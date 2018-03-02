@@ -6,6 +6,7 @@
 #' @param response Indicator variable for whether an ownership responded. 1=Yes and 0=No.
 #' @return response rate
 #' @keywords nwos
+#' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples

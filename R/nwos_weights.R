@@ -9,6 +9,7 @@
 #' @param response.rate vector of response rates.
 #' @return vector of weights
 #' @keywords nwos
+#' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples

@@ -4,6 +4,7 @@
 #' @param weights weight for each observation.
 #' @param method method to be used for trimming. The only current method implemented is "iqr_1.5".
 #' @keywords nwos
+#' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples

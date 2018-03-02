@@ -9,6 +9,7 @@
 #' @param area vector of areas of forest land owned by sampled ownerships. NAs are permissable.
 #' @param units units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".
 #' @keywords nwos
+#' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples
