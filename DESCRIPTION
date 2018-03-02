@@ -5,6 +5,7 @@ Version: 0.1.0
 Author: Brett J. Butler
 Maintainer: Brett J. Butler <bbutler@eco.umass.edu>
 Description: Calculate weights and estimates for the US Forest Service's National Woodland Owner Survey. 
+Imports: boot
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

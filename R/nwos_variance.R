@@ -1,13 +1,15 @@
 #' NWOS Variance
 #'
 #' This function calculates variances for NWOS statistics using a bootstrapping approach.
-#' @usage nwosVar(weight, point.count, domain, y=1, area, response, stratum.area, units="ownerships", stat="total", R=2500)
+#' @usage nwosVar(weight, point.count, domain, y=1, area, response,
+#' stratum.area, units="ownerships", stat="total", R=2500)
 #' @param weight weight for each observation.
 #' @param point.count vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.
 #' @param domain variable indicating whether ownership is in the domain of interest.
 #' @param y variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.
 #' @param area vector of areas of forest land owned by sampled ownerships. NAs are permissable.
 #' @param response Indicator variable for whether an ownership responded. 1=Yes and 0=No.
+#' @param stratum.area total area of land.
 #' @param units units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".
 #' @param stat statistic of interest. Permissable values are "total", "mean" or "proportion". Default is "total".
 #' @param R number of replicates or bootstraps. Default is 2500.
@@ -46,7 +48,7 @@
 nwosVar <- function(weight, point.count, domain, y=1, area, response,
                          stratum.area, units="ownerships", stat="total", R=2500)
 {
-  library(boot)
+  # library(boot)
   df <- data.frame(weight, point.count, domain, y, area, response)
   df <- df[rep(row.names(df), df$point.count), ]
   df$point.count <- 1
@@ -85,7 +87,7 @@ nwosVar <- function(weight, point.count, domain, y=1, area, response,
       return(x)
     }
 
-  b <- boot(data=df, statistic=nwosBoot,  R=R)
+  b <- boot::boot(data=df, statistic=nwosBoot,  R=R)
 
   x.var <- var(b$t)
 

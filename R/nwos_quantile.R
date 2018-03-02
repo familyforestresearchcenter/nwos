@@ -1,7 +1,8 @@
 #' NWOS Quantile
 #'
 #' This function calculates quantiles for NWOS estimates.
-#' @usage nwosQuantile(weight, point.count, domain, y=1, area, units="ownerships", prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
+#' @usage nwosQuantile(weight, point.count, domain, y=1, area, units="ownerships",
+#' prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
 #' @param weight weight for each observation.
 #' @param point.count vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.
 #' @param domain variable indicating whether ownership is in the domain of interest.
@@ -29,7 +30,7 @@
 #' area=nwos.sample.data$area)
 
 nwosQuantile <- function(weight, point.count, domain, y=1, area, units="ownerships",
-                         prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=100)
+                         prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
 {
   x.quant <- numeric(0)
   total <- nwosTotal(weight, point.count, domain, y, area, units=units)

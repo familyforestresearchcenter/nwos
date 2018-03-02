@@ -4,7 +4,8 @@
 \alias{nwosQuantile}
 \title{NWOS Quantile}
 \usage{
-nwosQuantile(weight, point.count, domain, y=1, area, units="ownerships", prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
+nwosQuantile(weight, point.count, domain, y=1, area, units="ownerships",
+prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
 }
 \arguments{
 \item{weight}{weight for each observation.}

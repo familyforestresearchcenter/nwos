@@ -11,13 +11,11 @@ nwosWeights(point.count, area, domain, stratum.area, response.rate)
 
 \item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable for ownerships not in owner.class.}
 
+\item{domain}{variable indicating whether ownership is in the domain of interest.}
+
 \item{stratum.area}{total area of land.}
 
 \item{response.rate}{vector of response rates.}
-
-\item{owner.class}{vector of owner classes.}
-
-\item{response.rate.owner.class}{vector of owner.class associated with each response.rate}
 }
 \value{
 vector of weights

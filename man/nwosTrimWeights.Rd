@@ -7,9 +7,9 @@
 nwosTrimWeights(weights, method = "iqr_1.5")
 }
 \arguments{
-\item{method}{method to be used for trimming. The only current method implemented is "iqr_1.5".}
+\item{weights}{weight for each observation.}
 
-\item{weight}{weight for each observation.}
+\item{method}{method to be used for trimming. The only current method implemented is "iqr_1.5".}
 }
 \description{
 This function calculates trimmed weights for the NWOS.

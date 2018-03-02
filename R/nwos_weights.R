@@ -4,10 +4,9 @@
 #' @usage nwosWeights(point.count, area, domain, stratum.area, response.rate)
 #' @param point.count vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.
 #' @param area vector of areas of forest land owned by sampled ownerships. NAs are permissable for ownerships not in owner.class.
-#' @param owner.class vector of owner classes.
+#' @param domain variable indicating whether ownership is in the domain of interest.
 #' @param stratum.area total area of land.
 #' @param response.rate vector of response rates.
-#' @param response.rate.owner.class vector of owner.class associated with each response.rate
 #' @return vector of weights
 #' @keywords nwos
 #' @references

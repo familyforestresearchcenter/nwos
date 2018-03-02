@@ -1,7 +1,7 @@
 #' NWOS Trim Weights
 #'
 #' This function calculates trimmed weights for the NWOS.
-#' @param weight weight for each observation.
+#' @param weights weight for each observation.
 #' @param method method to be used for trimming. The only current method implemented is "iqr_1.5".
 #' @keywords nwos
 #' @references

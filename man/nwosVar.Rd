@@ -4,7 +4,8 @@
 \alias{nwosVar}
 \title{NWOS Variance}
 \usage{
-nwosVar(weight, point.count, domain, y=1, area, response, stratum.area, units="ownerships", stat="total", R=2500)
+nwosVar(weight, point.count, domain, y=1, area, response,
+stratum.area, units="ownerships", stat="total", R=2500)
 }
 \arguments{
 \item{weight}{weight for each observation.}
@@ -18,6 +19,8 @@ nwosVar(weight, point.count, domain, y=1, area, response, stratum.area, units="o
 \item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable.}
 
 \item{response}{Indicator variable for whether an ownership responded. 1=Yes and 0=No.}
+
+\item{stratum.area}{total area of land.}
 
 \item{units}{units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".}
 
