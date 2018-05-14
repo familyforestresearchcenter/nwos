@@ -1,6 +1,6 @@
 #' NWOS Response Rates
 #'
-#' This function calculates response rates for the NWOS by stratum and domain.
+#' This function calculates response rates for the NWOS.
 #' @usage nwosResponseRates(point.count, response)
 #' @param point.count vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.
 #' @param response Indicator variable for whether an ownership responded. 1=Yes and 0=No.

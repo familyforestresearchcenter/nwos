@@ -4,9 +4,9 @@
 #' @usage nwosWeights(point.count, area, domain, stratum.area, response.rate)
 #' @param point.count vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.
 #' @param area vector of areas of forest land owned by sampled ownerships. NAs are permissable for ownerships not in owner.class.
-#' @param domain variable indicating whether ownership is in the domain of interest.
-#' @param stratum.area total area of land.
-#' @param response.rate vector of response rates.
+#' @param stratum vector indicating whether ownership is in the stratum.
+#' @param area.state total land area in the state.
+#' @param response.rate response rate for the stratum. Default is 1 (i.e., 100% response).
 #' @return vector of weights
 #' @keywords nwos
 #' @export
@@ -25,11 +25,13 @@
 #' stratum.area=35198019,
 #' response.rate=sample.response.rate)
 
-nwosWeights <- function(point.count, area, domain, stratum.area, response.rate)
+nwosWeights <- function(point.count, area, stratum, area.state, response.rate=1)
 {
   n <- sum(point.count) # Sample size
+  n.stratum <- sum(point.count[stratum==1])
+  area.stratum <- (n.stratum/n) * area.state
 
-  w <- ifelse(domain==1, (stratum.area / (n * area)) * (1 / response.rate), NA)
+  w <- ifelse(stratum==1, (area.stratum / (area * n.stratum)) * (1 / response.rate), NA)
 
   return(w)
 }
