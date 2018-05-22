@@ -1,96 +1,131 @@
 #' NWOS Variance
 #'
 #' This function calculates variances for NWOS statistics using a bootstrapping approach.
-#' @usage nwosVar(weight, point.count, domain, y=1, area, response,
-#' stratum.area, units="ownerships", stat="total", R=2500)
-#' @param weight weight for each observation.
-#' @param point.count vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.
-#' @param domain variable indicating whether ownership is in the domain of interest.
-#' @param y variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.
-#' @param area vector of areas of forest land owned by sampled ownerships. NAs are permissable.
-#' @param response Indicator variable for whether an ownership responded. 1=Yes and 0=No.
-#' @param stratum.area total area of land.
+#' @usage nwosVar(point.count, domain, y=1, area, response=1,
+#' stratum.area, units="ownerships", stat="total", R=100)
+#' @param data data frame of survey data. See details below for required variables.
 #' @param units units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".
 #' @param stat statistic of interest. Permissable values are "total", "mean" or "proportion". Default is "total".
-#' @param R number of replicates or bootstraps. Default is 2500.
+#' @param R number of replicates or bootstraps. Default is 100.
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @keywords nwos
 #' @export
 #' @examples
-#' load("data/nwos_sample_data.RData")
-#' nwos.sample.data$domain <- ifelse(nwos.sample.data$owner.class=="FamilyForest", 1, 0)
-#' nwos.sample.data$response <- ifelse(nwos.sample.data$owner.class=="FamilyForest",
-#' as.numeric(as.character(nwos.sample.data$response)), NA)
-#' nwos.sample.data$weights <- nwosWeights(point.count=nwos.sample.data$point.count,
-#' area=nwos.sample.data$area,
-#' domain=nwos.sample.data$domain,
-#' stratum.area=35198019,
-#' response.rate=sample.response.rate)
-#' # Variance of total number of ownerships
-#' nwosVar(weight=nwos.sample.data$weight,
-#' point.count=nwos.sample.data$point.count,
-#' domain=nwos.sample.data$domain,
-#' area=nwos.sample.data$area,
-#' response=nwos.sample.data$response,
-#' stratum.area=35198019,
-#' units="ownerships",
-#' stat="total")
-#' #' # Variance of total number of acres
-#' nwosVar(weight=nwos.sample.data$weight,
-#' point.count=nwos.sample.data$point.count,
-#' domain=nwos.sample.data$domain,
-#' area=nwos.sample.data$area,
-#' response=nwos.sample.data$response,
-#' stratum.area=35198019,
-#' units="area",
-#' stat="total")
+#' load("data/nwos_data_sample.RData")
+#' df <- nwos.data.sample[nwos.data.sample$SAMPLE==1,]
+#' nwosVar(point.count=df$POINT_COUNT, area=df$ACRES_FOREST, area.total=1000, R=100)
 
-nwosVar <- function(weight, point.count, domain, y=1, area, response,
-                         stratum.area, units="ownerships", stat="total", R=2500)
+nwosVar <- function(data, state.areas, response.rates,
+                    units="ownerships", stat="total", R=100)
 {
-  # library(boot)
-  df <- data.frame(weight, point.count, domain, y, area, response)
-  df <- df[rep(row.names(df), df$point.count), ]
-  df$point.count <- 1
-  df$response <- ifelse(df$domain==1, as.numeric(as.character(df$response)), NA)
+  require(boot)
 
-  if(stat=="total")
-  nwosBoot <- function(df, indices)
+  out <- data.frame(STATE=numeric(0),
+                    STRATUM=numeric(0),
+                    VARIANCE=numeric(0)) # Create empty data frame
+
+  state <- unique(data$STATE) # Vector of unique states in data
+  for(i in state) # State loop
   {
-    d <- df[indices,]
-    rr <- nwosResponseRates(d$point.count, d$response)
-    w <- nwosWeights(d$point.count, d$area, d$domain, stratum.area, rr)
-    x <- nwosTotal(weight=w, point.count=d$point.count,
-                   domain=d$domain, y=d$y, d$area, units=units)
-    return(x)
-  }
-
-  if(stat=="mean")
-    nwosBoot <- function(df, indices)
+    data.i <- data[data$STATE%in%i,] # Data for state i
+    stratum <- unique(data$STRATUM[data$STATE%in%i])  # Vector of unique strata in state i
+    for(j in stratum) # Stratum loop
     {
-      d <- df[indices,]
-      rr <- nwosResponseRates(d$point.count, d$response)
-      w <- nwosWeights(d$point.count, d$area, d$domain, stratum.area, rr)
-      x <- nwosMean(weight=w, point.count=d$point.count,
-                     domain=d$domain, y=d$y, d$area, units=units)
-      return(x)
-    }
+      data.i.j <- data.i[data.i$STRATUM%in%j, ] # Data for stratum j in state i
+      # if(units=="ownerships")
+      #   x <- sum(data.i.j$WEIGHT * data.i.j$DOMAIN, na.rm=T) # Ownerships estimator
+      # if(units=="area")
+      #   x <- sum(data.i.j$WEIGHT * data.i.j$DOMAIN * data.i.j$AREA, na.rm=T) # Area estimator
 
-  if(stat=="proportion")
-    nwosBoot <- function(df, indices)
-    {
-      d <- df[indices,]
-      rr <- nwosResponseRates(d$point.count, d$response)
-      w <- nwosWeights(d$point.count, d$area, d$domain, stratum.area, rr)
-      x <- nwosProportion(weight=w, point.count=d$point.count,
-                     domain=d$domain, y=d$y, d$area, units=units)
-      return(x)
-    }
+      # df <- data.frame(point.count, area, stratum, domain, y, response)
+      data.i.j.rep <- data.i.j[rep(row.names(data.i.j), data.i.j$POINT_COUNT), ]
+      data.i.j.rep$POINT_COUNT <- 1
 
-  b <- boot::boot(data=df, statistic=nwosBoot,  R=R)
+      if(stat=="total")
+        nwosBoot <- function(df, indices)
+        {
+          d <- df[indices,]
+          rr <- nwosResponseRate(d)
+          w <- nwosWeights(d$point.count, d$area, area.total, rr, stratum=d$stratum)
+          # nwosWeights <- function(data, state.areas, response.rates)
+          x <- nwosTotal(data, units=units)
+          return(x)
+        }
 
-  x.var <- var(b$t)
+      if(stat=="mean")
+        nwosBoot <- function(df, indices)
+        {
+          d <- df[indices,]
+          rr <- nwosResponseRate(d$point.count, d$response, d$stratum)
+          w <- nwosWeights(d$point.count, d$area, area.total, rr, stratum=d$stratum)
+          x <- nwosMean(weight=w, y=d$y, stratum=d$stratum, domain=d$domain, d$area, units=units)
+          return(x)
+        }
 
-  return(x.var)
+      if(stat=="proportion")
+        nwosBoot <- function(df, indices)
+        {
+          d <- df[indices,]
+          rr <- nwosResponseRate(d$point.count, d$response, d$stratum)
+          w <- nwosWeights(d$point.count, d$area, area.total, rr, stratum=d$stratum)
+          x <- nwosProportion(weight=w, y=d$y, stratum=d$stratum, domain=d$domain, d$area, units=units)
+          return(x)
+        }
+
+
+      b <- boot::boot(data=data.i.j.rep, statistic=nwosBoot,  R=R)
+
+      out <- rbind(out,
+                   data.frame(STATE=i,
+                              STRATUM=j,
+                              VARIANCE=as.numeric(var(b$t)))) # Append estimate to data frame
+    } # End stratum loop
+  } # End state loop
+
+
+
+
+
+
+
+  # df <- data.frame(point.count, area, stratum, domain, y, response)
+  # df <- df[rep(row.names(df), df$point.count), ]
+  # df$point.count <- 1
+  #
+  # if(stat=="total")
+  #   nwosBoot <- function(df, indices)
+  #   {
+  #     d <- df[indices,]
+  #     rr <- nwosResponseRate(d$point.count, d$response, d$stratum)
+  #     w <- nwosWeights(d$point.count, d$area, area.total, rr, stratum=d$stratum)
+  #     x <- nwosTotal(weight=w, stratum=d$stratum, domain=d$domain, y=d$y, d$area, units=units)
+  #     return(x)
+  #   }
+  #
+  # if(stat=="mean")
+  #   nwosBoot <- function(df, indices)
+  #   {
+  #     d <- df[indices,]
+  #     rr <- nwosResponseRate(d$point.count, d$response, d$stratum)
+  #     w <- nwosWeights(d$point.count, d$area, area.total, rr, stratum=d$stratum)
+  #     x <- nwosMean(weight=w, y=d$y, stratum=d$stratum, domain=d$domain, d$area, units=units)
+  #     return(x)
+  #   }
+  #
+  # if(stat=="proportion")
+  #   nwosBoot <- function(df, indices)
+  #   {
+  #     d <- df[indices,]
+  #     rr <- nwosResponseRate(d$point.count, d$response, d$stratum)
+  #     w <- nwosWeights(d$point.count, d$area, area.total, rr, stratum=d$stratum)
+  #     x <- nwosProportion(weight=w, y=d$y, stratum=d$stratum, domain=d$domain, d$area, units=units)
+  #     return(x)
+  #   }
+  #
+  # b <- boot::boot(data=df, statistic=nwosBoot,  R=R)
+  #
+  # x.var <- as.numeric(var(b$t))
+
+  return(out)
 }
