@@ -4,18 +4,16 @@
 \alias{nwosWeights}
 \title{NWOS Weights}
 \usage{
-nwosWeights(point.count, area, domain, stratum.area, response.rate)
+nwosWeights(point.count, area, domain, stratum.area, response.rates)
 }
 \arguments{
-\item{point.count}{vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.}
+\item{point.count}{vector of counts of sample points per ownership.}
 
-\item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable for ownerships not in owner.class.}
+\item{area}{vector of area (e.g., forest acres) per ownership.}
 
-\item{domain}{variable indicating whether ownership is in the domain of interest.}
+\item{stratum.area}{area for stratum}
 
-\item{stratum.area}{total area of land.}
-
-\item{response.rate}{vector of response rates.}
+\item{response.rate}{response rate for stratum. Default value = 1.}
 }
 \value{
 vector of weights
@@ -24,17 +22,10 @@ vector of weights
 This function returns the calculated weights based on the NWOS sample design.
 }
 \examples{
-# Calculate weights for family forest ownerships
-load("data/nwos_sample_data.RData")
-nwos.sample.data$domain <- ifelse(nwos.sample.data$owner.class=="FamilyForest", 1, 0)
-nwos.sample.data$response <- ifelse(nwos.sample.data$owner.class=="FamilyForest",
-as.numeric(as.character(nwos.sample.data$response)), NA)
-sample.response.rate <- nwosResponseRates(nwos.sample.data$point.count,nwos.sample.data$response)
-nwos.sample.data$weights <- nwosWeights(point.count=nwos.sample.data$point.count,
-area=nwos.sample.data$area,
-domain=nwos.sample.data$domain,
-stratum.area=35198019,
-response.rate=sample.response.rate)
+load("data/nwos_data_sample.RData")
+data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
+data$w <- nwosWeights(data$POINT_COUNT, data$ACRES_FOREST, 1000)
+sum(data$w)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

@@ -9,11 +9,9 @@ nwosMean(weight, point.count, domain, y=1, area, units="ownerships")
 \arguments{
 \item{weight}{weight for each observation.}
 
-\item{point.count}{vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.}
+\item{y}{variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.}
 
 \item{domain}{variable indicating whether ownership is in the domain of interest.}
-
-\item{y}{variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.}
 
 \item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable.}
 
@@ -23,29 +21,13 @@ nwosMean(weight, point.count, domain, y=1, area, units="ownerships")
 This function calculates totals for the NWOS.
 }
 \examples{
-load("data/nwos_sample_data.RData")
-nwos.sample.data$domain <- ifelse(nwos.sample.data$owner.class=="FamilyForest", 1, 0)
-nwos.sample.data$response <- ifelse(nwos.sample.data$owner.class=="FamilyForest",
-as.numeric(as.character(nwos.sample.data$response)), NA)
-nwos.sample.data$weights <- nwosWeights(point.count=nwos.sample.data$point.count,
-area=nwos.sample.data$area,
-domain=nwos.sample.data$domain,
-stratum.area=35198019,
-response.rate=sample.response.rate)
-# Ownership based mean size of forest holdings
-nwosMean(weight=nwos.sample.data$weight,
-point.count=nwos.sample.data$point.count,
-domain=nwos.sample.data$domain,
-y=nwos.sample.data$area,
-area=nwos.sample.data$area,
-units="ownerships")
-# Area based mean size of forest holdings
-nwosMean(weight=nwos.sample.data$weight,
-point.count=nwos.sample.data$point.count,
-domain=nwos.sample.data$domain,
-y=nwos.sample.data$area,
-area=nwos.sample.data$area,
-units="area")
+load("data/nwos_data_sample.RData")
+df <- nwos.data.sample[nwos.data.sample$SAMPLE==1,]
+df$WEIGHT <- nwosWeights(point.count=df$POINT_COUNT, area=df$ACRES_FOREST, area.total=1000)
+# Mean acreage by ownership
+nwosMean(weight=df$WEIGHT, y=df$ACRES_FOREST)
+# Mean acreage by area
+nwosMean(weight=df$WEIGHT, y=df$ACRES_FOREST, area=df$ACRES_FOREST, units="area")
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

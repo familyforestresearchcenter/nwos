@@ -9,11 +9,9 @@ nwosProportion(weight, point.count, domain, y, area, units="ownerships")
 \arguments{
 \item{weight}{weight for each observation.}
 
-\item{point.count}{vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.}
+\item{y}{variable of interest. 1 indicates inclusion.}
 
 \item{domain}{variable indicating whether ownership is in the domain of interest.}
-
-\item{y}{variable of interest. Set to 1 if interested in basic ownership or area totals.}
 
 \item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable.}
 
@@ -23,30 +21,13 @@ nwosProportion(weight, point.count, domain, y, area, units="ownerships")
 This function calculates totals for the NWOS.
 }
 \examples{
-load("data/nwos_sample_data.RData")
-nwos.sample.data$domain <- ifelse(nwos.sample.data$owner.class=="FamilyForest", 1, 0)
-nwos.sample.data$response <- ifelse(nwos.sample.data$owner.class=="FamilyForest",
-as.numeric(as.character(nwos.sample.data$response)), NA)
-nwos.sample.data$weights <- nwosWeights(point.count=nwos.sample.data$point.count,
-area=nwos.sample.data$area,
-domain=nwos.sample.data$domain,
-stratum.area=35198019,
-response.rate=sample.response.rate)
-# Proportion of ownership with y_1=1
-nwos.sample.data$y_1 <- as.numeric(as.character(nwos.sample.data$y_1))
-nwosProportion(weight=nwos.sample.data$weight,
-point.count=nwos.sample.data$point.count,
-domain=nwos.sample.data$domain,
-y=nwos.sample.data$y_1,
-area=nwos.sample.data$area,
-units="ownerships")
-# Proportion of area with y_1=1
-nwosProportion(weight=nwos.sample.data$weight,
-point.count=nwos.sample.data$point.count,
-domain=nwos.sample.data$domain,
-y=nwos.sample.data$y_1,
-area=nwos.sample.data$area,
-units="area")
+load("data/nwos_data_sample.RData")
+df <- nwos.data.sample[nwos.data.sample$SAMPLE==1,]
+df$WEIGHT <- nwosWeights(point.count=df$POINT_COUNT, area=df$ACRES_FOREST, area.total=1000)
+# Proportion of ownerships with Y_1=1
+nwosProportion(weight=df$WEIGHT, y=df$Y_1)
+# Proportion of acres with Y_1=1
+nwosProportion(weight=df$WEIGHT, y=df$Y_1, area=df$ACRES_FOREST, units="area")
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

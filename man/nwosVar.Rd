@@ -4,61 +4,25 @@
 \alias{nwosVar}
 \title{NWOS Variance}
 \usage{
-nwosVar(weight, point.count, domain, y=1, area, response,
-stratum.area, units="ownerships", stat="total", R=2500)
+nwosVar(point.count, domain, y=1, area, response=1,
+stratum.area, units="ownerships", stat="total", R=100)
 }
 \arguments{
-\item{weight}{weight for each observation.}
-
-\item{point.count}{vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.}
-
-\item{domain}{variable indicating whether ownership is in the domain of interest.}
-
-\item{y}{variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.}
-
-\item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable.}
-
-\item{response}{Indicator variable for whether an ownership responded. 1=Yes and 0=No.}
-
-\item{stratum.area}{total area of land.}
+\item{data}{data frame of survey data. See details below for required variables.}
 
 \item{units}{units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".}
 
 \item{stat}{statistic of interest. Permissable values are "total", "mean" or "proportion". Default is "total".}
 
-\item{R}{number of replicates or bootstraps. Default is 2500.}
+\item{R}{number of replicates or bootstraps. Default is 100.}
 }
 \description{
 This function calculates variances for NWOS statistics using a bootstrapping approach.
 }
 \examples{
-load("data/nwos_sample_data.RData")
-nwos.sample.data$domain <- ifelse(nwos.sample.data$owner.class=="FamilyForest", 1, 0)
-nwos.sample.data$response <- ifelse(nwos.sample.data$owner.class=="FamilyForest",
-as.numeric(as.character(nwos.sample.data$response)), NA)
-nwos.sample.data$weights <- nwosWeights(point.count=nwos.sample.data$point.count,
-area=nwos.sample.data$area,
-domain=nwos.sample.data$domain,
-stratum.area=35198019,
-response.rate=sample.response.rate)
-# Variance of total number of ownerships
-nwosVar(weight=nwos.sample.data$weight,
-point.count=nwos.sample.data$point.count,
-domain=nwos.sample.data$domain,
-area=nwos.sample.data$area,
-response=nwos.sample.data$response,
-stratum.area=35198019,
-units="ownerships",
-stat="total")
-#' # Variance of total number of acres
-nwosVar(weight=nwos.sample.data$weight,
-point.count=nwos.sample.data$point.count,
-domain=nwos.sample.data$domain,
-area=nwos.sample.data$area,
-response=nwos.sample.data$response,
-stratum.area=35198019,
-units="area",
-stat="total")
+load("data/nwos_data_sample.RData")
+df <- nwos.data.sample[nwos.data.sample$SAMPLE==1,]
+nwosVar(point.count=df$POINT_COUNT, area=df$ACRES_FOREST, area.total=1000, R=100)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
