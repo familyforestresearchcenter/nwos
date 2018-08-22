@@ -17,7 +17,7 @@
 
 nwos_variance <- function(state.area,
                           point.count, response, owner.area,
-                          stratum = 1, domain = 1, variable = 1,
+                          stratum, domain, variable = 1,
                           replicates, index,
                           stat = "TOTAL", units = "OWNERSHIPS") {
   var(sapply(1:NCOL(replicates), nwos_estimate_replicates,
