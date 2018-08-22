@@ -11,9 +11,9 @@ nwosMean(weight, point.count, domain, y=1, area, units="ownerships")
 
 \item{y}{variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.}
 
-\item{domain}{variable indicating whether ownership is in the domain of interest.}
-
 \item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable.}
+
+\item{domain}{variable indicating whether ownership is in the domain of interest.}
 
 \item{units}{units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".}
 }
@@ -22,12 +22,12 @@ This function calculates totals for the NWOS.
 }
 \examples{
 load("data/nwos_data_sample.RData")
-df <- nwos.data.sample[nwos.data.sample$SAMPLE==1,]
-df$WEIGHT <- nwosWeights(point.count=df$POINT_COUNT, area=df$ACRES_FOREST, area.total=1000)
+df <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
+df$WEIGHT <- nwosWeights(df$POINT_COUNT, df$ACRES_FOREST, 1000)
 # Mean acreage by ownership
-nwosMean(weight=df$WEIGHT, y=df$ACRES_FOREST)
+nwosMean(weight=df$WEIGHT, y=df$ACRES_FOREST, var=F)
 # Mean acreage by area
-nwosMean(weight=df$WEIGHT, y=df$ACRES_FOREST, area=df$ACRES_FOREST, units="area")
+nwosMean(weight=df$WEIGHT, y=df$ACRES_FOREST, area=df$ACRES_FOREST, units="area", var=F)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

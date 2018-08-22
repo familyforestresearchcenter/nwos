@@ -10,37 +10,29 @@ prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
 \arguments{
 \item{weight}{weight for each observation.}
 
+\item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable.}
+
 \item{point.count}{vector of number of sample points. Needs to sum to total number of sample points across all land uses and ownership classes.}
 
 \item{domain}{variable indicating whether ownership is in the domain of interest.}
-
-\item{y}{variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.}
-
-\item{area}{vector of areas of forest land owned by sampled ownerships. NAs are permissable.}
 
 \item{units}{units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".}
 
 \item{prob}{vector of probabilities for quantiles.}
 
 \item{max.iter}{maximum number of iterations. Default = 100.}
+
+\item{y}{variable of interest. Set to 1 if interested in basic ownership or area totals. Default is 1.}
 }
 \description{
 This function calculates quantiles for NWOS estimates.
 }
 \examples{
-load("data/nwos_sample_data.RData")
-nwos.sample.data$domain <- ifelse(nwos.sample.data$owner.class=="FamilyForest", 1, 0)
-nwos.sample.data$response <- ifelse(nwos.sample.data$owner.class=="FamilyForest",
-as.numeric(as.character(nwos.sample.data$response)), NA)
-nwos.sample.data$weights <- nwosWeights(point.count=nwos.sample.data$point.count,
-area=nwos.sample.data$area,
-domain=nwos.sample.data$domain,
-stratum.area=35198019,
-response.rate=sample.response.rate)
-nwosQuantile(weight=nwos.sample.data$weight,
-point.count=nwos.sample.data$point.count,
-domain=nwos.sample.data$domain,
-area=nwos.sample.data$area)
+load("data/nwos_data_sample.RData")
+data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
+data$WEIGHT <- nwosWeights(data$POINT_COUNT, data$ACRES_FOREST, 1000)
+data$DOMAIN <- 1
+nwosQuantile(weight=data$WEIGHT,area=data$ACRES_FOREST,domain=data$DOMAIN)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

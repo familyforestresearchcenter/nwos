@@ -16,25 +16,18 @@
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples
-#' load("data/nwos_sample_data.RData")
-#' nwos.sample.data$domain <- ifelse(nwos.sample.data$owner.class=="FamilyForest", 1, 0)
-#' nwos.sample.data$response <- ifelse(nwos.sample.data$owner.class=="FamilyForest",
-#' as.numeric(as.character(nwos.sample.data$response)), NA)
-#' nwos.sample.data$weights <- nwosWeights(point.count=nwos.sample.data$point.count,
-#' area=nwos.sample.data$area,
-#' domain=nwos.sample.data$domain,
-#' stratum.area=35198019,
-#' response.rate=sample.response.rate)
-#' nwosQuantile(weight=nwos.sample.data$weight,
-#' point.count=nwos.sample.data$point.count,
-#' domain=nwos.sample.data$domain,
-#' area=nwos.sample.data$area)
+#' load("data/nwos_data_sample.RData")
+#' data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
+#' data$WEIGHT <- nwosWeights(data$POINT_COUNT, data$ACRES_FOREST, 1000)
+#' data$DOMAIN <- 1
+#' nwosQuantile(weight=data$WEIGHT,area=data$ACRES_FOREST,domain=data$DOMAIN)
 
-nwosQuantile <- function(weight, point.count, domain, y=1, area, units="ownerships",
+nwosQuantile <- function(weight, area, point.count=NA, response=NA, domain, stratum.area=1, units="ownerships",
                          prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
 {
   x.quant <- numeric(0)
-  total <- nwosTotal(weight, point.count, domain, y, area, units=units)
+  total <- as.numeric(nwosTotal(weight=weight, area=area, point.count=point.count,
+                     domain=domain, units=units, var=F)[1])
   x.min <- min(area[domain==1], na.rm=T)
   x.max <- max(area[domain==1], na.rm=T)
   for(p in 1:NROW(prob)) # By probability level
@@ -51,15 +44,8 @@ nwosQuantile <- function(weight, point.count, domain, y=1, area, units="ownershi
         {
           if(round(quant.iter,2)!=(1-prob[p]))
           {
-            total.quant.iter <- nwosTotal(weight, point.count, domain,
-                                          y=y*ifelse(area>=x.quant.iter, 1, 0),
-                                          area, units=units)
-            # total.quant.iter <- nwosTotal(nwos.data, stratum=stratum[st], domain=domain[d],
-            #                               subdomain=subdomain,
-            #                               subdomain.name=NA,
-            #                               subsubdomain=subsubdomain * ifelse(nwos.data$area>=x.quant.iter, 1, 0),
-            #                               subsubdomain.name=NA,
-            #                               units=units[u])$value
+            total.quant.iter <- as.numeric(nwosTotal(weight=weight, area=area, point.count=point.count,
+                                                     domain=domain*ifelse(area>=x.quant.iter, 1, 0), units=units, var=F)[1])
             quant.iter <- total.quant.iter / total
             quant.iter.diff <- ifelse((x.quant.prev - x.quant.iter) > 10,
                                       (x.quant.prev - x.quant.iter) / 2,

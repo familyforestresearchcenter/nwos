@@ -29,36 +29,24 @@
 #' nwosTotal(weight=data$WEIGHT, point.count=data$POINT_COUNT, response=data$RESPONSE, area=data$ACRES_FOREST,
 #' domain=data$DOMAIN, stratum.area=1000, units="area")
 
-nwosTotal <- function(weight, area=NA, point.count=NA, response=NA, domain=1, stratum.area=1, units="ownerships",
-                      variance=T, R=1000)
-{
-  if(units=="ownerships")
-    x <- sum(weight * domain) # Ownerships estimator
-  else
-    x <- sum(weight * domain * area) # Area estimator
-  if(variance) # If variances are to be calculated
-  {
-    require(boot)
-    nwosBoot <- function(df, indices, area.s=stratum.area) # Function called by boot
-    {
-      d <- df[indices,] # Create new data frame with indices
-      rr <- nwosResponseRate(d$point.count, d$response) # Calculate response rates
-      d$weight <- nwosWeights(d$point.count, d$area, area.s, rr) # Calculate weights
-      if(units=="ownerships")
-        x <- sum(d$weight * d$domain) # Ownerships estimator
-      else
-        x <- sum(d$weight * d$domain * d$area) # Area estimator
-      return(x)
-    }
-    data <- data.frame(weight, domain, point.count, response, area) # Create data frame
-    data <- data[rep(row.names(data), data$point.count), ] # Replicate records by number of points
-    data$point.count <- 1 # Reset points counts
-    b <- boot::boot(data=data, statistic=nwosBoot, R=R) # Run bootstrap
-    # b <- boot::boot(data=data, statistic=nwosBoot, R=R, parallel="multicore", ncpus=3) # Run bootstrap
-    x.var=as.numeric(var(b$t)) # Varaince of bootstrap estimates
-  }
-  else
-    x.var <- NA
+# nwos_total <- function(stratum, domain=1, weight, area=NA, units="ownerships"){
+#   if(!units %in% c("ownerships","area")) stop("units need to be ownerships or area")
+#   if(units=="ownerships")
+#     x <- sum(stratum * domain * weight, na.rm=T) # Ownerships estimator
+#   else
+#     x <- sum(stratum * domain * weight * area, na.rm=T) # Area estimator
+#   return(x)
+# }
 
-return(list(x=x,x.var=x.var)) # Return estimate
+# nwos_total <- function(weight, area=NA, domain=1, variable=1, units="OWNERSHIPS"){
+#   if(!units %in% c("OWNERSHIPS","AREA")) stop("units need to be OWNERSHIPS or AREA")
+#   if(units=="OWNERSHIPS")
+#     x <- sum(weight * domain * variable, na.rm=T) # Ownerships estimator
+#   else
+#     x <- sum(weight * area * domain * variable, na.rm=T) # Area estimator
+#   return(x)
+# }
+
+nwos_total <- function(weight, area = 1, domain = 1, variable = 1){
+  sum(weight * area * domain * variable, na.rm=T)
 }

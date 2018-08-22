@@ -14,17 +14,41 @@
 #' @examples
 #' load("data/nwos_data_sample.RData")
 #' df <- nwos.data.sample[nwos.data.sample$SAMPLE==1,]
-#' df$WEIGHT <- nwosWeights(point.count=df$POINT_COUNT, area=df$ACRES_FOREST, area.total=1000)
+#' df$WEIGHT <- nwosWeights(df$POINT_COUNT, df$ACRES_FOREST, 1000)
 #' # Proportion of ownerships with Y_1=1
-#' nwosProportion(weight=df$WEIGHT, y=df$Y_1)
+#' nwosProportion(weight=df$WEIGHT, y=df$Y_1, var=F)
 #' # Proportion of acres with Y_1=1
-#' nwosProportion(weight=df$WEIGHT, y=df$Y_1, area=df$ACRES_FOREST, units="area")
+#' nwosProportion(weight=df$WEIGHT, y=df$Y_1, area=df$ACRES_FOREST, units="area", var=F)
 
-nwosProportion <- function(weight, y=1, stratum=1, domain=1, area=NA, units="ownerships")
+nwosProportion <- function(weight, y=1, area=NA, point.count=NA, response=NA, domain=1, stratum.area=1, units="ownerships",
+                     variance=T, R=1000)
 {
   if(units=="ownerships")
-    x.prop <- sum(weight * domain * y, na.rm=T) /sum(weight * domain, na.rm=T)
-  if(units=="area")
-    x.prop <- sum(weight * domain * y * area, na.rm=T) / sum(weight * domain * area, na.rm=T)
-  return(x.prop)
+    x <- sum(weight * domain * y) / sum(weight * domain) # Mean ownerships estimator
+  else
+    x <- sum(weight * domain * area * y) / sum(weight * domain * area) # Mean area estimator
+  if(variance) # If variances are to be calculated
+  {
+    require(boot)
+    nwosBoot <- function(df, indices, area.s=stratum.area) # Function called by boot
+    {
+      d <- df[indices,] # Create new data frame with indices
+      rr <- nwosResponseRate(d$point.count, d$response) # Calculate response rates
+      d$weight <- nwosWeights(d$point.count, d$area, area.s, rr) # Calculate weights
+      if(units=="ownerships")
+        x <- sum(d$weight * d$domain * d$y) / sum(d$weight * d$domain) # Ownerships estimator
+      else
+        x <- sum(d$weight * d$domain * d$area * d$y) / sum(d$weight * d$domain * d$area) # Area estimator
+      return(x)
+    }
+    data <- data.frame(weight, domain, y, point.count, response, area) # Create data frame
+    data <- data[rep(row.names(data), data$point.count), ] # Replicate records by number of points
+    data$point.count <- 1 # Reset points counts
+    b <- boot::boot(data=data, statistic=nwosBoot, R=R) # Run bootstrap
+    x.var=as.numeric(var(b$t)) # Varaince of bootstrap estimates
+  }
+  else
+    x.var <- NA
+
+  return(list(x=x,x.var=x.var)) # Return estimate
 }

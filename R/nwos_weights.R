@@ -16,11 +16,14 @@
 #' load("data/nwos_data_sample.RData")
 #' data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
 #' data$w <- nwosWeights(data$POINT_COUNT, data$ACRES_FOREST, 1000)
-#' sum(data$w)
 
-nwosWeights <- function(point.count, area, stratum.area, response.rate=1)
-{
-  n <- sum(point.count)
-  w <- ((stratum.area / (area * n)) * point.count) * (1 / response.rate)
-  return(w)
+nwos_weights <- function(stratum.area,
+                         stratum.area.correction=stratum.area,
+                         response.rate,
+                         point.count,
+                         owner.area,
+                         stratum = 1) {
+  n.s <- sum(point.count * stratum) # Sample points in stratum
+  stratum.area <- stratum.area.correction # Corrected stratum area
+  ((stratum.area / (owner.area * n.s)) * point.count) * (1 / response.rate) * stratum # Weights
 }

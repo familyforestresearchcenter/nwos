@@ -1,12 +1,15 @@
 #' NWOS Stratum Area
 #'
-#' This function estimates the area by state and stratum.
-#' @usage nwosWeights(point.count, area, domain, stratum.area, response.rates)
-#' @param data data frame of survey data. See details below for required variables.
-#' @param state.areas data frame of state areas. See details below for required variables.
-#' @param response.rates data frame of survey data. See details below for required variables.
+#' This function estimates the stratum area.
+#' @usage nwos_stratum_area(stratum, point.count, state.area)
+#' @param df data frame containing, at a minimum, the following variables: STATE_CD, LAND_USE, OWN_CD, and POINT_COUNT
+#' @param state.list vector of state codes to be evaluated.
+#' @param state.area vector of total land area in state. It needs to have the same length as state.list and be in the
+#' same order.
+#' @param land.use.list vector of land uses to be evaluated. The defaualt value is 1 (forest).
+#' @param own.cd.list vector of ownership codes to be evaluated. The default value if 45 (family).
 #' @details
-#' @return vector of weights
+#' @return data frame of areas in state/land use/ownership strata
 #' @keywords nwos
 #' @export
 #' @references
@@ -14,22 +17,10 @@
 #' @examples
 #' load("data/nwos_data_sample.RData")
 #' data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
-#' state.areas <- data.frame(STATE=0,AREA=1000)
-#' response.rates <- nwosResponseRate(data)
-#' data <- nwosWeights(data, state.areas, response.rates)
+#' nwos_stratum_area()
 
-# nwosWeights <- function(point.count, stratum, area, stratum.area, response.rate)
-# {
-#   n.s <- sum(data.i.j$POINT_COUNT, na.rm=T)  # Sample size in stratum j in state i
-#   area.i.j <- (n.s/n) * state.area
-#
-#   data.i.j$WEIGHT <- ((area.i.j / (data.i.j$AREA * n.i.j)) * data.i.j$POINT_COUNT) * (1 / response.rate)
-#   data.out <- rbind(data.out, data.i.j)
-# }
-# }
-#
-# var.list <- c("STATE", "STRATUM", "OWN_ID", "AREA", "POINT_COUNT", "RESPONSE", "WEIGHT")
-# data.out <- data.out[,c(var.list,names(data.out[!names(data.out)%in%var.list]))]
-#
-# return(data.out)
-# }
+nwos_stratum_area <- function(state.area, stratum, point.count) {
+  n <- sum(point.count[stratum %in% c(0,1)], na.rm=T) # Sample size (number of points) in state
+  n.s <- sum(point.count[stratum %in% c(1)], na.rm=T) # Sample size (number of points) in state stratum
+  (n.s / n) * state.area # Calculate stratum area
+}
