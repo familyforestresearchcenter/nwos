@@ -8,11 +8,11 @@ output: rmarkdown::html_vignette
 This vignette shows the basic steps necessary to generate estimates using the nwos package. The package can be downloaded from GitHub (devtools::install_git("git://github.com/bbutler01/nwos.git")). The examples below use the XX dataset supplied with the package. Estimates can be generated for totals, proportions, means, and associated variances.
 
 The basic steps are:
+* Generate replicates (used for variance estimates)
 * Estimate stratum areas
 * Calculate response rates
 * Calculate weights
-* Generate estimates
-* Generate variance estimates
+* Generate estimates, including variances
 
 These steps are repeated for each combination of state, stratum (e.g., family forest owners), and domain. The basic estimators assume the data supplied are for an individual state. Wrapper functions can be developed for iterating through states, strata, domains, and variables.
 
@@ -25,7 +25,7 @@ These steps are repeated for each combination of state, stratum (e.g., family fo
 # setwd("nwos")
 # devtools::install_git("git://github.com/bbutler01/nwos.git")
 library(nwos)
-library(ggplot2)
+library(tidyverse)
 ```
 
 Datasets need to have, at a minimum, the following variables:
@@ -43,142 +43,78 @@ Other data that are needed:
 
 Run by STATE
 
+This vingette assumes the data are from one state and there is only one stratum. Additional states and stratum are calculated by looping through the approriate levels.
+
 ## Load data
 ```{r load data}
-# load("../data/nwos_data.RData")
-# load("../data/nwos_data_sample.RData")
-# NWOS_DATA_SAMPLE$DOMAIN <- 1
-# sample.list <- unique(nwos.data.sample$SAMPLE)
-# STATE_AREA <- data.frame(STATE=0,AREA=1000)
-load("../../ANALYSIS/SAMPLE_SIZE/DATA/WI_SAMPLE_SIZE_SAMPLES_20180721.RData")
-df <- SAMPLE_SIZE_SAMPLES[SAMPLE_SIZE_SAMPLES$STATE_CD == 55 & SAMPLE_SIZE_SAMPLES$SAMPLE==1 & SAMPLE_SIZE_SAMPLES$SIZE==1000, ]
-df$STRATUM <- ifelse(df$LAND_USE == 1 & df$OWN_CD == 45, 1, 0)
-df$DOMAIN <- 1
-load("../../ANALYSIS/DATA/PARC_STATS_20180716.RData") # Get State Total Land Area
-STATE_AREA <- PARC_STATS$VALUE[PARC_STATS$DOMAIN=="ALL_LAND"] 
+wi <- tbl_df(read.csv("../data/wi.csv")) 
+wi <- wi %>% mutate(ROW_NAME = row.names(wi),
+                    AC_WOOD = ACRES_FOREST)
+```
+
+## Generate Replicates
+
+Replicates are used in the bootrstrapping variance estimation. Replicates are generated just once to increase processing efficiency, in order to use the same replicates across all estimates, and to facilitate repeatability of the results. This vignette uses only 100 replicates in order to decrease processing time. An actual application would likley use many more replicates, e.g., $R = 5,000$.
+
+```{r replicates}
+WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
 ```
 
 ## Estimate acreage in stratum
-```{r stratum area}
-STRATUM_AREA <- nwos_stratum_area(state.area = STATE_AREA, stratum = df$STRATUM, point.count = df$POINT_COUNT)
+
+A dummy variable indicating inclusion in a stratum must be created, e.g., family forest ownerships (FFO). Area are estimated for the stratum of interest. These values must also be estimated for each of the replicates.
+
+```{r stratum_area}
+wi <- wi %>% mutate(FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0)) # Add stratum variable, FFO
+WI_FFO_AREA <- nwos_stratum_area(stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
+WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_replicates, data = wi, stratum.name = "FFO", state.area = 33898733)
 ```
 
 ## Calculate response rates
-Response rates need to be calculated for each state and stratum (i.e., forest ownership group) for which estimates are desired. This vingette assumes the data are from one state and there is only one stratum. Additional states and stratum are calculated by looping through the approriate levels.
 
-```{r response rates}
-RESPONSE_RATE <- nwos_response_rate(point.count = df$POINT_COUNT[df$STRATUM %in% 1], 
-                                    response = df$RESPONSE[df$STRATUM %in% 1])
+Response rates need to be calculated for each stratum of interest, and the associated replicates. 
+
+```{r response_rates}
+wi <- wi %>% mutate(RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0)) %>%
+  mutate(RESPONSE = if_else(is.na(RESPONSE_PROPENSITY), 0, RESPONSE))
+WI_FFO_RR <- nwos_response_rate(stratum = wi$FFO, point.count = wi$POINT_COUNT, response = wi$RESPONSE)
+WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_replicates, data = wi, stratum.name = "FFO", response.name = "RESPONSE")
 ```
 
 ## Generate weights
 ```{r weights}
-df$WEIGHT <- nwos_weights(stratum.area = STRATUM_AREA, response.rate = RESPONSE_RATE,
-                          point.count = df$POINT_COUNT, owner.area = df$ACRES_FOREST, stratum = df$STRATUM) 
+wi$WEIGHT <- nwos_weights(stratum = wi$FFO, point.count = wi$POINT_COUNT, 
+                               response = wi$RESPONSE, owner.area = wi$AC_WOOD, 
+                               stratum.area = WI_FFO_AREA, response.rate = WI_FFO_RR)
+WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_replicates, 
+                             index.rep = WI_REPLICATES, data = wi, 
+                             stratum.area.rep = WI_FFO_AREA_REP, response.rate.rep = WI_FFO_RR_REP)
 ```
 
 ## Generate estimates - totals
 ```{r totals}
-OWN_TOTAL <- nwos_total(weight = df$WEIGHT)
-AC_TOTAL <- nwos_total(weight = df$WEIGHT, area = df$ACRES_FOREST)
+WI_FFO_OWN_TOTAL <- nwos_total(weight = wi$WEIGHT)
+wi <- wi %>% mutate(OWNER = 1)
+WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_replicates, index.rep = WI_REPLICATES, data = wi,
+                       weight.rep = WI_FFO_WEIGHTS_REP,
+                       owner.area.name = "OWNER",
+                       domain.name = "FFO",
+                       variable.name = "FFO")
+WI_FFO_AC_TOTAL <- nwos_total(weight = wi$WEIGHT, area = wi$AC_WOOD)
+WI_FFO_AC_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_replicates, index.rep = WI_REPLICATES, data = wi,
+                       weight.rep = WI_FFO_WEIGHTS_REP,
+                       owner.area.name = "AC_WOOD",
+                       domain.name = "FFO",
+                       variable.name = "FFO")
+
 ```
-
-
-Generating variance estimates are slightly more complicated and can take substantially more computational time due to the bootstrapping esimatation procedure that is used. 
-
-```{r total variances}
-row.names(df) <- 1:NROW(df)
-REPLICATES <- nwos_replicates(index = as.numeric(row.names(df)), point.count = df$POINT_COUNT)
-OWN_TOTAL_VAR <- nwos_variance(state.area = STATE_AREA,
-                               point.count = df$POINT_COUNT, response = df$RESPONSE, 
-                               owner.area = df$ACRES_FOREST, stratum = df$STRATUM,
-                               replicates = REPLICATES, index = as.numeric(row.names(df)))
-AC_TOTAL_VAR  <- nwos_variance(state.area = STATE_AREA,
-                               point.count = df$POINT_COUNT, response = df$RESPONSE, 
-                               owner.area = df$ACRES_FOREST, stratum = df$STRATUM,
-                               replicates = REPLICATES, index = as.numeric(row.names(df)),
-                               units = "ACRES")
-```
-
 
 ## Proportions
 
 ## Means
 
 ## Quantiles, including medians
-<!-- The mean estimated number of ownerships is `r round(sample.total.own.mean,2)` with a sampling error of XX. The actual number of ownerships in the population is `r total.own`. The difference between these values is `r round(abs(sample.total.own.mean-total.own),2)` with a t-statstic of `r round(total.own.t$statistic,2)` (p-value of `r  round(total.own.t$p.value,2)` with `r  total.own.t$parameter` degrees of freedom). -->
 
-<!-- ```{r} -->
-<!-- ggplot(data=ESTIMATE_TOTAL_OWNER, aes(x="1",y=ESTIMATE)) + geom_boxplot() + geom_hline(aes(yintercept=total.own, color="red")) -->
-<!-- ``` -->
+## Estimate proportion ($Y_1$)
 
-<!-- ## Generate estimates - acreage totals -->
-<!-- ```{r total acreage} -->
-<!-- sample.total.area <- numeric(0) -->
-<!-- sample.total.var.area <- numeric(0) -->
-<!-- for(i in sample.list) { # By sample -->
-<!--   sample.total.area <- c(sample.total.area, -->
-<!--                          nwosTotal(weight=nwos.data.sample$WEIGHT[nwos.data.sample$SAMPLE==sample.list[i]],  -->
-<!--                                    area=nwos.data.sample$ACRES_FOREST[nwos.data.sample$SAMPLE==sample.list[i]], -->
-<!--                                    units="area")) -->
-<!--   sample.total.var.area <- c(sample.total.var.area, -->
-<!--                              nwosVar(point.count=nwos.data.sample$POINT_COUNT[nwos.data.sample$SAMPLE==sample.list[i]], -->
-<!--                                      area=nwos.data.sample$ACRES_FOREST[nwos.data.sample$SAMPLE==sample.list[i]], -->
-<!--                                      area.total=1000, units="area")) -->
-<!-- } -->
-<!-- sample.total.area.mean <- mean(sample.total.area) -->
-<!-- total.area <- sum(nwos.data$ACRES_FOREST) -->
-<!-- # total.area.t <- t.test(sample.total.area,mu=total.area) -->
-<!-- ``` -->
-
-<!-- The mean estimated area is `r round(sample.total.area.mean,2)` with a sampling error of XX. The actual area in the population is `r total.area`. The difference between these values is `r round(abs(sample.total.area.mean-total.area),2)`. -->
-
-<!-- ## Estimate proportion (Y_1) -->
-<!-- ```{r proportion y_1} -->
-<!-- sample.prop.own.y1 <- numeric(0) -->
-<!-- # sample.prop.var.own.y1 <- numeric(0) -->
-<!-- sample.prop.area.y1 <- numeric(0) -->
-<!-- # sample.prop.var.area.y1 <- numeric(0) -->
-<!-- for(i in sample.list) { # By sample -->
-<!--   sample.prop.own.y1 <- c(sample.prop.own.y1, -->
-<!--                           nwosProportion(weight=nwos.data.sample$WEIGHT[nwos.data.sample$SAMPLE==sample.list[i]],  -->
-<!--                                          y=nwos.data.sample$Y_1[nwos.data.sample$SAMPLE==sample.list[i]])) -->
-<!--   sample.prop.area.y1 <- c(sample.prop.area.y1, -->
-<!--                            nwosProportion(weight=nwos.data.sample$WEIGHT[nwos.data.sample$SAMPLE==sample.list[i]],  -->
-<!--                                           y=nwos.data.sample$Y_1[nwos.data.sample$SAMPLE==sample.list[i]], -->
-<!--                                           area=nwos.data.sample$ACRES_FOREST[nwos.data.sample$SAMPLE==sample.list[i]], -->
-<!--                                           units="area")) -->
-<!-- } -->
-<!-- sample.prop.own.y1.mean <- mean(sample.prop.own.y1) -->
-<!-- y_1.mean <- mean(nwos.data$Y_1) -->
-<!-- t.test(sample.prop.own.y1,mu=y_1.mean) -->
-<!-- mean(sample.prop.area.y1) -->
-<!-- sum(nwos.data$Y_1*nwos.data$ACRES_FOREST) / sum(nwos.data$ACRES_FOREST) -->
-<!-- ``` -->
-
-<!-- ## Estimate mean (size of forest holdings) -->
-
-<!-- ```{r mean acreage} -->
-<!-- sample.mean.own.ac <- numeric(0) -->
-<!-- # sample.mean.var.own.ac <- numeric(0) -->
-<!-- sample.mean.area.ac <- numeric(0) -->
-<!-- # sample.mean.var.area.ac <- numeric(0) -->
-<!-- for(i in sample.list) { # By sample -->
-<!--   sample.mean.own.ac <- c(sample.mean.own.ac, -->
-<!--                           nwosMean(weight=nwos.data.sample$WEIGHT[nwos.data.sample$SAMPLE==sample.list[i]],  -->
-<!--                                    y=nwos.data.sample$ACRES_FOREST[nwos.data.sample$SAMPLE==sample.list[i]])) -->
-<!--   sample.mean.area.ac <- c(sample.mean.area.ac, -->
-<!--                            nwosMean(weight=nwos.data.sample$WEIGHT[nwos.data.sample$SAMPLE==sample.list[i]],  -->
-<!--                                     y=nwos.data.sample$ACRES_FOREST[nwos.data.sample$SAMPLE==sample.list[i]], -->
-<!--                                     area=nwos.data.sample$ACRES_FOREST[nwos.data.sample$SAMPLE==sample.list[i]], -->
-<!--                                     units="area")) -->
-<!-- } -->
-<!-- sample.mean.own.ac.mean <- mean(sample.mean.own.ac) -->
-<!-- own.ac.mean <- mean(nwos.data$ACRES_FOREST) -->
-<!-- t.test(sample.mean.own.ac,mu=own.ac.mean) -->
-<!-- sample.mean.area.ac.mean <- mean(sample.mean.area.ac) -->
-<!-- area.ac.mean <- sum(nwos.data$ACRES_FOREST*nwos.data$ACRES_FOREST) / sum(nwos.data$ACRES_FOREST) -->
-<!-- t.test(sample.mean.area.ac,mu=area.ac.mean) -->
-<!-- ``` -->
-
-<!-- ## Median -->
+## Estimate mean (size of forest holdings)

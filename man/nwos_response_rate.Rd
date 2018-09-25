@@ -4,27 +4,27 @@
 \alias{nwos_response_rate}
 \title{NWOS Response Rate}
 \usage{
-nwos_response_rate(point.count, response)
+nwos_response_rate(stratum, point.count, response)
 }
 \arguments{
-\item{df}{data frame containing, at a minimum, the following variables: STATE_CD, LAND_USE, OWN_CD, POINT_COUNT, and RESPONSE}
+\item{stratum}{vector indicating inclusion (1) and exclusion (0) in the stratum of interest.}
 
-\item{state.list}{vector of state codes to be evaluated.}
+\item{point.count}{vector of the number of sample points associated with each observation.}
 
-\item{land.use.list}{vector of land uses to be evaluated. The defaualt value is 1 (forest).}
-
-\item{own.cd.list}{vector of ownership codes to be evaluated. The default value if 45 (family).}
+\item{response}{vector indicating response (1) and non-response (0).}
 }
 \value{
-data frame of response rates by state/land use/ownership strata
+Response rate in the stratum.
 }
 \description{
-This function calculates response rate for the NWOS.
+This function calculates response rates for the NWOS.
+}
+\details{
+This function needs to be run by state.
 }
 \examples{
-load("data/nwos_data_sample.RData")
-data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
-nwos_response_rate(data$POINT_COUNT, data$RESPONSE)
+wi <- wi \%>\% mutate(RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0))
+WI_FFO_RR <- nwos_response_rate(stratum = wi$FFO, point.count = wi$POINT_COUNT, response = wi$RESPONSE)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

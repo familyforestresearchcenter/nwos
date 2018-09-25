@@ -4,7 +4,7 @@
 \alias{nwos_total}
 \title{NWOS Total}
 \usage{
-nwosTotal(weight, area=NA, point.count=NA, response=NA, domain=1, stratum.area=1, units="ownerships", variance=T, R=1000)
+nwos_total(weight, area = 1, domain = 1, variable = 1)
 }
 \arguments{
 \item{weight}{vector of weights per ownership.}
@@ -13,33 +13,17 @@ nwosTotal(weight, area=NA, point.count=NA, response=NA, domain=1, stratum.area=1
 
 \item{domain}{vector with 1 indicating inclusion in the domain and 0 otherwise.}
 
-\item{point.count}{vector of counts of sample points per ownership/record.}
-
-\item{response}{vector with 1 indicating response and 0 nonresponse.}
-
-\item{stratum.area}{area for stratum (e.g., acres of family forestland in a state).}
-
-\item{units}{units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".}
-
-\item{variance}{logic variable indicating if variances should be calculated}
+\item{variable}{vector of variable of interest.}
 }
 \description{
-Estimators used to calculate NWOS totals and, optionally, associated variances
+Estimators used to calculate NWOS total.
 }
 \details{
-Variances are calculated using a bootstrapping approach.
+If area is set to 1, then the esitmates are in terms of ownerships.
+Variable can be binary or continuous. If variable is binary, the value returned is the number of ownerships or acreage in the domain of interest with that attribute. If variable is continuous, the value returned is the variable total in terms of ownerships or acreage.
 }
 \examples{
-load("data/nwos_data_sample.RData")
-data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
-data$WEIGHT <- nwosWeights(data$POINT_COUNT, data$ACRES_FOREST, 1000)
-data$DOMAIN <- 1
-nwosTotal(data$WEIGHT, var=F)
-nwosTotal(weight=data$WEIGHT, point.count=data$POINT_COUNT, response=data$RESPONSE, area=data$ACRES_FOREST,
-domain=data$DOMAIN, stratum.area=1000)
-nwosTotal(data$WEIGHT, data$ACRES_FOREST, variance=F, units="area")
-nwosTotal(weight=data$WEIGHT, point.count=data$POINT_COUNT, response=data$RESPONSE, area=data$ACRES_FOREST,
-domain=data$DOMAIN, stratum.area=1000, units="area")
+WI_FFO_OWN_TOTAL <- nwos_total(weight = wi$WEIGHT)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

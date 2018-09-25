@@ -4,27 +4,26 @@
 \alias{nwos_replicates}
 \title{NWOS Replicates}
 \usage{
-nwos_replicates(df, R=5000)
+nwos_replicates(index, point.count, R = 5000)
 }
 \arguments{
-\item{R}{number of replicates or bootstraps. Default is 5000.}
+\item{index}{vector of names used to identify rows/observations in the data.}
 
-\item{df}{data frame of survey data.}
+\item{point.count}{the number of sample points associated with each observation.}
+
+\item{R}{number of replicates or bootstraps. Default is 5000.}
 }
 \value{
-Returns a list containing the original data frame with an INDEX appended and a matrix of replicates.
+List containing indices for the observations that make up each of the replicates.
 }
 \description{
-Create a matrix of This function calculates variances for NWOS statistics using a bootstrapping approach.
+Generate replicates that can be used for NWOS bootstrapping variance estimation.
 }
 \details{
-This function needs to be run by statev
+This function needs to be run by state.
 }
 \examples{
-load("../../ANALYSIS/SAMPLE_SIZE/DATA/WI_SAMPLE_SIZE_SAMPLES_20180721.RData")
-df <- SAMPLE_SIZE_SAMPLES[SAMPLE_SIZE_SAMPLES$STATE_CD == 55 & SAMPLE_SIZE_SAMPLES$SAMPLE==1 & SAMPLE_SIZE_SAMPLES$SIZE==1000, ]
-df.replicates <- nwos_replicates(df)
-save(df.replicates, file = "data/DF_REPLICATES.RData")
+WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

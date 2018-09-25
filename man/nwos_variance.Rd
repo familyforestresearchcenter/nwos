@@ -4,24 +4,19 @@
 \alias{nwos_variance}
 \title{NWOS Variance}
 \usage{
-nwosVar(point.count, domain, y=1, area, response=1,
-stratum.area, units="ownerships", stat="total", R=100)
+nwosVar(state.area, point.count, response, owner.area, stratum, domain, variable = 1,
+replicates, index, stat = "TOTAL", units = "OWNERSHIPS")
 }
 \arguments{
-\item{stat}{statistic of interest. Permissable values are "total", "mean" or "proportion". Default is "total".}
+\item{stat}{statistic of interest. Permissable values are "TOTAL", "mean" or "proportion". Default is "total".}
 
-\item{units}{units of analysis. Permissable values are "ownerships" or "area". Default is "ownerships".}
-
-\item{data}{data frame of survey data. See details below for required variables.}
-
-\item{R}{number of replicates or bootstraps. Default is 100.}
+\item{units}{units of analysis. Permissable values are "OWNERSHIPS" or "AREA". Default is "OWNERSHIPS".}
 }
 \description{
 This function calculates variances for NWOS statistics using a bootstrapping approach.
 }
 \examples{
-x <- nwos_variances(df=sample.i.j, state.list=55, state.area=LAND_AREA, R=10)
-x$VARIANCES
+NEED TO ADD
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

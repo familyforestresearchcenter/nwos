@@ -7,27 +7,25 @@
 nwos_stratum_area(stratum, point.count, state.area)
 }
 \arguments{
-\item{state.area}{vector of total land area in state. It needs to have the same length as state.list and be in the
-same order.}
+\item{stratum}{vector indicating inclusion (1) and exclusion (0) in the stratum of interest.}
 
-\item{df}{data frame containing, at a minimum, the following variables: STATE_CD, LAND_USE, OWN_CD, and POINT_COUNT}
+\item{point.count}{vector of the number of sample points associated with each observation.}
 
-\item{state.list}{vector of state codes to be evaluated.}
-
-\item{land.use.list}{vector of land uses to be evaluated. The defaualt value is 1 (forest).}
-
-\item{own.cd.list}{vector of ownership codes to be evaluated. The default value if 45 (family).}
+\item{state.area}{total land area in the state of interest.}
 }
 \value{
-data frame of areas in state/land use/ownership strata
+Area (of forestland) in the stratum.
 }
 \description{
-This function estimates the stratum area.
+This function estimates NWOS stratum areas.
+}
+\details{
+This function needs to be run by state.
 }
 \examples{
-load("data/nwos_data_sample.RData")
-data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
-nwos_stratum_area()
+wi <- wi \%>\% mutate(FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0))
+WI_FFO_AREA <- nwos_stratum_area(stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
+WI_FFO_AREA
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

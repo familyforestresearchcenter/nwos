@@ -4,16 +4,22 @@
 \alias{nwos_weights}
 \title{NWOS Weights}
 \usage{
-nwosWeights(point.count, area, domain, stratum.area, response.rates)
+nwos_weights(stratum, point.count, response, owner.area, stratum.area, stratum.area.correction = stratum.area, response.rate)
 }
 \arguments{
-\item{stratum.area}{area for stratum}
+\item{stratum}{vector indicating inclusion (1) and exclusion (0) in the stratum of interest.}
 
-\item{response.rate}{response rate for stratum. Default value = 1.}
+\item{point.count}{vector of the number of sample points associated with each observation.}
 
-\item{point.count}{vector of counts of sample points per ownership.}
+\item{response}{vector indicating response (1) and non-response (0).}
 
-\item{area}{vector of area (e.g., forest acres) per ownership.}
+\item{owner.area}{vector of the area (of forestland) owned by each ownership.}
+
+\item{stratum.area}{area (of forestland) in the stratum of interest.}
+
+\item{stratum.area.correction}{area (of forestland) in the stratum of interest to which the total stratum.area will be forced. The default value is stratum.area (i.e., no correction).}
+
+\item{response.rate}{response rate for the stratum of interest. Value should range from 0 ot 1.}
 }
 \value{
 vector of weights
@@ -22,9 +28,9 @@ vector of weights
 This function returns the calculated weights based on the NWOS sample design.
 }
 \examples{
-load("data/nwos_data_sample.RData")
-data <- NWOS_DATA_SAMPLE[NWOS_DATA_SAMPLE$SAMPLE==1,]
-data$w <- nwosWeights(data$POINT_COUNT, data$ACRES_FOREST, 1000)
+wi$WEIGHT <- nwos_weights(stratum = wi$FFO, point.count = wi$POINT_COUNT,
+response = wi$RESPONSE, owner.area = wi$AC_WOOD,
+stratum.area = WI_FFO_AREA, response.rate = WI_FFO_RR)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
