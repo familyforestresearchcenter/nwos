@@ -26,5 +26,5 @@ nwos_weights <- function(stratum, point.count, response, owner.area,
   n.s <- as.numeric(data %>% filter(stratum %in% c(1), response %in% c(0,1)) %>% summarize(sum(point.count))) # Number of sample points in stratum
   stratum.area <- stratum.area.correction # Corrected stratum area
   ifelse(data$owner.area == 0, 0,
-         ((stratum.area / (data$owner.area * n.s)) * data$point.count) * (1 / response.rate) * data$stratum) # Weights
+         ((stratum.area / (data$owner.area * n.s)) * data$point.count) * (1 / response.rate) * data$stratum * data$response) # Weights
 }

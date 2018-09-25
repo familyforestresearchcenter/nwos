@@ -5,9 +5,12 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 ---
 
-This vignette shows the basic steps necessary to generate estimates using the nwos package. The package can be downloaded from GitHub (devtools::install_git("git://github.com/bbutler01/nwos.git")). The examples below use the XX dataset supplied with the package. Estimates can be generated for totals, proportions, means, and associated variances.
+The nwos package was designed to generate estimates for the U.S. Forest Service's National Woodland Owner Survey. The functions incpororate the NWOS sample design to generate estimates. Estimates can be generated for totals, proportions, means, medians, and associated variances. The background on the estimators is provided in Butler (In review).
+
+This vignette shows the basic steps necessary to generate estimates using this package. The package can be downloaded from GitHub (devtools::install_git("git://github.com/bbutler01/nwos.git")). The examples below use the ``wi'' dataset supplied with the package. A descirption of this dataset is inclduded in Butler (In review).
 
 The basic steps are:
+* Install packages and load data
 * Generate replicates (used for variance estimates)
 * Estimate stratum areas
 * Calculate response rates
@@ -17,33 +20,12 @@ The basic steps are:
 These steps are repeated for each combination of state, stratum (e.g., family forest owners), and domain. The basic estimators assume the data supplied are for an individual state. Wrapper functions can be developed for iterating through states, strata, domains, and variables.
 
 
-## General setup: Install/load packages
+## Install packages
 ```{r setup}
-# library(devtools)
-# setwd("..")
-# install("nwos")
-# setwd("nwos")
 # devtools::install_git("git://github.com/bbutler01/nwos.git")
 library(nwos)
 library(tidyverse)
 ```
-
-Datasets need to have, at a minimum, the following variables:
-* STRATUM
-* POINT_COUNT
-* ACRES_FOREST
-* RESPONSE
-* etc.
-
-Optional:
-* DOMAIN
-
-Other data that are needed:
-* STATE_AREA
-
-Run by STATE
-
-This vingette assumes the data are from one state and there is only one stratum. Additional states and stratum are calculated by looping through the approriate levels.
 
 ## Load data
 ```{r load data}
@@ -60,9 +42,11 @@ Replicates are used in the bootrstrapping variance estimation. Replicates are ge
 WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
 ```
 
-## Estimate acreage in stratum
+## Estimate stratum areas
 
-A dummy variable indicating inclusion in a stratum must be created, e.g., family forest ownerships (FFO). Area are estimated for the stratum of interest. These values must also be estimated for each of the replicates.
+Areas need to be esitmated for each stratum of interest in a state. This is done using a dummy variable indicating inclusion in a stratum, e.g., family forest ownerships (FFO). To capture the full variability in the estimates, stratum areas must be estimated separately for each replicate.
+
+For the example here, the stratum of interest is family forest ownerships (FFO) in Wisconsin. The FFO dummy variable is set to 1 if $LAND\_USE == 1$ & $OWN\_CD == 45$ & $AC\_WOOD >= 1$, and 0 otherwise.
 
 ```{r stratum_area}
 wi <- wi %>% mutate(FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0)) # Add stratum variable, FFO
@@ -72,7 +56,9 @@ WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_replicates, data = wi
 
 ## Calculate response rates
 
-Response rates need to be calculated for each stratum of interest, and the associated replicates. 
+Response rates need to be calculated for each stratum of interest. Again, response rates need to be calculated for each replicate. 
+
+For this example, RESPONSE is defined as 1 if $RESPONSE\_PROPENSITY >= 0.5$, and 0 otherwise.
 
 ```{r response_rates}
 wi <- wi %>% mutate(RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0)) %>%
@@ -82,31 +68,46 @@ WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_replicates, data = wi,
 ```
 
 ## Generate weights
+
+Weights are key to the NWOS estimates. For the NWOS, they are a function of the number of sample points owned, acrage owned, and the area of the stratum. These weights are used for all of the estimates, and the estimates calculated above are largely done in order to generate these weights. 
+
+For some modeling purposes, extreme values in the weights may cause problems. See the section below on trimmed weights for a potential solution.
+
 ```{r weights}
 wi$WEIGHT <- nwos_weights(stratum = wi$FFO, point.count = wi$POINT_COUNT, 
-                               response = wi$RESPONSE, owner.area = wi$AC_WOOD, 
-                               stratum.area = WI_FFO_AREA, response.rate = WI_FFO_RR)
+                          response = wi$RESPONSE, owner.area = wi$AC_WOOD, 
+                          stratum.area = WI_FFO_AREA, response.rate = WI_FFO_RR)
 WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_replicates, 
                              index.rep = WI_REPLICATES, data = wi, 
                              stratum.area.rep = WI_FFO_AREA_REP, response.rate.rep = WI_FFO_RR_REP)
 ```
 
 ## Generate estimates - totals
+
+Totals are estimated as a function of weights and can be calculated in terms of ownerships or acreage. Specific domains of interest (e.g., a subset within a stratum) can be specified.
+
+In addition, totals can be made for continuous variables. This does not make sense for many NWOS variables, but it is useful for generating means (see below).
+
+Variances, and sampling errors, are estimated using the estimates for the replicates.
+
 ```{r totals}
 WI_FFO_OWN_TOTAL <- nwos_total(weight = wi$WEIGHT)
 wi <- wi %>% mutate(OWNER = 1)
 WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_replicates, index.rep = WI_REPLICATES, data = wi,
-                       weight.rep = WI_FFO_WEIGHTS_REP,
-                       owner.area.name = "OWNER",
-                       domain.name = "FFO",
-                       variable.name = "FFO")
+                               weight.rep = WI_FFO_WEIGHTS_REP,
+                               owner.area.name = "OWNER",
+                               domain.name = "FFO",
+                               variable.name = "FFO")
+WI_FFO_OWN_TOTAL
+sqrt(var(WI_FFO_OWN_TOTAL_REP))
 WI_FFO_AC_TOTAL <- nwos_total(weight = wi$WEIGHT, area = wi$AC_WOOD)
 WI_FFO_AC_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_replicates, index.rep = WI_REPLICATES, data = wi,
-                       weight.rep = WI_FFO_WEIGHTS_REP,
-                       owner.area.name = "AC_WOOD",
-                       domain.name = "FFO",
-                       variable.name = "FFO")
-
+                              weight.rep = WI_FFO_WEIGHTS_REP,
+                              owner.area.name = "AC_WOOD",
+                              domain.name = "FFO",
+                              variable.name = "FFO")
+WI_FFO_AC_TOTAL
+sqrt(var(WI_FFO_AC_TOTAL_REP))
 ```
 
 ## Proportions
@@ -118,3 +119,8 @@ WI_FFO_AC_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_replicates, in
 ## Estimate proportion ($Y_1$)
 
 ## Estimate mean (size of forest holdings)
+
+## Trimmed Weights
+
+## References
+Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
