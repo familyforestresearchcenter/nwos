@@ -123,7 +123,7 @@ WI_FFO_OWN_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replic
                                domain.name = "Y_1",
                                base.name = "FFO",
                                variable.name = "FFO")
-WI_FFO_Y1_OWN_PROP
+WI_FFO_OWN_Y1_PROP
 sqrt(var(WI_FFO_OWN_Y1_PROP_REP))
 WI_FFO_AC_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$Y_1)
 WI_FFO_AC_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replicates, index.rep = WI_REPLICATES, 
@@ -133,7 +133,7 @@ WI_FFO_AC_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replica
                                domain.name = "Y_1",
                                base.name = "FFO",
                                variable.name = "FFO")
-WI_FFO_Y1_AC_PROP
+WI_FFO_AC_Y1_PROP
 sqrt(var(WI_FFO_AC_Y1_PROP_REP))
 ```
 

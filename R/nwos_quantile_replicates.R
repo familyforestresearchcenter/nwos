@@ -9,6 +9,7 @@
 #' @param prob vector of probabilities for quantiles. Defualt is 0.00, 0.25, 0.50, 0.75, 1.00 (i.e., quartiles).
 #' @param max.iter maximum number of iterations. Default = 1000.
 #' @keywords nwos
+#' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples
