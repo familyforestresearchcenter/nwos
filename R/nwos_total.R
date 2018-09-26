@@ -3,9 +3,9 @@
 #' Estimators used to calculate NWOS total.
 #' @usage nwos_total(weight, area = 1, domain = 1, variable = 1)
 #' @param weight vector of weights per ownership.
-#' @param area vector of area (e.g., forest acres) per ownership.
-#' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise.
-#' @param variable vector of variable of interest.
+#' @param area vector of area (e.g., forest acres) per ownership. Default = 1 (i.e., estimates are in terms of ownerships).
+#' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1 (i.e., all ownerships are included).
+#' @param variable vector of variable of interest. Default = 1 (i.e., variable is ignored).
 #' @keywords nwos
 #' @details
 #' If area is set to 1, then the esitmates are in terms of ownerships.

@@ -112,15 +112,105 @@ sqrt(var(WI_FFO_AC_TOTAL_REP))
 
 ## Proportions
 
+Proportions are typically in terms of what proportion of the ownerships (or acreage) have a specific attribute.
+
+```{r proportions}
+WI_FFO_OWN_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, domain = wi$Y_1)
+WI_FFO_OWN_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replicates, index.rep = WI_REPLICATES, 
+                               data = wi,
+                               weight.rep = WI_FFO_WEIGHTS_REP,
+                               owner.area.name = "OWNER",
+                               domain.name = "Y_1",
+                               base.name = "FFO",
+                               variable.name = "FFO")
+WI_FFO_Y1_OWN_PROP
+sqrt(var(WI_FFO_OWN_Y1_PROP_REP))
+WI_FFO_AC_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$Y_1)
+WI_FFO_AC_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replicates, index.rep = WI_REPLICATES, 
+                               data = wi,
+                               weight.rep = WI_FFO_WEIGHTS_REP,
+                               owner.area.name = "AC_WOOD",
+                               domain.name = "Y_1",
+                               base.name = "FFO",
+                               variable.name = "FFO")
+WI_FFO_Y1_AC_PROP
+sqrt(var(WI_FFO_AC_Y1_PROP_REP))
+```
+
 ## Means
 
-## Quantiles, including medians
+Means are in terms of ownerships or acreage, i.e., what is the average value of a given variable in terms of ownerships or acreage. 
 
-## Estimate proportion ($Y_1$)
+### Average size of forest holdings
 
-## Estimate mean (size of forest holdings)
+```{r mean size}
+WI_FFO_OWN_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, variable = wi$AC_WOOD)
+WI_FFO_OWN_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
+                               data = wi,
+                               weight.rep = WI_FFO_WEIGHTS_REP,
+                               owner.area.name = "OWNER",
+                               domain.name = "FFO",
+                               variable.name = "AC_WOOD")
+WI_FFO_OWN_AC_MEAN
+sqrt(var(WI_FFO_OWN_AC_MEAN_REP))
+WI_FFO_AC_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$AC_WOOD)
+WI_FFO_AC_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
+                               data = wi,
+                               weight.rep = WI_FFO_WEIGHTS_REP,
+                               owner.area.name = "AC_WOOD",
+                               domain.name = "FFO",
+                               variable.name = "AC_WOOD")
+WI_FFO_AC_AC_MEAN
+sqrt(var(WI_FFO_AC_AC_MEAN_REP))
+```
+
+### Average of $Y_3$
+
+```{r}
+WI_FFO_OWN_Y_3_MEAN <- nwos_mean(weight = wi$WEIGHT, variable = wi$Y_3)
+WI_FFO_OWN_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
+                               data = wi,
+                               weight.rep = WI_FFO_WEIGHTS_REP,
+                               owner.area.name = "OWNER",
+                               domain.name = "FFO",
+                               variable.name = "Y_3")
+WI_FFO_OWN_Y_3_MEAN
+sqrt(var(WI_FFO_OWN_Y_3_MEAN_REP))
+WI_FFO_AC_Y_3_MEAN <- nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$Y_3)
+WI_FFO_AC_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
+                               data = wi,
+                               weight.rep = WI_FFO_WEIGHTS_REP,
+                               owner.area.name = "AC_WOOD",
+                               domain.name = "FFO",
+                               variable.name = "Y_3")
+WI_FFO_AC_Y_3_MEAN
+sqrt(var(WI_FFO_AC_Y_3_MEAN_REP))
+```
+
+## Quantiles
+
+Quantiles, including medians, can be calculated in terms of ownerships or acreage. The current algorithm uses an iterative approach and can be computationally slow.
+
+```{r quantiles}
+WI_FFO_OWN_AC_QUANTILE <- nwos_quantile(weight = wi$WEIGHT, domain = wi$FFO, variable = wi$AC_WOOD)
+WI_FFO_AC_AC_QUANTILE <- nwos_quantile(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$FFO, variable = wi$AC_WOOD)
+WI_FFO_OWN_AC_QUANTILE_REP <- sapply(1:2, # length(WI_REPLICATES),
+                                     nwos_quantile_replicates, index.rep = WI_REPLICATES, data = wi,
+                                     weight.rep = WI_FFO_WEIGHTS_REP, owner.area.name = "OWNER",
+                                     domain.name = "FFO", variable.name = "AC_WOOD")
+WI_FFO_OWN_AC_QUANTILE
+WI_FFO_AC_AC_QUANTILE
+```
 
 ## Trimmed Weights
+
+For some purposes, extreme values in the base weights may cause problems (e.g., convergence in models). For these circumstances, trimmed weights may rectify the problem. The only method currently implements in the nwos package for trimming weights is the IQR method (i.e., values greater than or less than $1.5 \times IQR$ are set to $Q_4 + (1.5 \times IQR)$ and $Q_2 - (1.5 \times IQR)$, respectively).
+
+```{r weights_trimmed}
+wi$WEIGHT_TRIMMED <- nwos_weights_trimmed(weights = wi$WEIGHT)
+summary(wi$WEIGHT)
+summary(wi$WEIGHT_TRIMMED)
+```
 
 ## References
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

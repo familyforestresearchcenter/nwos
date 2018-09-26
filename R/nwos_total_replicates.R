@@ -5,8 +5,8 @@
 #' @param r vector of replicates. See details below.
 #' @param index.rep list of observations (i.e., replicates) in data to include.
 #' @param data data frame containing stratum variable.
-#' @param weight.rep,
-#' @param owner.area.name nae of a variable in data of the area (of forestland) owned by each ownership. Default = "OWNER" (i.e., 1, which is used for estimating number of ownerships).
+#' @param weight.rep list with each element the weights for the observations in that replicate.
+#' @param owner.area.name name of a variable in data of the area (of forestland) owned by each ownership. Default = "OWNER" (i.e., 1, which is used for estimating number of ownerships).
 #' @param domain.name name of the variable in data indicating inclusion (1) and exclusion (0) in the domain of interest. Default = "FFO".
 #' @param variable.name name of the variable of interest in data. Default = "FFO". See details below.
 #' @keywords nwos
