@@ -13,7 +13,9 @@ nwos_total_replicates <- function(r, index.rep, data, weight.rep, owner.area.nam
 
 \item{data}{data frame containing stratum variable.}
 
-\item{owner.area.name}{nae of a variable in data of the area (of forestland) owned by each ownership. Default = "OWNER" (i.e., 1, which is used for estimating number of ownerships).}
+\item{weight.rep}{list with each element the weights for the observations in that replicate.}
+
+\item{owner.area.name}{name of a variable in data of the area (of forestland) owned by each ownership. Default = "OWNER" (i.e., 1, which is used for estimating number of ownerships).}
 
 \item{domain.name}{name of the variable in data indicating inclusion (1) and exclusion (0) in the domain of interest. Default = "FFO".}
 
