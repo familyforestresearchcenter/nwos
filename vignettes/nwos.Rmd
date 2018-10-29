@@ -21,7 +21,7 @@ These steps are repeated for each combination of state, stratum (e.g., family fo
 
 
 ## Install packages
-```{r setup}
+```{r setup, warning = FALSE}
 # devtools::install_git("git://github.com/bbutler01/nwos.git")
 library(nwos)
 library(tidyverse)
@@ -208,8 +208,8 @@ For some purposes, extreme values in the base weights may cause problems (e.g., 
 
 ```{r weights_trimmed}
 wi$WEIGHT_TRIMMED <- nwos_weights_trimmed(weights = wi$WEIGHT)
-summary(wi$WEIGHT)
-summary(wi$WEIGHT_TRIMMED)
+summary(wi$WEIGHT[wi$WEIGHT > 0])
+summary(wi$WEIGHT_TRIMMED[wi$WEIGHT_TRIMMED > 0])
 ```
 
 ## References

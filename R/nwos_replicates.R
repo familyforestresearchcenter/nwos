@@ -4,7 +4,7 @@
 #' @usage nwos_replicates(index, point.count, R = 5000)
 #' @param index vector of names used to identify rows/observations in the data.
 #' @param point.count the number of sample points associated with each observation.
-#' @param R number of replicates or bootstraps. Default is 5000.
+#' @param R number of replicates or bootstraps. Default is 2500.
 #' @details
 #' This function needs to be run by state.
 #' @return
@@ -16,7 +16,7 @@
 #' @examples
 #' WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
 
-nwos_replicates <- function(index, point.count, R = 5000) {
+nwos_replicates <- function(index, point.count, R = 2500) {
   data <- tbl_df(list(index = index, point.count = point.count)) %>% # Combine index and point.count variables into a single data frame
     slice(rep(1:n(), point.count)) %>% # Expand data based on point.count
     mutate(point.count = 1) # Reset point counts to 1
