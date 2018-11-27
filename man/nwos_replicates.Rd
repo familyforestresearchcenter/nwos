@@ -11,7 +11,7 @@ nwos_replicates(index, point.count, R = 5000)
 
 \item{point.count}{the number of sample points associated with each observation.}
 
-\item{R}{number of replicates or bootstraps. Default is 5000.}
+\item{R}{number of replicates or bootstraps. Default is 2500.}
 }
 \value{
 List containing indices for the observations that make up each of the replicates.
