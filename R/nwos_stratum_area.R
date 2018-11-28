@@ -19,8 +19,7 @@
 #' WI_FFO_AREA
 
 nwos_stratum_area <- function(stratum, point.count, state.area) {
-  data <- data.frame(stratum = stratum, point.count = point.count)
-  n <- data %>% filter(stratum %in% c(0,1)) %>% summarize(sum(point.count)) # Number of sample points
-  n.s <- data %>% filter(stratum %in% c(1)) %>% summarize(sum(point.count)) # Number of sample points in stratum
-  as.numeric((n.s / n) * state.area) # Calculate stratum area
+  n <- sum(point.count[stratum %in% c(0,1)]) # Number of sample points
+  n.s <- sum(point.count[stratum %in% c(1)]) # Number of sample points in stratum
+  (n.s / n) * state.area # Calculate stratum area
 }

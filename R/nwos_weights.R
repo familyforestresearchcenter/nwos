@@ -20,11 +20,10 @@
 #' response = wi$RESPONSE, owner.area = wi$AC_WOOD,
 #' stratum.area = WI_FFO_AREA, response.rate = WI_FFO_RR)
 
-nwos_weights <- function(stratum, point.count, response, owner.area,
+nwos_weights <- function(stratum, point.count, response, area,
                          stratum.area, stratum.area.correction = stratum.area, response.rate) {
-  data <- data.frame(stratum = stratum, point.count = point.count, response = response, owner.area = owner.area) # Create data frame
-  n.s <- as.numeric(data %>% filter(stratum %in% c(1), response %in% c(0,1)) %>% summarize(sum(point.count))) # Number of sample points in stratum
+  n.s <- sum(point.count[stratum %in% c(1) & response %in% c(0,1)]) # Number of sample points in stratum
   stratum.area <- stratum.area.correction # Corrected stratum area
-  ifelse(data$owner.area == 0, 0,
-         ((stratum.area / (data$owner.area * n.s)) * data$point.count) * (1 / response.rate) * data$stratum * data$response) # Weights
+  ifelse(area == 0, 0,
+         ((stratum.area / (area * n.s)) * point.count) * (1 / response.rate) * stratum * response) # Weights
 }

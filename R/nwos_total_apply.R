@@ -2,8 +2,9 @@
 #'
 #' A version of the nwos_total function that is intended to be used with an apply function, typically for estimating sampling errors.
 #' @usage nwos_total_appl(index, weight, area, domain, variable)
-#' @param index list of observations (i.e., replicates) in data to include.
-#' @param weight vector of weights per ownership.
+#' @param replicate an atomic value indicating which replicate to use.
+#' @param index list of vectors indicating which data to include. There needs to be an element with the same name as the replicate being assessed.
+#' @param weight list of vectors of weights. There needs to be an element with the same name as the replicate being assessed.
 #' @param area vector of area (e.g., forest acres) per ownership.
 #' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise.
 #' @param variable vector of variable of interest.
@@ -17,6 +18,8 @@
 #' @examples
 #' NEED TO ADD
 
-nwos_total_apply <- function(index, weight, area, domain, variable) {
-  sum(weight[index] * area[index] * domain[index] * variable[index], na.rm=T)
+nwos_total_apply <- function(r, index, weight, area, domain, variable) {
+  index <- unlist(index[r])
+  nwos_total(weight = unlist(weight[r]), area = area[index],
+             domain = domain[index], variable = variable[index])
 }

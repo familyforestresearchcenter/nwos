@@ -17,9 +17,7 @@
 #' WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
 
 nwos_replicates <- function(index, point.count, R = 2500) {
-  data <- tbl_df(list(index = index, point.count = point.count)) %>% # Combine index and point.count variables into a single data frame
-    slice(rep(1:n(), point.count)) %>% # Expand data based on point.count
-    mutate(point.count = 1) # Reset point counts to 1
-  replicates <- replicate(R, sample(data$index, NROW(data$index), replace = T)) # Generate replicates
+  index <- rep(index, point.count)
+  replicates <- replicate(R, sample(index, length(index), replace = T)) # Generate replicates
   split(replicates, col(replicates)) # Convert to list
 }

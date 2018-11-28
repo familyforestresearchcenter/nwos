@@ -18,8 +18,7 @@
 #' WI_FFO_RR <- nwos_response_rate(stratum = wi$FFO, point.count = wi$POINT_COUNT, response = wi$RESPONSE)
 
 nwos_response_rate <- function(stratum, point.count, response) {
-  data <- data.frame(stratum = stratum, point.count = point.count, response = response) # Create data frame
-  n.s <- data %>% filter(stratum %in% c(1), response %in% c(0,1)) %>% summarize(sum(point.count)) # Number of sample points in stratum
-  n.s.r <- data %>% filter(stratum %in% c(1), response %in% c(1)) %>% summarize(sum(point.count)) # Number of respondent sample points in stratum
-  as.numeric(n.s.r / n.s) # Calculate response rate
+  n.s <- sum(point.count[stratum %in% c(1) & response %in% c(0,1)]) # Number of sample points in stratum
+  n.s.r <- sum(point.count[stratum %in% c(1) & response %in% c(1)]) # Number of respondent sample points in stratum
+  n.s.r / n.s # Calculate response rate
 }

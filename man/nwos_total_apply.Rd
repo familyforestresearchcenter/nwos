@@ -7,15 +7,17 @@
 nwos_total_appl(index, weight, area, domain, variable)
 }
 \arguments{
-\item{index}{list of observations (i.e., replicates) in data to include.}
+\item{index}{list of vectors indicating which data to include. There needs to be an element with the same name as the replicate being assessed.}
 
-\item{weight}{vector of weights per ownership.}
+\item{weight}{list of vectors of weights. There needs to be an element with the same name as the replicate being assessed.}
 
 \item{area}{vector of area (e.g., forest acres) per ownership.}
 
 \item{domain}{vector with 1 indicating inclusion in the domain and 0 otherwise.}
 
 \item{variable}{vector of variable of interest.}
+
+\item{replicate}{an atomic value indicating which replicate to use.}
 }
 \description{
 A version of the nwos_total function that is intended to be used with an apply function, typically for estimating sampling errors.

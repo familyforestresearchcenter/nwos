@@ -13,13 +13,13 @@ nwos_weights(stratum, point.count, response, owner.area, stratum.area, stratum.a
 
 \item{response}{vector indicating response (1) and non-response (0).}
 
-\item{owner.area}{vector of the area (of forestland) owned by each ownership.}
-
 \item{stratum.area}{area (of forestland) in the stratum of interest.}
 
 \item{stratum.area.correction}{area (of forestland) in the stratum of interest to which the total stratum.area will be forced. The default value is stratum.area (i.e., no correction).}
 
 \item{response.rate}{response rate for the stratum of interest. Value should range from 0 ot 1.}
+
+\item{owner.area}{vector of the area (of forestland) owned by each ownership.}
 }
 \value{
 vector of weights
