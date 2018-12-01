@@ -17,7 +17,7 @@
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples
 
-nwos_proportion_apply <- function(r, index, weight, area, domain, variable) {
+nwos_mean_apply <- function(r, index, weight, area, domain, variable) {
   index <- unlist(index[r])
   nwos_total(weight = unlist(weight[r]), area = area[index], domain = domain[index], variable = variable[index]) /
     nwos_total(weight = unlist(weight[r]), area = area[index], domain = domain[index], variable = 1)

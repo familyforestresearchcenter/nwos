@@ -17,7 +17,7 @@
 #' nwos_quantile(weight = wi$WEIGHT, domain = wi$FFO, variable = wi$AC_WOOD)
 #' nwos_quantile(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$FFO, variable = wi$AC_WOOD)
 
-nwos_quantile <- function(weight, area = 1, domain, variable,
+nwos_quantile <- function(weight, area = 1, domain = 1, variable,
                           prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
 {
   x.quant <- numeric(0)
