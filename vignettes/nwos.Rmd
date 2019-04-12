@@ -51,7 +51,7 @@ For the example here, the stratum of interest is family forest ownerships (FFO) 
 ```{r stratum_area}
 wi <- wi %>% mutate(FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0)) # Add stratum variable, FFO
 WI_FFO_AREA <- nwos_stratum_area(stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
-WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_replicates, data = wi, stratum.name = "FFO", state.area = 33898733)
+WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
 ```
 
 ## Calculate response rates

@@ -22,5 +22,6 @@
 
 # nwos_stratum_area <- function(stratum, point.count, state.area)
 nwos_stratum_area_apply <- function(index, stratum, point.count, state.area) {
+  index <- unlist(as.numeric(index))
   nwos_stratum_area(stratum = stratum[index], point.count = point.count[index], state.area = state.area)
 }
