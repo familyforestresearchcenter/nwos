@@ -18,8 +18,10 @@
 #' @examples
 #' NEED TO ADD
 
-nwos_total_apply <- function(r, index, weight, area, domain, variable) {
-  index <- unlist(index[r])
-  nwos_total(weight = unlist(weight[r]), area = area[index],
-             domain = domain[index], variable = variable[index])
+nwos_total_apply <- function(r, index.rep, index, weight, area = 1, domain = 1, variable = 1) {
+  index.rep <- unlist(index.rep[r])
+  if(length(area) != 1) area <- area[match(index.rep, index)]
+  if(length(domain) != 1) domain <- domain[match(index.rep, index)]
+  if(length(variable) != 1) variable <- variable[match(index.rep, index)]
+  nwos_total(weight = unlist(weight[r]), area = area, domain = domain, variable = variable)
 }

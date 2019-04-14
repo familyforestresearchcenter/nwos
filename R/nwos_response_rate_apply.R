@@ -19,7 +19,9 @@
 #' nwos_response_rate_replicates(index = WI_REPLICATES[[1]], data = wi, stratum.name = "FFO", response.name = "RESPONSE")
 
 # nwos_response_rate <- function(stratum, point.count, response)
-nwos_response_rate_apply <- function(index, stratum, point.count, response) {
-  nwos_response_rate(stratum[index], point.count[index], response[index])
+nwos_response_rate_apply <- function(index.rep, index, stratum, response) {
+  index.rep <- unlist(index.rep)
+  nwos_response_rate(stratum = stratum[match(index.rep, index)],
+                     response = response[match(index.rep, index)])
 }
 

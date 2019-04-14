@@ -5,6 +5,9 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 ---
 
+## Figure out how to use index as character/CN (row names?)
+## Issue with point counts in replicates - set to 1
+
 The nwos package was designed to generate estimates for the U.S. Forest Service's National Woodland Owner Survey. The functions incpororate the NWOS sample design to generate estimates. Estimates can be generated for totals, proportions, means, medians, and associated variances. The background on the estimators is provided in Butler (In review).
 
 This vignette shows the basic steps necessary to generate estimates using this package. The package can be downloaded from GitHub (devtools::install_git("git://github.com/bbutler01/nwos.git")). The examples below use the ``wi'' dataset supplied with the package. A descirption of this dataset is inclduded in Butler (In review).
@@ -51,7 +54,7 @@ For the example here, the stratum of interest is family forest ownerships (FFO) 
 ```{r stratum_area}
 wi <- wi %>% mutate(FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0)) # Add stratum variable, FFO
 WI_FFO_AREA <- nwos_stratum_area(stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
-WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
+WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW_NAME, stratum = wi$FFO, state.area = 33898733)
 ```
 
 ## Calculate response rates
@@ -64,7 +67,7 @@ For this example, RESPONSE is defined as 1 if $RESPONSE\_PROPENSITY >= 0.5$, and
 wi <- wi %>% mutate(RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0)) %>%
   mutate(RESPONSE = if_else(is.na(RESPONSE_PROPENSITY), 0, RESPONSE))
 WI_FFO_RR <- nwos_response_rate(stratum = wi$FFO, point.count = wi$POINT_COUNT, response = wi$RESPONSE)
-WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_replicates, data = wi, stratum.name = "FFO", response.name = "RESPONSE")
+WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
 ```
 
 ## Generate weights
@@ -75,11 +78,17 @@ For some modeling purposes, extreme values in the weights may cause problems. Se
 
 ```{r weights}
 wi$WEIGHT <- nwos_weights(stratum = wi$FFO, point.count = wi$POINT_COUNT, 
-                          response = wi$RESPONSE, owner.area = wi$AC_WOOD, 
+                          response = wi$RESPONSE, area = wi$AC_WOOD, 
                           stratum.area = WI_FFO_AREA, response.rate = WI_FFO_RR)
-WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_replicates, 
-                             index.rep = WI_REPLICATES, data = wi, 
-                             stratum.area.rep = WI_FFO_AREA_REP, response.rate.rep = WI_FFO_RR_REP)
+WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), 
+                             nwos_weights_apply, 
+                             index.rep = WI_REPLICATES, 
+                             index = wi$ROW_NAME, 
+                             stratum = wi$FFO, 
+                             response = wi$RESPONSE, 
+                             area = wi$AC_WOOD,
+                             stratum.area = WI_FFO_AREA_REP, 
+                             response.rate = WI_FFO_RR_REP)
 ```
 
 ## Generate estimates - totals
@@ -92,22 +101,23 @@ Variances, and sampling errors, are estimated using the estimates for the replic
 
 ```{r totals}
 WI_FFO_OWN_TOTAL <- nwos_total(weight = wi$WEIGHT)
-wi <- wi %>% mutate(OWNER = 1)
-WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_replicates, index.rep = WI_REPLICATES, data = wi,
-                               weight.rep = WI_FFO_WEIGHTS_REP,
-                               owner.area.name = "OWNER",
-                               domain.name = "FFO",
-                               variable.name = "FFO")
-WI_FFO_OWN_TOTAL
-sqrt(var(WI_FFO_OWN_TOTAL_REP))
+# wi <- wi %>% mutate(OWNER = 1)
+WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), 
+                               nwos_total_apply, 
+                               index.rep = WI_REPLICATES,
+                               index = wi$ROW_NAME,
+                               weight = WI_FFO_WEIGHTS_REP)
+# WI_FFO_OWN_TOTAL
+# sqrt(var(WI_FFO_OWN_TOTAL_REP))
 WI_FFO_AC_TOTAL <- nwos_total(weight = wi$WEIGHT, area = wi$AC_WOOD)
-WI_FFO_AC_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_replicates, index.rep = WI_REPLICATES, data = wi,
-                              weight.rep = WI_FFO_WEIGHTS_REP,
-                              owner.area.name = "AC_WOOD",
-                              domain.name = "FFO",
-                              variable.name = "FFO")
-WI_FFO_AC_TOTAL
-sqrt(var(WI_FFO_AC_TOTAL_REP))
+WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), 
+                               nwos_total_apply, 
+                               index.rep = WI_REPLICATES,
+                               index = wi$ROW_NAME,
+                               weight = WI_FFO_WEIGHTS_REP,
+                               area = wi$AC_WOOD)
+# WI_FFO_AC_TOTAL
+# sqrt(var(WI_FFO_AC_TOTAL_REP))
 ```
 
 ## Proportions
@@ -117,22 +127,22 @@ Proportions are typically in terms of what proportion of the ownerships (or acre
 ```{r proportions}
 WI_FFO_OWN_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, domain = wi$Y_1)
 WI_FFO_OWN_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replicates, index.rep = WI_REPLICATES, 
-                               data = wi,
-                               weight.rep = WI_FFO_WEIGHTS_REP,
-                               owner.area.name = "OWNER",
-                               domain.name = "Y_1",
-                               base.name = "FFO",
-                               variable.name = "FFO")
+                                 data = wi,
+                                 weight.rep = WI_FFO_WEIGHTS_REP,
+                                 owner.area.name = "OWNER",
+                                 domain.name = "Y_1",
+                                 base.name = "FFO",
+                                 variable.name = "FFO")
 WI_FFO_OWN_Y1_PROP
 sqrt(var(WI_FFO_OWN_Y1_PROP_REP))
 WI_FFO_AC_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$Y_1)
 WI_FFO_AC_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replicates, index.rep = WI_REPLICATES, 
-                               data = wi,
-                               weight.rep = WI_FFO_WEIGHTS_REP,
-                               owner.area.name = "AC_WOOD",
-                               domain.name = "Y_1",
-                               base.name = "FFO",
-                               variable.name = "FFO")
+                                data = wi,
+                                weight.rep = WI_FFO_WEIGHTS_REP,
+                                owner.area.name = "AC_WOOD",
+                                domain.name = "Y_1",
+                                base.name = "FFO",
+                                variable.name = "FFO")
 WI_FFO_AC_Y1_PROP
 sqrt(var(WI_FFO_AC_Y1_PROP_REP))
 ```
@@ -146,20 +156,20 @@ Means are in terms of ownerships or acreage, i.e., what is the average value of 
 ```{r mean size}
 WI_FFO_OWN_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, variable = wi$AC_WOOD)
 WI_FFO_OWN_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                               data = wi,
-                               weight.rep = WI_FFO_WEIGHTS_REP,
-                               owner.area.name = "OWNER",
-                               domain.name = "FFO",
-                               variable.name = "AC_WOOD")
+                                 data = wi,
+                                 weight.rep = WI_FFO_WEIGHTS_REP,
+                                 owner.area.name = "OWNER",
+                                 domain.name = "FFO",
+                                 variable.name = "AC_WOOD")
 WI_FFO_OWN_AC_MEAN
 sqrt(var(WI_FFO_OWN_AC_MEAN_REP))
 WI_FFO_AC_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$AC_WOOD)
 WI_FFO_AC_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                               data = wi,
-                               weight.rep = WI_FFO_WEIGHTS_REP,
-                               owner.area.name = "AC_WOOD",
-                               domain.name = "FFO",
-                               variable.name = "AC_WOOD")
+                                data = wi,
+                                weight.rep = WI_FFO_WEIGHTS_REP,
+                                owner.area.name = "AC_WOOD",
+                                domain.name = "FFO",
+                                variable.name = "AC_WOOD")
 WI_FFO_AC_AC_MEAN
 sqrt(var(WI_FFO_AC_AC_MEAN_REP))
 ```
@@ -169,20 +179,20 @@ sqrt(var(WI_FFO_AC_AC_MEAN_REP))
 ```{r}
 WI_FFO_OWN_Y_3_MEAN <- nwos_mean(weight = wi$WEIGHT, variable = wi$Y_3)
 WI_FFO_OWN_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                               data = wi,
-                               weight.rep = WI_FFO_WEIGHTS_REP,
-                               owner.area.name = "OWNER",
-                               domain.name = "FFO",
-                               variable.name = "Y_3")
+                                  data = wi,
+                                  weight.rep = WI_FFO_WEIGHTS_REP,
+                                  owner.area.name = "OWNER",
+                                  domain.name = "FFO",
+                                  variable.name = "Y_3")
 WI_FFO_OWN_Y_3_MEAN
 sqrt(var(WI_FFO_OWN_Y_3_MEAN_REP))
 WI_FFO_AC_Y_3_MEAN <- nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$Y_3)
 WI_FFO_AC_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                               data = wi,
-                               weight.rep = WI_FFO_WEIGHTS_REP,
-                               owner.area.name = "AC_WOOD",
-                               domain.name = "FFO",
-                               variable.name = "Y_3")
+                                 data = wi,
+                                 weight.rep = WI_FFO_WEIGHTS_REP,
+                                 owner.area.name = "AC_WOOD",
+                                 domain.name = "FFO",
+                                 variable.name = "Y_3")
 WI_FFO_AC_Y_3_MEAN
 sqrt(var(WI_FFO_AC_Y_3_MEAN_REP))
 ```
@@ -208,8 +218,8 @@ For some purposes, extreme values in the base weights may cause problems (e.g., 
 
 ```{r weights_trimmed}
 wi$WEIGHT_TRIMMED <- nwos_weights_trimmed(weights = wi$WEIGHT)
-summary(wi$WEIGHT[wi$WEIGHT > 0])
-summary(wi$WEIGHT_TRIMMED[wi$WEIGHT_TRIMMED > 0])
+# summary(wi$WEIGHT[wi$WEIGHT > 0])
+# summary(wi$WEIGHT_TRIMMED[wi$WEIGHT_TRIMMED > 0])
 ```
 
 ## References

@@ -28,13 +28,12 @@
 
 # nwos_weights <- function(stratum, point.count, response, area,
 #                          stratum.area, stratum.area.correction = stratum.area, response.rate)
-nwos_weights_apply <- function(r, index, stratum, point.count, response, area,
+nwos_weights_apply <- function(r, index.rep, index, stratum, point.count, response, area,
                                stratum.area, stratum.area.correction = stratum.area, response.rate) {
-  index <- unlist(index[r])
-  nwos_weights(stratum = stratum[index],
-               point.count = point.count[index],
-               response = response[index],
-               area = area[index],
+  index.rep <- unlist(index.rep[r])
+  nwos_weights(stratum = stratum[match(index.rep, index)],
+               response = response[match(index.rep, index)],
+               area = area[match(index.rep, index)],
                stratum.area = stratum.area[r],
                response.rate = response.rate[r])
 }
