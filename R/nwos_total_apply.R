@@ -1,22 +1,28 @@
 #' NWOS Total Apply
 #'
 #' A version of the nwos_total function that is intended to be used with an apply function, typically for estimating sampling errors.
-#' @usage nwos_total_appl(index, weight, area, domain, variable)
-#' @param replicate an atomic value indicating which replicate to use.
-#' @param index list of vectors indicating which data to include. There needs to be an element with the same name as the replicate being assessed.
-#' @param weight list of vectors of weights. There needs to be an element with the same name as the replicate being assessed.
-#' @param area vector of area (e.g., forest acres) per ownership.
-#' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise.
-#' @param variable vector of variable of interest.
+#' @usage nwos_total_appl(r, index.rep, index, weight, area = 1, domain = 1, variable = 1)
+#' @param r vector of replicates numbers.
+#' @param index.rep list of observations (i.e., replicates) to include.
+#' @param index vector used to identify the location of values in the other vectors (e.g., row names).
+#' @param weight list of weights for each observation in each replicate.
+#' @param area vector of the area (of forestland) for each observation. Default = 1.
+#' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1.
+#' @param variable vector of variable of interest. Default = 1.
 #' @keywords nwos
-#' @details
-#' If index is set to 1:length(x), the results are equivalent to nwos_total.
-#' Default values for area, domain, and variable are not set, as they are for nwos_total, in order to reduce computation time.
 #' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples
-#' NEED TO ADD
+#' wi <- tbl_df(read.csv("data/wi.csv")) %>% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0), RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0), RESPONSE = if_else(is.na(RESPONSE_PROPENSITY), 0, RESPONSE))
+#' WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
+#' WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW_NAME, stratum = wi$FFO, state.area = 33898733)
+#' WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
+#' WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_apply,index.rep = WI_REPLICATES, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE, area = wi$AC_WOOD,stratum.area = WI_FFO_AREA_REP, response.rate = WI_FFO_RR_REP)
+#' WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP)
+#' WI_FFO_OWN_TOTAL_REP
+#' WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP, area = wi$AC_WOOD)
+#' WI_FFO_OWN_TOTAL_REP
 
 nwos_total_apply <- function(r, index.rep, index, weight, area = 1, domain = 1, variable = 1) {
   index.rep <- unlist(index.rep[r])
