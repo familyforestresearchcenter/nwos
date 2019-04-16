@@ -125,26 +125,25 @@ WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES),
 Proportions are typically in terms of what proportion of the ownerships (or acreage) have a specific attribute.
 
 ```{r proportions}
-WI_FFO_OWN_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, domain = wi$Y_1)
-WI_FFO_OWN_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replicates, index.rep = WI_REPLICATES, 
-                                 data = wi,
-                                 weight.rep = WI_FFO_WEIGHTS_REP,
-                                 owner.area.name = "OWNER",
-                                 domain.name = "Y_1",
-                                 base.name = "FFO",
-                                 variable.name = "FFO")
-WI_FFO_OWN_Y1_PROP
-sqrt(var(WI_FFO_OWN_Y1_PROP_REP))
-WI_FFO_AC_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$Y_1)
-WI_FFO_AC_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), nwos_proportion_replicates, index.rep = WI_REPLICATES, 
-                                data = wi,
-                                weight.rep = WI_FFO_WEIGHTS_REP,
-                                owner.area.name = "AC_WOOD",
-                                domain.name = "Y_1",
-                                base.name = "FFO",
-                                variable.name = "FFO")
-WI_FFO_AC_Y1_PROP
-sqrt(var(WI_FFO_AC_Y1_PROP_REP))
+WI_FFO_OWN_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, variable = wi$Y_1)
+WI_FFO_OWN_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), 
+                                 nwos_proportion_apply, 
+                                 index.rep = WI_REPLICATES,
+                                 index = wi$ROW_NAME,
+                                 weight = WI_FFO_WEIGHTS_REP,
+                                 variable = wi$Y_1)
+# WI_FFO_OWN_Y1_PROP
+# sqrt(var(WI_FFO_OWN_Y1_PROP_REP))
+WI_FFO_AC_Y1_PROP <- nwos_proportion(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$Y_1)
+WI_FFO_AC_Y1_PROP_REP <- sapply(1:length(WI_REPLICATES), 
+                                nwos_proportion_apply, 
+                                index.rep = WI_REPLICATES,
+                                index = wi$ROW_NAME,
+                                weight = WI_FFO_WEIGHTS_REP,
+                                area = wi$AC_WOOD,
+                                variable = wi$Y_1)
+# WI_FFO_AC_Y1_PROP
+# sqrt(var(WI_FFO_AC_Y1_PROP_REP))
 ```
 
 ## Means
