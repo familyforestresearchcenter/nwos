@@ -4,18 +4,16 @@
 \alias{nwos_stratum_area_apply}
 \title{NWOS Replicate Stratum Areas}
 \usage{
-nwos_stratum_area_replicates(index, data, stratum.name, state.area)
+nwos_stratum_area_apply(index.rep, index, stratum, state.area)
 }
 \arguments{
-\item{index}{list of observations (i.e., replicates) in data to include.}
+\item{index.rep}{list of observations (i.e., replicates) to include.}
 
-\item{point.count}{the number of sample points associated with each observation.}
+\item{index}{vector used to identify the location of values in the other vectors (e.g., row names).}
+
+\item{stratum}{vector indicating inclusion (1) and exclusion (0) in the stratum of interest.}
 
 \item{state.area}{total land area in the state of interest.}
-
-\item{data}{data frame containing stratum variable.}
-
-\item{stratum.name}{the name of the variable in data indicating inclusion (1) and exclusion (0) in the stratum of interest}
 }
 \value{
 Area of forestland in the stratum.
@@ -24,12 +22,13 @@ Area of forestland in the stratum.
 This function estimates NWOS stratum areas for NWOS replicates and is designed to be used with an apply function, such as sapply.
 }
 \details{
-This function needs to be run by state.
-point.count is automatically set to 1 since the replicates are an expanded list (one observation per sample point).
+point.count in nwos_stratum_area is  set to 1 since the replicates are an expanded list (one observation per sample point).
 }
 \examples{
-wi <- wi \%>\% mutate(FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0)) # Add stratum variable, FFO
-WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_replicates, data = wi, stratum.name = "FFO", state.area = 33898733)
+wi <- tbl_df(read.csv("data/wi.csv")) \%>\% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0))
+WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
+WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW_NAME, stratum = wi$FFO, state.area = 33898733)
+WI_FFO_AREA_REP
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

@@ -8,9 +8,8 @@
 #' @param weight list of weights for each observation in each replicate.
 #' @param area vector of the area (of forestland) for each observation. Default = 1.
 #' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1.
-#' @param variable vector of variable of interest. Default = 1.
+#' @param variable vector of variable of interest.
 #' @keywords nwos
-#' @details
 #' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

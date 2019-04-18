@@ -5,12 +5,9 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 ---
 
-## Figure out how to use index as character/CN (row names?)
-## Issue with point counts in replicates - set to 1
+The nwos package was designed to generate estimates for the U.S. Forest Service's National Woodland Owner Survey. The functions incorporate the NWOS sample design to generate estimates. Estimates can be generated for totals, proportions, means, medians, and associated variances. The background on the estimators is provided in Butler (In review).
 
-The nwos package was designed to generate estimates for the U.S. Forest Service's National Woodland Owner Survey. The functions incpororate the NWOS sample design to generate estimates. Estimates can be generated for totals, proportions, means, medians, and associated variances. The background on the estimators is provided in Butler (In review).
-
-This vignette shows the basic steps necessary to generate estimates using this package. The package can be downloaded from GitHub (devtools::install_git("git://github.com/bbutler01/nwos.git")). The examples below use the ``wi'' dataset supplied with the package. A descirption of this dataset is inclduded in Butler (In review).
+This vignette shows the basic steps necessary to generate estimates using this package. The package can be downloaded from GitHub (devtools::install_git("git://github.com/bbutler01/nwos.git")). The examples below use the ``wi'' dataset supplied with the package. A description of this dataset is included in Butler (In review).
 
 The basic steps are:
 * Install packages and load data
@@ -21,7 +18,6 @@ The basic steps are:
 * Generate estimates, including variances
 
 These steps are repeated for each combination of state, stratum (e.g., family forest owners), and domain. The basic estimators assume the data supplied are for an individual state. Wrapper functions can be developed for iterating through states, strata, domains, and variables.
-
 
 ## Install packages
 ```{r setup, warning = FALSE}
@@ -39,7 +35,7 @@ wi <- wi %>% mutate(ROW_NAME = row.names(wi),
 
 ## Generate Replicates
 
-Replicates are used in the bootrstrapping variance estimation. Replicates are generated just once to increase processing efficiency, in order to use the same replicates across all estimates, and to facilitate repeatability of the results. This vignette uses only 100 replicates in order to decrease processing time. An actual application would likley use many more replicates, e.g., $R = 5,000$.
+Replicates are used in the bootstrapping variance estimation. Replicates are generated just once to increase processing efficiency, in order to use the same replicates across all estimates, and to facilitate repeatability of the results. This vignette uses only 100 replicates in order to decrease processing time. An actual application would likely use many more replicates, e.g., $R = 5,000$.
 
 ```{r replicates}
 WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
@@ -47,7 +43,7 @@ WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_C
 
 ## Estimate stratum areas
 
-Areas need to be esitmated for each stratum of interest in a state. This is done using a dummy variable indicating inclusion in a stratum, e.g., family forest ownerships (FFO). To capture the full variability in the estimates, stratum areas must be estimated separately for each replicate.
+Areas need to be estimated for each stratum of interest in a state. This is done using a dummy variable indicating inclusion in a stratum, e.g., family forest ownerships (FFO). To capture the full variability in the estimates, stratum areas must be estimated separately for each replicate.
 
 For the example here, the stratum of interest is family forest ownerships (FFO) in Wisconsin. The FFO dummy variable is set to 1 if $LAND\_USE == 1$ & $OWN\_CD == 45$ & $AC\_WOOD >= 1$, and 0 otherwise.
 
@@ -72,7 +68,7 @@ WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_
 
 ## Generate weights
 
-Weights are key to the NWOS estimates. For the NWOS, they are a function of the number of sample points owned, acrage owned, and the area of the stratum. These weights are used for all of the estimates, and the estimates calculated above are largely done in order to generate these weights. 
+Weights are key to the NWOS estimates. For the NWOS, they are a function of the number of sample points owned, acreage owned, and the area of the stratum. These weights are used for all of the estimates, and the estimates calculated above are largely done in order to generate these weights. 
 
 For some modeling purposes, extreme values in the weights may cause problems. See the section below on trimmed weights for a potential solution.
 
@@ -154,46 +150,48 @@ Means are in terms of ownerships or acreage, i.e., what is the average value of 
 
 ```{r mean size}
 WI_FFO_OWN_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, variable = wi$AC_WOOD)
-WI_FFO_OWN_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                                 data = wi,
-                                 weight.rep = WI_FFO_WEIGHTS_REP,
-                                 owner.area.name = "OWNER",
-                                 domain.name = "FFO",
-                                 variable.name = "AC_WOOD")
-WI_FFO_OWN_AC_MEAN
-sqrt(var(WI_FFO_OWN_AC_MEAN_REP))
+WI_FFO_OWN_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), 
+                                 nwos_mean_apply, 
+                                 index.rep = WI_REPLICATES,
+                                 index = wi$ROW_NAME,
+                                 weight = WI_FFO_WEIGHTS_REP,
+                                 variable = wi$AC_WOOD)
+# WI_FFO_OWN_AC_MEAN
+# sqrt(var(WI_FFO_OWN_AC_MEAN_REP))
 WI_FFO_AC_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$AC_WOOD)
-WI_FFO_AC_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                                data = wi,
-                                weight.rep = WI_FFO_WEIGHTS_REP,
-                                owner.area.name = "AC_WOOD",
-                                domain.name = "FFO",
-                                variable.name = "AC_WOOD")
-WI_FFO_AC_AC_MEAN
-sqrt(var(WI_FFO_AC_AC_MEAN_REP))
+WI_FFO_AC_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), 
+                                 nwos_mean_apply, 
+                                 index.rep = WI_REPLICATES,
+                                 index = wi$ROW_NAME,
+                                 weight = WI_FFO_WEIGHTS_REP,
+                                 area = wi$AC_WOOD,
+                                 variable = wi$AC_WOOD)
+# WI_FFO_AC_AC_MEAN
+# sqrt(var(WI_FFO_AC_AC_MEAN_REP))
 ```
 
 ### Average of $Y_3$
 
 ```{r}
 WI_FFO_OWN_Y_3_MEAN <- nwos_mean(weight = wi$WEIGHT, variable = wi$Y_3)
-WI_FFO_OWN_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                                  data = wi,
-                                  weight.rep = WI_FFO_WEIGHTS_REP,
-                                  owner.area.name = "OWNER",
-                                  domain.name = "FFO",
-                                  variable.name = "Y_3")
-WI_FFO_OWN_Y_3_MEAN
-sqrt(var(WI_FFO_OWN_Y_3_MEAN_REP))
+WI_FFO_OWN_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), 
+                                 nwos_mean_apply, 
+                                 index.rep = WI_REPLICATES,
+                                 index = wi$ROW_NAME,
+                                 weight = WI_FFO_WEIGHTS_REP,
+                                 variable = wi$Y_3)
+# WI_FFO_OWN_Y_3_MEAN
+# sqrt(var(WI_FFO_OWN_Y_3_MEAN_REP))
 WI_FFO_AC_Y_3_MEAN <- nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$Y_3)
-WI_FFO_AC_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_replicates, index.rep = WI_REPLICATES, 
-                                 data = wi,
-                                 weight.rep = WI_FFO_WEIGHTS_REP,
-                                 owner.area.name = "AC_WOOD",
-                                 domain.name = "FFO",
-                                 variable.name = "Y_3")
-WI_FFO_AC_Y_3_MEAN
-sqrt(var(WI_FFO_AC_Y_3_MEAN_REP))
+WI_FFO_AC_Y_3_MEAN_REP <- sapply(1:length(WI_REPLICATES), 
+                                 nwos_mean_apply, 
+                                 index.rep = WI_REPLICATES,
+                                 index = wi$ROW_NAME,
+                                 weight = WI_FFO_WEIGHTS_REP,
+                                 area = wi$AC_WOOD,
+                                 variable = wi$Y_3)
+# WI_FFO_AC_Y_3_MEAN
+# sqrt(var(WI_FFO_AC_Y_3_MEAN_REP))
 ```
 
 ## Quantiles
@@ -202,13 +200,9 @@ Quantiles, including medians, can be calculated in terms of ownerships or acreag
 
 ```{r quantiles}
 WI_FFO_OWN_AC_QUANTILE <- nwos_quantile(weight = wi$WEIGHT, domain = wi$FFO, variable = wi$AC_WOOD)
+# WI_FFO_OWN_AC_QUANTILE
 WI_FFO_AC_AC_QUANTILE <- nwos_quantile(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$FFO, variable = wi$AC_WOOD)
-WI_FFO_OWN_AC_QUANTILE_REP <- sapply(1:2, # length(WI_REPLICATES),
-                                     nwos_quantile_replicates, index.rep = WI_REPLICATES, data = wi,
-                                     weight.rep = WI_FFO_WEIGHTS_REP, owner.area.name = "OWNER",
-                                     domain.name = "FFO", variable.name = "AC_WOOD")
-WI_FFO_OWN_AC_QUANTILE
-WI_FFO_AC_AC_QUANTILE
+# WI_FFO_AC_AC_QUANTILE
 ```
 
 ## Trimmed Weights
@@ -222,4 +216,4 @@ wi$WEIGHT_TRIMMED <- nwos_weights_trimmed(weights = wi$WEIGHT)
 ```
 
 ## References
-Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
+Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newtown Square, PA.

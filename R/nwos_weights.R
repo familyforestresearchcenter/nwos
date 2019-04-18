@@ -9,7 +9,6 @@
 #' @param stratum.area area (of forestland) in the stratum of interest.
 #' @param stratum.area.correction area (of forestland) in the stratum of interest to which the total stratum.area will be forced. The default value is stratum.area (i.e., no correction).
 #' @param response.rate response rate for the stratum of interest. Value should range from 0 ot 1.
-#' @details
 #' @return
 #' vector of weights
 #' @keywords nwos

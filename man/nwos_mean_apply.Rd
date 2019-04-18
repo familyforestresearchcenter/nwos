@@ -4,29 +4,52 @@
 \alias{nwos_mean_apply}
 \title{NWOS Proportion}
 \usage{
-nwos_proportion_replicates(r, index.rep, data, weight.rep, owner.area.name = "OWNER", domain.name, base.name = "FFO", variable.name = "FFO")
+nwos_proportion_apply(r, index.rep, data, weight.rep, owner.area.name = "OWNER", domain.name, base.name = "FFO", variable.name = "FFO")
 }
 \arguments{
-\item{r}{vector of replicates. See details below.}
+\item{r}{vector of replicates numbers.}
 
-\item{index.rep}{list of observations (i.e., replicates) in data to include.}
+\item{index.rep}{list of observations (i.e., replicates) to include.}
 
-\item{data}{data frame containing stratum variable.}
+\item{index}{vector used to identify the location of values in the other vectors (e.g., row names).}
 
-\item{weight.rep}{list with each element the weights for the observations in that replicate.}
+\item{weight}{list of weights for each observation in each replicate.}
 
-\item{owner.area.name}{nae of a variable in data of the area (of forestland) owned by each ownership. Default = "OWNER" (i.e., 1, which is used for estimating number of ownerships).}
+\item{area}{vector of the area (of forestland) for each observation. Default = 1.}
 
-\item{domain.name}{name of the variable in data indicating inclusion (1) and exclusion (0) in the domain of interest.}
+\item{domain}{vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1.}
 
-\item{base.name}{name of a variable in data with 1 indicating inclusion in the base (i.e., denominator) and 0 otherwise. Default = 1 (i.e., all ownerships are included).}
-
-\item{variable.name}{name of the variable of interest in data. Default = "FFO".}
+\item{variable}{vector of variable of interest.}
+}
+\value{
+Mean of variable of interest.
+ @keywords nwos
 }
 \description{
-This function calculates proportions for the NWOS replicates. This is typically used with an apply function.
+This function calculates means for NWOS replicates. This is typically used with an apply function.
+}
+\details{
+This function needs to be run by stratum (e.g., family forest ownerships in a state).
+Due to indexing (to allow for apply function), there are fewer defauly values than nwos_mean.
+}
+\examples{
+wi <- tbl_df(read.csv("data/wi.csv")) \%>\% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0), RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0), RESPONSE = if_else(is.na(RESPONSE_PROPENSITY), 0, RESPONSE))
+WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
+WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW_NAME, stratum = wi$FFO, state.area = 33898733)
+WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
+WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_apply,index.rep = WI_REPLICATES, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE, area = wi$AC_WOOD,stratum.area = WI_FFO_AREA_REP, response.rate = WI_FFO_RR_REP)
+WI_FFO_OWN_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, variable = wi$AC_WOOD)
+WI_FFO_OWN_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP, variable = wi$AC_WOOD)
+WI_FFO_OWN_AC_MEAN
+sqrt(var(WI_FFO_OWN_AC_MEAN_REP))
+WI_FFO_AC_AC_MEAN <- nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$AC_WOOD)
+WI_FFO_AC_AC_MEAN_REP <- sapply(1:length(WI_REPLICATES), nwos_mean_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP, area = wi$AC_WOOD, variable = wi$AC_WOOD)
+WI_FFO_AC_AC_MEAN
+sqrt(var(WI_FFO_AC_AC_MEAN_REP))
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 }
-\keyword{nwos}
+\seealso{
+nwos_mean
+}

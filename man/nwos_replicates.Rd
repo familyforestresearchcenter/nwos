@@ -4,12 +4,12 @@
 \alias{nwos_replicates}
 \title{NWOS Replicates}
 \usage{
-nwos_replicates(index, point.count, R = 5000)
+nwos_replicates(index, point.count, R = 2500)
 }
 \arguments{
-\item{index}{vector of names used to identify rows/observations in the data.}
+\item{index}{vector of names (e.g., row names) used to identify observations.}
 
-\item{point.count}{the number of sample points associated with each observation.}
+\item{point.count}{the number of sample points associated with each observation. Default is 1.}
 
 \item{R}{number of replicates or bootstraps. Default is 2500.}
 }
@@ -19,10 +19,8 @@ List containing indices for the observations that make up each of the replicates
 \description{
 Generate replicates that can be used for NWOS bootstrapping variance estimation.
 }
-\details{
-This function needs to be run by state.
-}
 \examples{
+wi <- tbl_df(read.csv("data/wi.csv")) \%>\% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0))
 WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
 }
 \references{

@@ -1,7 +1,7 @@
 #' NWOS Quantile
 #'
 #' This function calculates quantiles for NWOS estimates.
-#' @usage nwos_quantile(weight, area = 1, domain, variable, prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
+#' @usage nwos_quantile(weight, area = 1, domain, variable, prob = c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter = 1000)
 #'
 #' @param weight vector of weights per ownership.
 #' @param area vector of area (e.g., forest acres) per ownership. Default = 1 (i.e., estimates are in terms of ownerships).
@@ -14,11 +14,15 @@
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples
+#' wi <- tbl_df(read.csv("data/wi.csv")) %>% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0), RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0), RESPONSE = if_else(is.na(RESPONSE_PROPENSITY), 0, RESPONSE))
+#' WI_FFO_AREA <- nwos_stratum_area(stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
+#' WI_FFO_RR <- nwos_response_rate(stratum = wi$FFO, point.count = wi$POINT_COUNT, response = wi$RESPONSE)
+#' wi$WEIGHT <- nwos_weights(stratum = wi$FFO, point.count = wi$POINT_COUNT, response = wi$RESPONSE, area = wi$AC_WOOD, stratum.area = WI_FFO_AREA, response.rate = WI_FFO_RR)
 #' nwos_quantile(weight = wi$WEIGHT, domain = wi$FFO, variable = wi$AC_WOOD)
 #' nwos_quantile(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$FFO, variable = wi$AC_WOOD)
 
 nwos_quantile <- function(weight, area = 1, domain = 1, variable,
-                          prob=c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter=1000)
+                          prob = c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter = 1000)
 {
   x.quant <- numeric(0)
   total <- nwos_total(weight = weight, area = area, domain = domain)

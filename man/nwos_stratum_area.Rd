@@ -7,9 +7,9 @@
 nwos_stratum_area(stratum, point.count, state.area)
 }
 \arguments{
-\item{stratum}{vector indicating inclusion (1) and exclusion (0) in the stratum of interest.}
+\item{stratum}{vector indicating inclusion (1) and exclusion (0) in the stratum of interest. NA's are allowed.}
 
-\item{point.count}{vector of the number of sample points associated with each observation.}
+\item{point.count}{vector of the number of sample points associated with each observation. Default is point.count = 1.}
 
 \item{state.area}{total land area in the state of interest.}
 }
@@ -19,11 +19,8 @@ Area (of forestland) in the stratum.
 \description{
 This function estimates NWOS stratum areas.
 }
-\details{
-This function needs to be run by state.
-}
 \examples{
-wi <- wi \%>\% mutate(FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0))
+wi <- tbl_df(read.csv("data/wi.csv")) \%>\% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0))
 WI_FFO_AREA <- nwos_stratum_area(stratum = wi$FFO, point.count = wi$POINT_COUNT, state.area = 33898733)
 WI_FFO_AREA
 }

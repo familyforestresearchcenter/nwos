@@ -4,43 +4,39 @@
 \alias{nwos_weights_apply}
 \title{NWOS Replicate Weights}
 \usage{
-nwos_weights_replicates(r, index.rep, data, stratum.name = "FFO", point.count.name = "POINT_COUNT",
-response.name = "RESPONSE", owner.area.name = "AC_WOOD", stratum.area.rep, response.rate.rep)
+nwos_weights_replicates(r, index.rep, index, stratum, response, area, stratum.area, stratum.area.correction = stratum.area, response.rate)
 }
 \arguments{
-\item{r}{vector of replicates. See details below.}
+\item{r}{vector of replicates numbers.}
 
-\item{index.rep}{list of observations (i.e., replicates) in data to include.}
+\item{index.rep}{list of observations (i.e., replicates) to include.}
 
-\item{data}{data frame containing stratum variable.}
+\item{index}{vector used to identify the location of values in the other vectors (e.g., row names).}
 
-\item{stratum.name}{name of the variable in data indicating inclusion (1) and exclusion (0) in the stratum of interest. Default = "FFO".}
+\item{stratum}{vector indicating inclusion (1) and exclusion (0) in the stratum of interest. NA's are allowed.}
 
-\item{point.count.name}{name of a variable in data of the number of sample points associated with each observation.. Default = "POINT_COUNT",}
+\item{response}{vector indicating response (1) and non-response (0).}
 
-\item{response.name}{name of a variable in data indicating response (1) and non-response (0). Default = "RESPONSE".}
+\item{area}{vector of the area (of forestland) owned by each ownership.}
 
-\item{owner.area.name}{nae of a variable in data of the area (of forestland) owned by each ownership. Default = "AC_WOOD".}
+\item{stratum.area}{vector of area (of forestland) in the stratum of interest for each replicate.}
 
-\item{stratum.area.rep}{vector of area (of forestland) in the stratum of interest for each replicate.}
+\item{stratum.area.correction}{vector of area (of forestland) in the stratum of interest to which the total stratum.area will be forced. The default value is stratum.area (i.e., no correction).}
 
-\item{response.rate.rep}{vector of response rates for each replicate for the stratum of interest.}
+\item{response.rate}{vector of response rates for each replicate for the stratum of interest.}
 }
 \value{
-vector of weights
+list of vector of weights
 }
 \description{
-This function returns the calculated weights based on the NWOS sample design and is designed to be used with an apply function, such as sapply.
-}
-\details{
-r it typcially set using 1:length(WI_REPLICATES)
-index.rep differs from index in other nwos functions in that these includes multiple lists (i.e., all of the replicates, not just one).
-index.rep, stratum.area.rep, and response.rate.rep are assumed to be listed in the same order.
+This function returns the calculated weights based on the NWOS sample design and is designed to be used with an apply function, such as lapply.
 }
 \examples{
-WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_replicates,
-index.rep = WI_REPLICATES, data = wi,
-stratum.area.rep = WI_FFO_AREA_REP, response.rate.rep = WI_FFO_RR_REP)
+wi <- tbl_df(read.csv("data/wi.csv")) \%>\% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0), RESPONSE = if_else(RESPONSE_PROPENSITY >= 0.5, 1, 0), RESPONSE = if_else(is.na(RESPONSE_PROPENSITY), 0, RESPONSE))
+WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
+WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW_NAME, stratum = wi$FFO, state.area = 33898733)
+WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
+WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_apply,index.rep = WI_REPLICATES, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE, area = wi$AC_WOOD,stratum.area = WI_FFO_AREA_REP, response.rate = WI_FFO_RR_REP)
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

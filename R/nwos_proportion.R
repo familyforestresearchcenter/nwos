@@ -7,7 +7,6 @@
 #' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1 (i.e., all ownerships are included).
 #' @param variable vector of binary variable of interest. 1 = Yes and 0 = No.
 #' @keywords nwos
-#' @details
 #' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
