@@ -15,6 +15,8 @@ nwos_weights(stratum, point.count, response, area, stratum.area, stratum.area.co
 
 \item{area}{vector of the area (of forestland) owned by each ownership.}
 
+\item{nonresponse.adj}{vector of unit nonresponse adjustment factors. Default nonresponse.adj = 1.}
+
 \item{stratum.area}{area (of forestland) in the stratum of interest.}
 
 \item{stratum.area.correction}{area (of forestland) in the stratum of interest to which the total stratum.area will be forced. The default value is stratum.area (i.e., no correction).}

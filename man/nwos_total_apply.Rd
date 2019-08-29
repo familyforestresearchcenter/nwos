@@ -4,7 +4,7 @@
 \alias{nwos_total_apply}
 \title{NWOS Total Apply}
 \usage{
-nwos_total_appl(r, index.rep, index, weight, area = 1, domain = 1, variable = 1)
+nwos_total_apply(r, index.rep, index, weight, area = 1, domain = 1, variable = 1)
 }
 \arguments{
 \item{r}{vector of replicates numbers.}
@@ -31,8 +31,6 @@ WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW
 WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
 WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_apply,index.rep = WI_REPLICATES, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE, area = wi$AC_WOOD,stratum.area = WI_FFO_AREA_REP, response.rate = WI_FFO_RR_REP)
 WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP)
-WI_FFO_OWN_TOTAL_REP
-WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP, area = wi$AC_WOOD)
 WI_FFO_OWN_TOTAL_REP
 }
 \references{

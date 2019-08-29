@@ -11,6 +11,8 @@ nwos_total(weight, area = 1, domain = 1, variable = 1)
 
 \item{area}{vector of area (e.g., forest acres) per observation. Default = 1 (i.e., estimates are in terms of ownerships).}
 
+\item{stratum}{vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).}
+
 \item{domain}{vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1 (i.e., all ownerships are included).}
 
 \item{variable}{vector of variable of interest. Default = 1 (i.e., variable is ignored).}
