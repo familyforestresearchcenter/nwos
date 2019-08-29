@@ -1,7 +1,7 @@
 #' NWOS Total
 #'
 #' Estimator used to calculate NWOS totals.
-#' @usage nwos_total(weight, area = 1, domain = 1, variable = 1)
+#' @usage nwos_total(weight, area = 1, stratum = 1, domain = 1, variable = 1)
 #' @param weight vector of weights per observation.
 #' @param area vector of area (e.g., forest acres) per observation. Default = 1 (i.e., estimates are in terms of ownerships).
 #' @param stratum vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).
