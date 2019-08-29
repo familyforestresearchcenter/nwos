@@ -2,6 +2,7 @@
 
 export(nwos_mean)
 export(nwos_mean_apply)
+export(nwos_n)
 export(nwos_proportion)
 export(nwos_proportion_apply)
 export(nwos_quantile)
