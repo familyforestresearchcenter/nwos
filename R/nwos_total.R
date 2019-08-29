@@ -4,6 +4,7 @@
 #' @usage nwos_total(weight, area = 1, domain = 1, variable = 1)
 #' @param weight vector of weights per observation.
 #' @param area vector of area (e.g., forest acres) per observation. Default = 1 (i.e., estimates are in terms of ownerships).
+#' @param stratum vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).
 #' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1 (i.e., all ownerships are included).
 #' @param variable vector of variable of interest. Default = 1 (i.e., variable is ignored).
 #' @keywords nwos
@@ -23,6 +24,6 @@
 #' WI_FFO_AC_TOTAL <- nwos_total(weight = wi$WEIGHT, area = wi$AC_WOOD)
 #' WI_FFO_AC_TOTAL
 
-nwos_total <- function(weight, area = 1, domain = 1, variable = 1) {
-  sum(weight * area * domain * variable, na.rm=T)
+nwos_total <- function(weight, area = 1, stratum = 1, domain = 1, variable = 1) {
+  sum(weight * area * stratum * domain * variable, na.rm=T)
 }

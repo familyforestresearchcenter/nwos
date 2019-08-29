@@ -1,7 +1,7 @@
 #' NWOS Total Apply
 #'
 #' A version of the nwos_total function that is intended to be used with an apply function, typically for estimating sampling errors.
-#' @usage nwos_total_appl(r, index.rep, index, weight, area = 1, domain = 1, variable = 1)
+#' @usage nwos_total_apply(r, index.rep, index, weight, area = 1, domain = 1, variable = 1)
 #' @param r vector of replicates numbers.
 #' @param index.rep list of observations (i.e., replicates) to include.
 #' @param index vector used to identify the location of values in the other vectors (e.g., row names).
@@ -20,8 +20,6 @@
 #' WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
 #' WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_apply,index.rep = WI_REPLICATES, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE, area = wi$AC_WOOD,stratum.area = WI_FFO_AREA_REP, response.rate = WI_FFO_RR_REP)
 #' WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP)
-#' WI_FFO_OWN_TOTAL_REP
-#' WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP, area = wi$AC_WOOD)
 #' WI_FFO_OWN_TOTAL_REP
 
 nwos_total_apply <- function(r, index.rep, index, weight, area = 1, domain = 1, variable = 1) {

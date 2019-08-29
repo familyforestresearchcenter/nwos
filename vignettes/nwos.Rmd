@@ -35,7 +35,7 @@ wi <- wi %>% mutate(ROW_NAME = row.names(wi),
 
 ## Generate Replicates
 
-Replicates are used in the bootstrapping variance estimation. Replicates are generated just once to increase processing efficiency, in order to use the same replicates across all estimates, and to facilitate repeatability of the results. This vignette uses only 100 replicates in order to decrease processing time. An actual application would likely use many more replicates, e.g., $R = 5,000$.
+Replicates are used in the bootstrapping variance estimation. Replicates are generated just once to increase processing efficiency, in order to use the same replicates across all estimates, and to facilitate repeatability of the results. This vignette uses only 100 replicates in order to decrease processing time. An actual application would likely use many more replicates, e.g., $R = 2,500$.
 
 ```{r replicates}
 WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
