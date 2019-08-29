@@ -4,12 +4,14 @@
 \alias{nwos_proportion}
 \title{NWOS Proportion}
 \usage{
-nwos_proportion(weight, area = 1, domain, base = 1, variable)
+nwos_proportion(weight, area = 1, stratum = 1, domain = 1, base = 1, variable)
 }
 \arguments{
 \item{weight}{vector of weights per ownership.}
 
 \item{area}{vector of area (e.g., forest acres) per ownership. Default = 1 (i.e., estimates are in terms of ownerships).}
+
+\item{stratum}{vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).}
 
 \item{domain}{vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1 (i.e., all ownerships are included).}
 

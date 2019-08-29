@@ -4,7 +4,7 @@
 \alias{nwos_total}
 \title{NWOS Total}
 \usage{
-nwos_total(weight, area = 1, domain = 1, variable = 1)
+nwos_total(weight, area = 1, stratum = 1, domain = 1, variable = 1)
 }
 \arguments{
 \item{weight}{vector of weights per observation.}
