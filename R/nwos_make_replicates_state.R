@@ -13,7 +13,7 @@
 #' @examples
 #' ??
 
-nwos_replicates_state <- function(x, data = po) {
+nwos_make_replicates_state <- function(x, data = po, R = 10) {
   ID <- data %>% filter(STATECD_NWOS %in% x) %>% pull(PLOT_OWNER_CN_INTEGER)
-  nwos_replicates(ID, R = 10)
+  nwos_make_replicates(ID, R = R)
 }

@@ -4,7 +4,7 @@
 \alias{nwos_make_replicates}
 \title{NWOS Make Replicates}
 \usage{
-nwos_replicates(index, point.count, R = 2500)
+nwos_make_replicates(index, point.count, R = 2500)
 }
 \arguments{
 \item{index}{vector of names (e.g., row names) used to identify observations.}

@@ -11,6 +11,8 @@ nwos_mean(weight, area = 1, domain = 1, variable)
 
 \item{area}{vector of area (e.g., forest acres in the stratum). Default = 1 (i.e., estimates are in terms of ownerships).}
 
+\item{stratum}{vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).}
+
 \item{domain}{binary vector (i.e., dummay variable) with 1 indicating inclusion in the domain  of interest and 0 otherwise. Default = 1 (i.e., all ownerships are included).}
 
 \item{variable}{vector of values for the variable of interest.}

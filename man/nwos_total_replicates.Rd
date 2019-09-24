@@ -17,6 +17,8 @@ nwos_total_apply(r, index.rep, index, weight, area = 1, domain = 1, variable = 1
 
 \item{area}{vector of the area (of forestland) for each observation. Default = 1.}
 
+\item{stratum}{vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).}
+
 \item{domain}{vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1.}
 
 \item{variable}{vector of variable of interest. Default = 1.}
