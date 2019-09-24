@@ -1,7 +1,7 @@
 #' NWOS Make Replicates
 #'
 #' Generate replicates that can be used for NWOS bootstrapping variance estimation.
-#' @usage nwos_replicates(index, point.count, R = 2500)
+#' @usage nwos_make_replicates(index, point.count, R = 2500)
 #' @param index vector of names (e.g., row names) used to identify observations.
 #' @param point.count the number of sample points associated with each observation. Default is 1.
 #' @param R number of replicates or bootstraps. Default is 2500.

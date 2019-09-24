@@ -7,6 +7,7 @@
 #' @param index vector used to identify the location of values in the other vectors (e.g., row names).
 #' @param weight list of weights for each observation in each replicate.
 #' @param area vector of the area (of forestland) for each observation. Default = 1.
+#' @param stratum vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).
 #' @param domain vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1.
 #' @param variable vector of variable of interest. Default = 1.
 #' @keywords nwos
@@ -22,10 +23,11 @@
 #' WI_FFO_OWN_TOTAL_REP <- sapply(1:length(WI_REPLICATES), nwos_total_apply, index.rep = WI_REPLICATES, index = wi$ROW_NAME, weight = WI_FFO_WEIGHTS_REP)
 #' WI_FFO_OWN_TOTAL_REP
 
-nwos_total_replicates <- function(r, index.rep, index, weight, area = 1, domain = 1, variable = 1) {
+nwos_total_replicates <- function(r, index.rep, index, weight, area = 1, stratum = 1, domain = 1, variable = 1) {
   index.rep <- unlist(index.rep[r])
   if(length(area) != 1) area <- area[match(index.rep, index)]
+  if(length(stratum) != 1) stratum <- stratum[match(index.rep, index)]
   if(length(domain) != 1) domain <- domain[match(index.rep, index)]
   if(length(variable) != 1) variable <- variable[match(index.rep, index)]
-  nwos_total(weight = unlist(weight[r]), area = area, domain = domain, variable = variable)
+  nwos_total(weight = unlist(weight[r]), area = area, stratum = stratum, domain = domain, variable = variable)
 }
