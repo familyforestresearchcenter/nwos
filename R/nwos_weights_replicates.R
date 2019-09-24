@@ -1,4 +1,4 @@
-#' NWOS Replicate Weights
+#' NWOS Weights for Replicates
 #'
 #' This function returns the calculated weights based on the NWOS sample design and is designed to be used with an apply function, such as lapply.
 #' @usage nwos_weights_replicates(r, index.rep, index, stratum, response, area, stratum.area, stratum.area.correction = stratum.area, response.rate)
@@ -24,7 +24,7 @@
 #' WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
 #' WI_FFO_WEIGHTS_REP <- lapply(1:length(WI_REPLICATES), nwos_weights_apply,index.rep = WI_REPLICATES, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE, area = wi$AC_WOOD,stratum.area = WI_FFO_AREA_REP, response.rate = WI_FFO_RR_REP)
 
-nwos_weights_apply <- function(r, index.rep, index, stratum, response, area,
+nwos_weights_replicates <- function(r, index.rep, index, stratum, response, area,
                                stratum.area, stratum.area.correction = stratum.area, response.rate) {
   index.rep <- unlist(index.rep[r])
   nwos_weights(stratum = stratum[match(index.rep, index)],

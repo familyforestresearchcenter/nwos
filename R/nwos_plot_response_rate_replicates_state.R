@@ -1,11 +1,11 @@
-#' NWOS Replicate Response Rates
+#' NWOS Plot Response Rates for Replicates by State
 #'
 #' This function calculates response rates for NWOS replicates and is designed to be used with an apply function, such as sapply.
-#' @usage nwos_response_rate(index.rep, index, stratum, response)
-#' @param index.rep list of observations (i.e., replicates) to include.
-#' @param index vector used to identify the location of values in the other vectors (e.g., row names).
-#' @param stratum vector indicating inclusion (1) and exclusion (0) in the stratum of interest. NA's are allowed.
-#' @param response vector indicating response (1) and non-response (0).
+#' @usage nwos_response_rate_replicates_state(state, data = po, s.name = "FFO", r.name = "RESPONSE")
+#' @param state
+#' @param data = po
+#' @param s.name = "FFO"
+#' @param r.name = "RESPONSE"
 #' @return
 #' Response rate in the stratum.
 #' @keywords nwos
@@ -17,10 +17,10 @@
 #' WI_FFO_RR_REP <- sapply(WI_REPLICATES, nwos_response_rate_apply, index = wi$ROW_NAME, stratum = wi$FFO, response = wi$RESPONSE)
 #' WI_FFO_RR_REP
 
-# nwos_response_rate <- function(stratum, point.count, response)
-nwos_response_rate_apply <- function(index.rep, index, stratum, response) {
-  index.rep <- unlist(index.rep)
-  nwos_response_rate(stratum = stratum[match(index.rep, index)],
-                     response = response[match(index.rep, index)])
+nwos_plot_response_rate_replicates_state <- function(state, data = po, s.name = "FFO", r.name = "RESPONSE") {
+  sapply(REPLICATES[[state]],
+         nwos_plot_response_rate_replicates,
+         index = data %>% filter(STATECD_NWOS %in% state) %>% pull(PLOT_OWNER_CN_INTEGER),
+         stratum = data %>% filter(STATECD_NWOS %in% state) %>% pull(!!s.name),
+         response = data %>% filter(STATECD_NWOS %in% state) %>% pull(!!r.name))
 }
-

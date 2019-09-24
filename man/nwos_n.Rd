@@ -13,7 +13,7 @@ nwos_n(point.count = 1, stratum = 1, domain = 1)
 
 \item{domain}{vector with 1 indicating inclusion in the domain and 0 otherwise. Default = 1 (i.e., all ownerships are included).}
 
-\item{variable}{vector of variable of interest. Default = 1 (i.e., variable is ignored).}
+\item{variable}{vector of variable of interest. Default = 1 (i.e., variable is ignored)}
 }
 \description{
 Count number of responses (n).

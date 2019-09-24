@@ -1,4 +1,4 @@
-#' NWOS Replicate Stratum Areas
+#' NWOS Stratum Areas for Replicates
 #'
 #' This function estimates NWOS stratum areas for NWOS replicates and is designed to be used with an apply function, such as sapply.
 #' @usage nwos_stratum_area_apply(index.rep, index, stratum, state.area)
@@ -20,7 +20,7 @@
 #' WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW_NAME, stratum = wi$FFO, state.area = 33898733)
 #' WI_FFO_AREA_REP
 
-nwos_stratum_area_apply <- function(index.rep, index, stratum, state.area) {
+nwos_stratum_area_replicates <- function(index.rep, index, stratum, state.area) {
   index.rep <- unlist(index.rep)
   nwos_stratum_area(stratum = stratum[match(index.rep, index)],
                     state.area = state.area)

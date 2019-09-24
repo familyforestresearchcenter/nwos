@@ -1,4 +1,4 @@
-#' NWOS Proportion
+#' NWOS Means for  Replicates
 #'
 #' This function calculates means for NWOS replicates. This is typically used with an apply function.
 #' @usage nwos_proportion_apply(r, index.rep, data, weight.rep, owner.area.name = "OWNER", domain.name, base.name = "FFO", variable.name = "FFO")
@@ -33,7 +33,7 @@
 #' WI_FFO_AC_AC_MEAN
 #' sqrt(var(WI_FFO_AC_AC_MEAN_REP))
 
-nwos_mean_apply <- function(r, index.rep, index, weight, area = 1, domain =1, variable) {
+nwos_mean_replicates <- function(r, index.rep, index, weight, area = 1, domain =1, variable) {
   index.rep <- unlist(index.rep[r])
   if(length(area) != 1) area <- area[match(index.rep, index)]
   if(length(domain) != 1) domain <- domain[match(index.rep, index)]

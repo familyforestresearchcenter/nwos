@@ -1,4 +1,4 @@
-#' NWOS Replicates
+#' NWOS Make Replicates
 #'
 #' Generate replicates that can be used for NWOS bootstrapping variance estimation.
 #' @usage nwos_replicates(index, point.count, R = 2500)
@@ -15,7 +15,7 @@
 #' wi <- tbl_df(read.csv("data/wi.csv")) %>% mutate(ROW_NAME = row.names(wi), AC_WOOD = ACRES_FOREST, FFO = if_else(LAND_USE == 1 & OWN_CD == 45 & AC_WOOD >= 1, 1, 0))
 #' WI_REPLICATES <- nwos_replicates(index = row.names(wi), point.count = wi$POINT_COUNT, R = 100)
 
-nwos_replicates <- function(index, point.count = 1, R = 2500) {
+nwos_make_replicates <- function(index, point.count = 1, R = 2500) {
   index <- rep(index, point.count)
   if(length(point.count) == 1) point.count <- rep(1, length(index))
   replicates <- replicate(R, sample(index, length(index), replace = T)) # Generate replicates
