@@ -6,7 +6,7 @@
 #' @param variables = "HOME"
 #' @param variables
 #' @param levels = "1",
-#' @param data = QUEST
+#' @param data = QUEST_WIDE
 #' @param data.area = NA
 #' @param data.weights = "WEIGHT"
 #' @keywords nwos
@@ -18,7 +18,7 @@
 #' ??
 
 nwos_total_svl <- function(states, variables, levels,
-                           data = QUEST, data.area = NA, data.weights = "WEIGHT") {
+                           data = QUEST_WIDE, data.area = NA, data.weights = "WEIGHT") {
   nwos_total(weight = data[[data.weights]],
              area = ifelse(is.na(data.area), 1, data[[data.area]]), # AC_WOOD
              stratum = ifelse(data[["STATECD_NWOS"]] %in% states, 1, 0),
