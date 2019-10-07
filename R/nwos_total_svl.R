@@ -17,10 +17,16 @@
 #' @examples
 #' ??
 
-nwos_total_svl <- function(states, variables, levels,
-                           data = QUEST_WIDE, data.area = NA, data.weights = "WEIGHT") {
-  nwos_total(weight = data[[data.weights]],
-             area = ifelse(is.na(data.area), 1, data[[data.area]]), # AC_WOOD
-             stratum = ifelse(data[["STATECD_NWOS"]] %in% states, 1, 0),
-             domain = ifelse(data[[variables]] %in% levels, 1, 0))
+nwos_total_svl <- function(states = "1", variables = "OWNTYPE", levels = "1",
+                           data = QUEST_WIDE, data.area = NA, data.weights = "WEIGHT",
+                           data.stratum = NA, data.domain = NA) {
+  weight <- data[[data.weights]]
+  area <- if(is.na(data.area)) 1 else data[[data.area]] # AC_WOOD
+  state <- ifelse(data[["STATECD_NWOS"]] %in% states, 1, 0)
+  stratum <- if(is.na(data.stratum)) 1 else data[[data.stratum]]
+  domain <- if(is.na(data.domain)) 1 else data[[data.domain]]
+  variable <- ifelse(data[[variables]] %in% levels, 1, 0)
+  nwos_total(weight = weight, area = area, stratum = state * stratum,
+             domain = domain, variable = variable)
 }
+

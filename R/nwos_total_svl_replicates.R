@@ -19,13 +19,14 @@
 
 nwos_total_svl_replicates <- function (r = 1, rep = REPLICATES,
                                        states = "1", variables = "HOME", levels = "1",
-                                       data = QUEST_WIDE, data.area = NA, data.weight = "WEIGHT")
+                                       data = QUEST_WIDE, data.area = NA, data.weight = "WEIGHT",
+                                       data.stratum = NA, data.domain = NA)
 {
   rep.r <- rep %>% filter(REP %in% r)
   data.rep.r <- (rep.r %>% select(CN = RESPONSE_CN, FINAL_WEIGHT = WEIGHT, PLOT_COUNT)) %>%
     left_join((data %>% select(-FINAL_WEIGHT, -PLOT_COUNT)), by = "CN") %>%
     mutate(WEIGHT = FINAL_WEIGHT * PLOT_COUNT)
-  # mapply(nwos_total_svl, svl$STATE, svl$VARIABLE, svl$LEVEL,
   mapply(nwos_total_svl, states, variables, levels,
-         MoreArgs = list(data = data.rep.r, data.area = data.area))
+         MoreArgs = list(data = data.rep.r, data.area = data.area, data.weight = data.weight,
+                         data.stratum = data.stratum, data.domain = data.domain))
 }
