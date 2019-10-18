@@ -3,7 +3,6 @@
 \docType{class}
 \name{nwos.plots.object-class}
 \alias{nwos.plots.object-class}
-\alias{nwos.plots.object}
 \title{nwos.plots.object}
 \description{
 An S4 class to contain NWOS raw plot- and sample-level data
