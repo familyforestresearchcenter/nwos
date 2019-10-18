@@ -1,23 +1,19 @@
 #' nwos_object
 #'
-#' Creates an object of S4 class 'nwos.object' 
+#' An S4 class to contain NWOS raw data, including metadata,weights,and imputations.  
 #'
-#' @param x is a list
-#'
-#' @return a nwos.object
-#'
-#' @examples
-#' nwos_object(foo)
+#' @slot quest is a data.frame containing raw questionaire data
+#' @slot sample is a data.frame containing imformation on the sample
+#' @slot metadata is a data.frame containing question metadata
+#' @slot fields is a data.frame containing metadata for columns in sample and quest
+#' @slot weight is a data.frame containing survey weights
+#' @slot imputation is a data.frame containing imputation sets
 #'
 #' @export
 
-nwos_object <- function(x){
-  register_nwos_object()
-  nwo <- new("nwos.object",quest=x[[1]],
-	sample=x[[2]],
-	metadata=x[[3]],
-	fields=x[[4]],
-	weights=x[[5]],
-	imputations=x[[6]])
-  return(nwo)
-}
+nwos.object <- setClass("nwos.object",representation(quest='data.frame',
+                                        sample='data.frame',
+                                        metadata='data.frame',
+                                        fields='data.frame',
+                                        weights='data.frame',
+										imputations='data.frame'))
