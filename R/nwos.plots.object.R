@@ -7,4 +7,4 @@
 #'
 #' @export
 
-setClass("nwos.plots.object",representation(plots='data.frame',response_codes='data.frame'))
+nwos.plots.object <- setClass("nwos.plots.object",representation(plots='data.frame',response_codes='data.frame'))
