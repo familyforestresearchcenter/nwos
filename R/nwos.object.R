@@ -1,4 +1,4 @@
-#' nwos_object
+#' nwos.object
 #'
 #' An S4 class to contain NWOS raw data, including metadata,weights,and imputations.  
 #'

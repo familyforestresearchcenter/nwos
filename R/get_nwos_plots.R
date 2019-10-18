@@ -153,6 +153,7 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   
   ls <- list(plots=PO,response_codes=fs)
   ls <- nwos_plots_object(ls)
+  ls <- new("nwos.plots.object",plots=ls[[1]],response_codes=ls[[2]])
   
   return(ls)
   
