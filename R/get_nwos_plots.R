@@ -156,7 +156,6 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   fs$POINT_COUNT <- PO2$PLOT_OWNER_CN[match(fs$SAMPLE_CN,PO2$SAMPLE_CN)] #add point_count
   
   ls <- list(plots=PO,response_codes=fs)
-  ls <- nwos_plots_object(ls)
   ls <- new("nwos.plots.object",plots=ls[[1]],response_codes=ls[[2]])
   
   return(ls)
