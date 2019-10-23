@@ -115,11 +115,15 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   #function for determing if a sample is RESPONSE, NONRESPONSE, or EXCUSED NONRESPONSE
   coop.code <- function(x){
     if ('R' %in% x){
+      y <- 'I'
+    } else if (any(x %in% c(3,13))){
+      y <- 'P' 
+    } else if (any(x %in% c(2:5,7:8,14))){
+      y <- 'NC'
+	} else if (any(x %in% c(10,11))){
+      y <- 'UN'
+	} else if (any(x %in% c(1,6))){
       y <- 'R'
-    } else if (any(x %in% c(2:5,7:8,10:15))){
-      y <- 'ENR' 
-    } else if (any(x %in% c(1,6))){
-      y <- 'NR'
     }
     return(y)
   }
@@ -140,7 +144,7 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   PO2$RESPONSES <- SR2$RESPONSES[match(PO2$SKEY,SR2$SKEY)] #join RESPONSES
   PO2$RESPONSE_CAT <- SR2$RESPONSE_CAT[match(PO2$SKEY,SR2$SKEY)] #join RESPONSE_CAT
   PO2$RESPONSES[is.na(PO2$RESPONSES)] <- '11' #if no RESPONSES, then 11
-  PO2$RESPONSE_CAT[is.na(PO2$RESPONSE_CAT)] <- 'ENR' #if no RESPONSE_CAT, then ENR
+  PO2$RESPONSE_CAT[is.na(PO2$RESPONSE_CAT)] <- 'UN' #if no RESPONSE_CAT, then UN
   
   #full sample, one record per response
   fs <- unique(PO2[,c("SKEY","SAMPLE_CN","STATECD_NWOS","OWNCD_NWOS","STRATA",

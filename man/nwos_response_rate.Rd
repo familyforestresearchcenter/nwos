@@ -7,7 +7,7 @@
 nwos_response_rate(x)
 }
 \arguments{
-\item{x}{is a vector containing values of R ('response'), NR ('non-response'), and ENR ('excused non-response' or undeliverable)}
+\item{x}{is a vector containing values of I ('response'), P ('partial response'), NC ('not contacted'), UN ('unknown'), and R ('refused')}
 }
 \value{
 a numeric value
@@ -16,6 +16,6 @@ a numeric value
 Calculates nwos response rate
 }
 \examples{
-nwos_response_rate(c('R','R','NR','NR','ENR','ENR','ENR'))
+nwos_response_rate(c('I','I','R','R','NC','NC','P'))
 
 }
