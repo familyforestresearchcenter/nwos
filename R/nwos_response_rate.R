@@ -2,13 +2,13 @@
 #'
 #' Calculates nwos response rate 
 #'
-#' @param x is a vector containing values of R ('response'), NR ('non-response'), and ENR ('excused non-response' or undeliverable)
+#' @param x is a vector containing values of I ('response'), P ('partial response'), NC ('not contacted'), UN ('unknown'), and R ('refused')
 #'
 #' @return a numeric value
 #'
 #' @examples
-#' nwos_response_rate(c('R','R','NR','NR','ENR','ENR','ENR'))
+#' nwos_response_rate(c('I','I','R','R','NC','NC','P'))
 #'
 #' @export
 
-nwos_response_rate <- function(x){length(x[x=='R'])/length(x)}
+nwos_response_rate <- function(x){length(x[x=='I'])/length(x)}
