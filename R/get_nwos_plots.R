@@ -62,7 +62,7 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   IN.OA <- PO$PLOT_OWNER_CN %in% OA$CN #index of those with updates
   PO$OWNCD_NWOS[IN.OA] <- OA$OWNCD_ASSIGNED[match(PO$PLOT_OWNER_CN[IN.OA],OA$CN)]
   
-  PO <- subset(PO,COND_STATUS_CD != '4') #drop census water from sample
+  PO <- PO[nullif(PO$COND_STATUS_CD) != '4',] #drop census water from sample
   
   #determine strata
   #non-private, non-forested
