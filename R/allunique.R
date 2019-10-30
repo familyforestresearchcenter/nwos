@@ -1,4 +1,4 @@
-#' unique.all
+#' allunique
 #'
 #' Determines whether a vector contains only unique, non-null values
 #'
@@ -7,8 +7,8 @@
 #' @return a logical value
 #'
 #' @examples
-#' unique.all(c("A","A","B"))
+#' allunique(c("A","A","B"))
 #'
 #' @export
 
-unique.all <- function(x) {length(x)==length(unique(na.omit(x)))}
+allunique <- function(x) {length(x)==lunique(na.omit(x))}
