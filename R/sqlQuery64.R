@@ -30,7 +30,7 @@ sqlQuery64 <- function(query){
   cat("library(RODBC) \n")
   #cat("print(Sys.getenv('R_ARCH')) \n")
   cat(paste("load(",gsub("\\","\\\\",data,fixed=T),") \n",sep="'"))
-  cat("con <- odbcConnect('FIA01P') \n")
+  cat("con <- odbcConnect('FIADB01P') \n")
   cat("r <- sqlQuery(con,q) \n")
   cat("odbcClose(con) \n")
   cat("save(list=c('r'),file=data) \n")
