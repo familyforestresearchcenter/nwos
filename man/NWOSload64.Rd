@@ -2,7 +2,7 @@
 % Please edit documentation in R/NWOSload64.R
 \name{NWOSload64}
 \alias{NWOSload64}
-\title{NWOSload}
+\title{NWOSload64}
 \usage{
 NWOSload64(tables)
 }
@@ -16,6 +16,6 @@ Loads update tables to the NWOS database from a 64-bit install of R
 This function must be run on a machine with an ODBC connection (32-bit) to the USFS FIA production database through a user with read permissions.
 }
 \examples{
-NWOSload(tables=c('SAMPLE_UPDATE','OWNER_UPDATE'))
+NWOSload64(tables=c('SAMPLE_UPDATE','OWNER_UPDATE'))
 
 }

@@ -1,4 +1,4 @@
-#' NWOSload
+#' NWOSload64
 #'
 #' Loads update tables to the NWOS database from a 64-bit install of R
 #'
@@ -8,7 +8,7 @@
 #' @param tables is a character vector containing names of update tables currently in the working environment.
 #'
 #' @examples
-#' NWOSload(tables=c('SAMPLE_UPDATE','OWNER_UPDATE'))
+#' NWOSload64(tables=c('SAMPLE_UPDATE','OWNER_UPDATE'))
 #'
 #' @export
 
