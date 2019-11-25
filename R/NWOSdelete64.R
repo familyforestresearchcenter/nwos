@@ -1,4 +1,4 @@
-#' NWOSdelete
+#' NWOSdelete64
 #'
 #' Deletes records from the NWOS database from a 64-bit R session
 #'
@@ -8,7 +8,7 @@
 #' @param tables is a character vector containing names of vectors currently in the working environment; each vector contains CNs to be deleted from the corresponding table.
 #'
 #' @examples
-#' NWOSdelete(tables=c('RESPONSE_DELETE'))
+#' NWOSdelete64(tables=c('RESPONSE_DELETE'))
 #'
 #' @export
 

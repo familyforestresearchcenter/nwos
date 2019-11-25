@@ -2,7 +2,7 @@
 % Please edit documentation in R/NWOSdelete64.R
 \name{NWOSdelete64}
 \alias{NWOSdelete64}
-\title{NWOSdelete}
+\title{NWOSdelete64}
 \usage{
 NWOSdelete64(tables)
 }
@@ -16,6 +16,6 @@ Deletes records from the NWOS database from a 64-bit R session
 This function must be run on a machine with an ODBC connection (32-bit) to the USFS FIA production database through a user with read permissions.
 }
 \examples{
-NWOSdelete(tables=c('RESPONSE_DELETE'))
+NWOSdelete64(tables=c('RESPONSE_DELETE'))
 
 }
