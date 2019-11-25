@@ -13,11 +13,11 @@
 #' @export
 
 NWOSload64 <- function(tables) {
-  
+
   #identify special variable types
   #download metadata
   FIELDS <- sqlQuery64("SELECT * FROM FS_NWOS.FIELDS WHERE DATA_TYPE IN ('CHAR2000','DATE')")
-  FIELDS <- subset(FIELDS,DATA_TYPE %in% c('CHAR2000','DATE'))
+  FIELDS <- subset(FIELDS,DATA_TYPE %in% c('VARCHAR2(2000)','DATE'))
   tn <- unique(FIELDS$TABLE_NAME)
   vb <- vector("list",length(tn)) #empty list of names and special variable types
   for (i in 1:length(vb)){
@@ -26,7 +26,7 @@ NWOSload64 <- function(tables) {
     names(vt) <- fsub$FIELD_NAME
     vb[[i]] <- list(paste(tn[i],"_UPDATE",sep=""),vt) #add name of update table / variable list to vb
   }
-  
+
   #scroll through vb and load those in tables
   for (i in 1:length(vb)){
     if (vb[[i]][1] %in% tables){
@@ -53,7 +53,7 @@ NWOSload64 <- function(tables) {
       q <- gsub("<TNU>",tnu,q)
       sqlQuery64(q)
       message(paste("'",vb[[i]][1],"' LOADED.",sep=""))
-    } 
+    }
   }
-  
+
 }
