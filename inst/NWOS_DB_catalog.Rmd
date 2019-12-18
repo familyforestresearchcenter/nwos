@@ -1,0 +1,52 @@
+---
+title: "National Woodland Owner Survey (NWOS) Raw Database Catalog"
+author: "Jesse Caputo"
+date: '`r format(Sys.time(),"%d %B %Y")`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE) # set options
+
+#packages
+library(knitr)
+library(RODBC)
+library(nwos)
+
+#download data
+TABLES <- sqlQuery64("SELECT * FROM FS_NWOS.TABLES")
+FIELDS <- sqlQuery64("SELECT * FROM FS_NWOS.FIELDS")
+CODES <- sqlQuery64("SELECT * FROM FS_NWOS.CODES")
+
+TABLES <- TABLES[order(TABLES$TABLE_NAME),] #reorder
+FIELDS <- FIELDS[order(FIELDS$TABLE_NAME,FIELDS$COLUMN),]
+CODES <- CODES[order(CODES$TABLE_NAME,CODES$FIELD_NAME),]
+```
+
+## Introduction
+
+This document contains a prelimninary catalog of tables, fields, and codes in the current version of the NWOS Database.
+
+## Tables
+
+The DB contains `r nrow(TABLES)` tables, including administrative tables and survey tables, those tables containing information about the sampling frame, survey organization, and raw data.
+
+```{r tables, echo=FALSE}
+kable(TABLES[,c("TABLE_NAME","DESCRIPTION","TYPE")],row.names=F)
+```
+
+## Fields
+
+The DB contains `r nrow(FIELDS)` individual fields among the `r nrow(TABLES)` tables.
+
+```{r fields, echo=FALSE}
+kable(FIELDS[,c("TABLE_NAME","FIELD_NAME","DESCRIPTION","DATA_TYPE")],row.names=F)
+```
+
+## Codes
+
+`r length(unique(CODES$FIELD_CN))` fields in the DB have coded values.
+
+```{r codes, echo=FALSE}
+kable(CODES[,c("TABLE_NAME","FIELD_NAME","CODE","MEANING")],row.names=F)
+```
