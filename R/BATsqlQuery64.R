@@ -1,4 +1,4 @@
-#' sqlQuery64
+#' BATsqlQuery64
 #'
 #' Wrapper function for RODBC:sqlQuery to select batches of specific records from tables or views
 #'

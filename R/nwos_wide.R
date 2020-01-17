@@ -3,11 +3,12 @@
 #' Formats NWOS data into a wide format for analysis
 #'
 #' @param x is a nwos.object
+#' @param imputations is string containing which imputation set is to be used in place of non-response, if any. Valid responses are "none","1","2","3","4","5"
 #'
 #' @return a data.frame
 #'
 #' @examples
-#' nwos_wide(foo)
+#' nwos_wide(foo,imputations='2')
 #'
 #' @export
 
