@@ -2,7 +2,7 @@
 % Please edit documentation in R/BATsqlQuery64.R
 \name{BATsqlQuery64}
 \alias{BATsqlQuery64}
-\title{sqlQuery64}
+\title{BATsqlQuery64}
 \usage{
 BATsqlQuery64(ids, table = "PLOT_OWNER", field = "CN", idtag = "<I>",
   ttag = "<T>", ftag = "<F>",
