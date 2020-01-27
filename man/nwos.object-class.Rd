@@ -19,8 +19,8 @@ An S4 class to contain NWOS raw data, including metadata,weights,and imputations
 
 \item{\code{fields}}{is a data.frame containing metadata for columns in sample and quest}
 
-\item{\code{weight}}{is a data.frame containing survey weights}
+\item{\code{weights}}{is a data.frame containing survey weights}
 
-\item{\code{imputation}}{is a data.frame containing imputation sets}
+\item{\code{imputations}}{is a data.frame containing imputation sets}
 }}
 

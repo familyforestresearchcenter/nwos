@@ -9,7 +9,7 @@ nwos_wide(x, imputations = "none")
 \arguments{
 \item{x}{is a nwos.object}
 
-\item{imputations}{is string containing which imputation set is to be used in place of non-response, if any. Valid responses are "none","1","2","3","4","5"}
+\item{imputations}{is string containing which imputation set is to be used in place of non-response, if any. Valid responses are "none","random","1","2","3","4","5"}
 }
 \value{
 a data.frame
