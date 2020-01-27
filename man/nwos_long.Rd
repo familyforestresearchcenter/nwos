@@ -4,10 +4,12 @@
 \alias{nwos_long}
 \title{nwos_long}
 \usage{
-nwos_long(x)
+nwos_long(x, imputations = "none")
 }
 \arguments{
 \item{x}{is a nwos.object}
+
+\item{imputations}{is string containing which imputation set is to be used in place of non-response, if any. Valid responses are "none","random","1","2","3","4","5"}
 }
 \value{
 a data.frame
@@ -16,6 +18,6 @@ a data.frame
 Formats NWOS data into a long format for analysis
 }
 \examples{
-nwos_long(foo)
+nwos_long(foo,imputations="1")
 
 }

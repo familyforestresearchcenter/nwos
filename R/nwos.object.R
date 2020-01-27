@@ -6,8 +6,8 @@
 #' @slot sample is a data.frame containing imformation on the sample
 #' @slot metadata is a data.frame containing question metadata
 #' @slot fields is a data.frame containing metadata for columns in sample and quest
-#' @slot weight is a data.frame containing survey weights
-#' @slot imputation is a data.frame containing imputation sets
+#' @slot weights is a data.frame containing survey weights
+#' @slot imputations is a data.frame containing imputation sets
 #'
 #' @export
 
