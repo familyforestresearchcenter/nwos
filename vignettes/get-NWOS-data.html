@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+
+<title>Accessing the NWOS database</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Accessing the NWOS database</h1>
+
+
+
+<p>The NWOS database can be queried using a database client and SQL (standard query language) scripts. For administrative users, this is often a useful and necessary means of access – particularly for special-purpose or ad hoc tasks. For the average user, however, a more reliable method is to use to the ‘nwos’ R package. This package contains a number of standardized functions for downloading, manipulating, and analyzing NWOS data in a clear and consistent manner.</p>
+<p>In order to use this package, the user must have access to a USDA computer that has been mapped to the internal Forest Service network (i.e. T drive). The computer must be configured with the correct DSN (data source name) for the Forest Service production space (i.e. Oracle instance). With these in place, the user should be able to connect to the production space from a desktop installation of R (R Core Team 2019). In addition to the base installation, the user will need the ‘RODBC’ (Ripley and Lapsley 2019) and ‘devtools’ (Wickham et al. 2019) packages. Finally, it is necessary for the user to have connection privileges to the Forest Service production space and to have been assigned a role within the NWOS database. This vignette is written from the perspective of a new user with the ANALYST role.</p>
+<div id="downloading-and-preparing-nwos-data" class="section level2">
+<h2>Downloading and Preparing NWOS Data</h2>
+<p>The primary function for downloading data is get_nwos(). This function creates and passes a query to the NWOS database to obtain the raw questionnaire results for a particular study and cycle. This query joins the QUEST, SAMPLE, and RESPONSE tables and filters them by study and cycle variables. For example:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(nwos)</a>
+<a class="sourceLine" id="cb1-2" title="2">quest &lt;-<span class="st"> </span><span class="kw">get_nwos</span>(<span class="dt">cycle =</span> <span class="st">&#39;2018&#39;</span>, <span class="dt">study =</span> <span class="st">&#39;base&#39;</span>)</a></code></pre></div>
+<p>will download the raw responses for the 2018 base survey. Additional ‘states’<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> and ‘questions’ parameters can be used to limit the download to a narrower slice of the data (improving transfer speed). For example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">quest &lt;-<span class="st"> </span><span class="kw">get_nwos</span>(<span class="dt">cycle=</span><span class="st">&#39;2018&#39;</span>, <span class="dt">study=</span><span class="st">&#39;base&#39;</span>, <span class="dt">states=</span><span class="kw">c</span>(<span class="st">&#39;44&#39;</span>), <span class="dt">questions=</span><span class="kw">c</span>(<span class="st">&#39;AC_WOOD&#39;</span>,<span class="st">&#39;AC_LAN&#39;</span>))</a></code></pre></div>
+<p>would retrieve data for two questions (AC_WOOD and AC_LAND) and only for the state of Rhode Island. get_nwos() returns an ‘nwos.object’ object, a type of list object containing several different datasets in individual ‘slots’. These include slots for the raw response data, sample-level data, and metadata. If weights and imputations for the study of interest have already been calculated (see Butler et al. IN REVIEW), these will also be included in additional slots<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. The ‘nwos.object’ is of limited utility to most users in its raw form. A number of helper functions are included in the package in order to transform the raw object into more useable forms. One of the most powerful of these is nwos_wide(). This function creates an R dataframe in a wide format suitable for most common types of data analysis. Here, wide format means a format in which every row corresponds to one respondent’s questionnaire and every column corresponds to either a question or an attribute of the respondent. Survey weights are included and imputed values can also be inserted. For example, the command:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">qwide &lt;-<span class="st"> </span><span class="kw">nwos_wide</span>(quest, <span class="dt">imputations=</span><span class="st">&#39;1&#39;</span>)</a></code></pre></div>
+<p>will return a wide table with all null values (i.e. nonresponse) replaced with the values of the first imputation set. As part of the base survey, five imputation sets were created (see Butler et al. IN REVIEW for more on imputation). In addition to the numbers 1 through 5, the imputations parameter can be set to “none” - in which case no imputed values will be inserted and unanswered questions will appear as null values (i.e. ‘-1’) – and “random”, in which case of the five imputation sets will be randomly selected.</p>
+<p>The wide table will in most cases have a large number of columns (more than 250 in the case of base NWOS). Many of these are coded and a large number have names that may not be intuitive to a new user. A useful function, therefore, is nwos_wide_metadata(). This function, when applied to the original ‘nwos.object’ object, will generate a dataframe containing all the metadata that relate to the wide format. This includes a description of each column, the data type for each column, the factor levels for the coded responses, and other attributes. The DATA_TYPE and UNITS_FACTORS columns are particularly important, because the question columns in the wide table are generated as character fields, with categorical questions also being coded.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">qwmd &lt;-<span class="st"> </span><span class="kw">nwos_wide_metadata</span>(quest)</a></code></pre></div>
+<p>For other purposes, including certain plotting and statistical functions, a long table may be preferred. This is a table where each question – not each questionnaire – is represented is by an individual row. A long table (and corresponding metadata table) can be generated by:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">qlong &lt;-<span class="st"> </span><span class="kw">nwos_long</span>(quest, <span class="dt">imputations=</span><span class="st">&#39;1&#39;</span>)</a>
+<a class="sourceLine" id="cb5-2" title="2">qlmd &lt;-<span class="st"> </span><span class="kw">nwos_long_metadata</span>(quest)</a></code></pre></div>
+<p>In addition to the raw response data, an analyst will sometimes need access to the raw point-level data. This data can be retrieved using the get_nwos_plots() function:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">plots &lt;-<span class="st"> </span><span class="kw">get_nwos_plots</span>(<span class="dt">cycle=</span><span class="st">&#39;2018&#39;</span>, <span class="dt">study=</span><span class="st">&#39;base&#39;</span>)</a></code></pre></div>
+<p>The function will return an “nwos.plots.object” object. As with an “nwos.object” object, this is a custom list object with multiple slots. In this case there are two slots, one containing raw plot/point-level data and one containing sample/response level data. As before, the raw list object is of limited utility in terms of analysis. Here, we will use the nwos_plots_complete() function:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">plcomp &lt;-<span class="st"> </span><span class="kw">nwos_plots_complete</span>(plots)</a></code></pre></div>
+<p>This returns a dataframe with a single row for each sample plot (or point) in the sample, along with plot-level land and ownership attributes. The dataframe also includes sample-level attributes, such as strata and response category (for calculating response and cooperation rate). For those points that are associated with a valid response, there will be a non-null value in the RESPONSE_CN field. This is particularly useful as it can be used to join response data to the point data. One common use for this is to attach sample point coordinates to survey responses for spatial analysis:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">quest.spatial &lt;-<span class="st"> </span><span class="kw">merge</span>(<span class="dt">x=</span>plcomp, <span class="dt">y=</span>qwide, <span class="dt">by.x=</span><span class="st">&#39;RESPONSE_CN&#39;</span>, <span class="dt">by.y=</span><span class="st">&#39;CN&#39;</span>)</a></code></pre></div>
+</div>
+<div id="other-functions" class="section level2">
+<h2>Other Functions</h2>
+<p>In addition to functions for retrieving data and preparing it for analysis, the ‘nwos’ package contains a number of functions for use and analysis of data. There are a number of functions for making population-level estimates, calculating response and cooperation rates, and other purposes. For users with the ADMIN role, there are functions for loading, altering, and deleting records to and from the database. You can use the help() function to access a menu with a list of functions and links to the documentation for each:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">help</span>(<span class="dt">package=</span><span class="st">&#39;nwos&#39;</span>)</a></code></pre></div>
+<p>One function that may be useful to readers of this document is the get_nwos_db_catalog() function. This function will render a current, up-to-date copy of the database catalog on the users’ hard drive. The catalog is generated as an HTML file, readable in any web browser or text editor. This catalog lists all the tables, fields, and codes relevant to the database – equivalent to the information in Supplement 1. As the database evolves and changes, however, it is useful to be able to periodically generate an up-to-date version.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">get_nwos_db_catalog</span>(<span class="dt">dir=</span><span class="st">&#39;C:/my_nwos_analyses&#39;</span>, <span class="dt">file=</span><span class="st">&#39;NWOS_DB_catalog&#39;</span>)</a></code></pre></div>
+<p>Finally, many users will want to be able to export quest data in other formats to use with software other than R. Fortunately, prepared response data (both long and wide formats), ‘completed’ plot tables, and individual slots of ‘nwos.object’s and ‘nwos.plot.object’s all take the form of regular R dataframes and can be exported in a number of formats using standard R functions. Additionally, the nwos_export() function can be used to export response data as text in either a long or wide format:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw">nwos_export</span>(quest, <span class="dt">dir=</span><span class="st">&#39;C:/my_nwos_analyses&#39;</span>, <span class="dt">format=</span><span class="st">&#39;wide&#39;</span>, <span class="dt">imputations=</span><span class="st">&#39;1&#39;</span>)</a></code></pre></div>
+<p>This will export a copy of the formatted response data in the listed directory as a CSV file, along with a copy of the corresponding metadata (also in CSV). This provides the user with the fundamental data necessary to begin analysis elsewhere. The nwos_export() function can pass the ‘imputations’ parameter through using either the long or wide table format.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>The name of the ‘states’ parameter is derived from the STATECD_NWOS field in the PLOT_OWNER and SAMPLE tables. Both refer more broadly to survey units where these are other than state (e.g. cities for the urban NWOS)<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>get_nwos() is normally only used to retrieve data for which weights and imputations have already been calculated. One exception to this is during the process of creating the weights and imputations in the first place!<a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
