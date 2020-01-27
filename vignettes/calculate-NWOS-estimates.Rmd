@@ -1,5 +1,5 @@
 ---
-title: "Using the nwos package"
+title: "Using the nwos package to calculate estimates"
 author: "Brett J. Butler"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -21,7 +21,6 @@ These steps are repeated for each combination of state, stratum (e.g., family fo
 
 ## Install packages
 ```{r setup, warning = FALSE}
-# devtools::install_git("git://github.com/bbutler01/nwos.git")
 library(nwos)
 library(tidyverse)
 ```

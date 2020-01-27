@@ -1,12 +1,14 @@
 Package: nwos
 Type: Package
-Title: NWOS Weights and Estimates
+Title: An R Package for Working with USDA Forest Service, National Woodland Owner Survey Data
 Version: 0.1.0
-Author: Brett J. Butler
-Maintainer: Brett J. Butler <bbutler@eco.umass.edu>
-Description: Calculate weights and estimates for the US Forest Service's National Woodland Owner Survey. 
+URL: https://github.com/familyforestresearchcenter/nwos
+Authors@R: c(
+    person("Butler", "Brett J", email = "bbutler@umass.edu", role =  c("aut", "cre")),
+    person("Caputo", "Jesse", email = "jessecaputo@umass.edu", role =  c("aut")))
+Description: Access and manipulate data, calculate weights and estimates for the US Forest Service's National Woodland Owner Survey. 
 Imports: boot, 
-    dplyr
+    dplyr, RODBC
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
