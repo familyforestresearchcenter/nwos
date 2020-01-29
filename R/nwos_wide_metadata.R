@@ -27,7 +27,7 @@ nwos_wide_metadata <- function(x){
   ls <- replicate(nrow(f)+2,md,simplify=F)
   md <- do.call("rbind",ls)
   #fill in md from f
-  md$QUESTION_NAME <- c(f$FIELD_NAME,'POINT_COUNT','FINAL_WEIGHT')
+  md$QUESTION_NAME <- c(f$FIELD_NAME,'PLOT_COUNT','FINAL_WEIGHT')
   md$QUESTION_TEXT <- c(f$DESCRIPTION,'Number of plots associated with this survey','Sampling weight, for estimates and models')
   md$DATA_TYPE <- c(f$DATA_TYPE,'NUMERIC','NUMERIC')
   md$UNITS_FACTORS <- c(f$UNITS_FACTORS,'PLOTS',NA)
