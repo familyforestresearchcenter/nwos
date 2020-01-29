@@ -24,6 +24,10 @@ nwos_export <- function(x,dir='~',format='wide',imputations="none"){
     stop("nwos_export() only accepts 'wide' or 'long' as 'format'")
   }
 
+  if(!imputations %in% c('none','random',1:5)){
+    stop("'imputations' only excepts values of 'none','random', or integer")
+  }
+
   n <- paste(dir,'/QUEST_',x@sample$NWOS_CYCLE[1],'.csv',sep='')
   n2 <- paste(dir,'/QUEST_',x@sample$NWOS_CYCLE[1],'_METADATA.csv',sep='')
 
