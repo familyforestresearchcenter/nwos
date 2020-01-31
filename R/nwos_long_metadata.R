@@ -20,7 +20,7 @@ nwos_long_metadata <- function(x){
   md <- x@fields[x@fields$FIELD_NAME %in% c(names(x@quest),names(x@sample)),]
   #add weights column
   md <- rbind(md,
-              data.frame(FIELD_NAME=c('POINT_COUNT','FINAL_WEIGHT'),
+              data.frame(FIELD_NAME=c('PLOT_COUNT','FINAL_WEIGHT'),
                          DESCRIPTION=c('Number of plots associated with this survey','Sampling weight, for estimates and models'),
                          DATA_TYPE=c('NUMERIC','NUMERIC'),
                          UNITS_FACTORS=c('PLOTS',NA)))
