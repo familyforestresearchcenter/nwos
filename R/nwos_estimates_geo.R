@@ -30,7 +30,7 @@ nwos_estimates_geo <- function(domain = "AC_WOOD >= 10",
   # Run by GEO and IMPUTATION
   estimates <- do.call(rbind, mcmapply(geo.cd.list = as.list(rep(geo.cd.list, each = length(imputations))),
                                        imp = as.list(rep(imputations, length(geo.cd.list))),
-                                       nwos.estimates.geo.imp,
+                                       nwos_estimates_geo_imp,
                                        domain = domain,
                                        mc.cores = detectCores() - 1,
                                        SIMPLIFY = F)) %>%
