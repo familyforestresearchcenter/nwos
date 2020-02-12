@@ -1,6 +1,6 @@
 #' get_nwos
 #'
-#' Extracts the data for a given NWOS cycle/study from the NWOS and returns it as an nwos.object, including metadata, weights, and imputations.
+#' Extracts the data for a given NWOS cycle/study from the NWOS and returns it as an nwos.object, including metadata, weights, imputations, and plot-level data.
 #'
 #' @details
 #' This function must be run on a machine with an ODBC connection to the USFS FIA production database through a user with read permissions.
@@ -132,15 +132,24 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
   #get imputations					   
   imps <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_QUEST_IMPUTED.csv")
   imps <- imps[imps$RESPONSE_CN %in% sample$CN
-                       ,c('RESPONSE_CN','RESPONSE_VALUE','IMPUTATION','METADATA_CN')]				   
+                       ,c('RESPONSE_CN','RESPONSE_VALUE','IMPUTATION','METADATA_CN')]
+
+  #get plots summary table
+  file <- "T:/FS/RD/FIA/NWOS/ESTIMATION/FULL_SAMPLE_TABLES/"
+  file <- paste(file,toupper(study),'_',cycle,'.csv',sep='')
+  plots <- read.csv(file)
+  if (!is.na(states)){
+	  plots <- plots[plots$STATECD_NWOS %in% states,]
+  }
     
-  ls <- list(quest,sample,metadata,fields,weights,imps)
+  ls <- list(quest,sample,metadata,fields,weights,imps,plots)
   ls <- new("nwos.object",quest=ls[[1]],
 	sample=ls[[2]],
 	metadata=ls[[3]],
 	fields=ls[[4]],
 	weights=ls[[5]],
-	imputations=ls[[6]])
+	imputations=ls[[6]],
+	plots=ls[[7]])
   
   return(ls)
   
