@@ -20,7 +20,7 @@ get_nwos(cycle = "2018", study = "base", states = NA,
 a nwos.object
 }
 \description{
-Extracts the data for a given NWOS cycle/study from the NWOS and returns it as an nwos.object, including metadata, weights, and imputations.
+Extracts the data for a given NWOS cycle/study from the NWOS and returns it as an nwos.object, including metadata, weights, imputations, and plot-level data.
 }
 \details{
 This function must be run on a machine with an ODBC connection to the USFS FIA production database through a user with read permissions.

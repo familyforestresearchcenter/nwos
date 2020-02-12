@@ -4,18 +4,16 @@
 \alias{nwos_full_metadata}
 \title{nwos_full_metadata}
 \usage{
-nwos_full_metadata(quest, plots)
+nwos_full_metadata(x)
 }
 \arguments{
-\item{quest}{is a nwos.object}
-
-\item{plots}{is a nwos.plots.object}
+\item{x}{is a nwos.object}
 }
 \value{
 a data.frame
 }
 \description{
-Creates metadata table for full (i.e. responses and plots) NWOS dataset
+Creates metadata table for full (i.e. all plots and responses) NWOS dataset
 }
 \examples{
 nwos_full_metadata(foo)
