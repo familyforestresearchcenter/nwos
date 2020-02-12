@@ -22,5 +22,7 @@ An S4 class to contain NWOS raw data, including metadata,weights,and imputations
 \item{\code{weights}}{is a data.frame containing survey weights}
 
 \item{\code{imputations}}{is a data.frame containing imputation sets}
+
+\item{\code{plots}}{is a data.frame containing the full (ie. plot-level) sample}
 }}
 

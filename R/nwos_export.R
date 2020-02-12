@@ -1,6 +1,6 @@
 #' nwos_export
 #'
-#' Exports NWOS data and metadata as CSVs, in either long or wide format.
+#' Exports NWOS data and metadata as CSVs, in multiple formats.
 #'
 #' @param x is a nwos.object
 #' @param dir is the directory to export to

@@ -4,12 +4,10 @@
 \alias{nwos_full}
 \title{nwos_full}
 \usage{
-nwos_full(quest, plots, imputations = "none")
+nwos_full(x, imputations = "none")
 }
 \arguments{
-\item{quest}{is a nwos.object}
-
-\item{plots}{is a nwos.plots.object}
+\item{x}{is a nwos.object}
 
 \item{imputations}{is string containing which imputation set is to be used in place of non-response, if any. Valid responses are "none","random","1","2","3","4","5"}
 }
@@ -17,9 +15,9 @@ nwos_full(quest, plots, imputations = "none")
 a data.frame
 }
 \description{
-Combines nwos plots and response data to recreate the full sample
+Formats full NWOS dataset (i.e. all plots and responses) into a wide format, for use as input in the 'survey' package
 }
 \examples{
-nwos_full(quest,plots,imputations="1")
+nwos_full(foo,imputations="1")
 
 }
