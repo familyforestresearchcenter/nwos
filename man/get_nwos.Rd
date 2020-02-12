@@ -4,8 +4,7 @@
 \alias{get_nwos}
 \title{get_nwos}
 \usage{
-get_nwos(cycle = "2018", study = "base", states = NA,
-  questions = NA)
+get_nwos(cycle = "2018", study = "base", states = NA, questions = NA)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}
