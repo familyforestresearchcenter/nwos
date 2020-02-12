@@ -61,10 +61,10 @@ nwos_estimates_geo_imp <- function(geo.cd.list,
 
   bind_rows(do.call(rbind, mapply(variable.name = variables.categorcial$VARIABLE,
                                   level.name = variables.categorcial$LEVEL,
-                                  nwos.estimates.categorical,
+                                  nwos_estimates_categorical,
                                   SIMPLIFY = F)),
             do.call(rbind, mapply(variable.name = variables.continuous,
-                                  nwos.estimates.continuous,
+                                  nwos_estimates_continuous,
                                   SIMPLIFY = F))) %>%
     mutate(IMPUTATION = imp, GEO_CD = paste(geo.cd, collapse = ", ")) %>% select(GEO_CD, everything())
 }
