@@ -10,8 +10,10 @@ nwos_estimates_geo(
   cond.status = 1,
   own = 45,
   quest = QUEST,
-  plot = PLOTS,
-  imputations = 1:5
+  quest.meta = QUEST_META,
+  imputations = 1:5,
+  variables.categorcial = VARIABLES_CATEGORICAL,
+  variables.continuous = VARIABLES_CONTINUOUS
 )
 }
 \arguments{
@@ -25,9 +27,9 @@ nwos_estimates_geo(
 
 \item{quest}{= QUEST,}
 
-\item{plot}{= PLOTS,}
-
 \item{imputations}{= 1:5}
+
+\item{plot}{= PLOTS,}
 }
 \value{
 data frame
@@ -36,6 +38,8 @@ data frame
 Generate estimates by geography
 }
 \examples{
-nwos_estimates_geo()
+nwos_estimates_geo(imputations = 1:2)
+nwos_estimates_geo(imputations = 1:2, domain = "AC_WOOD >= 1")
+nwos_estimates_geo(domain = "AC_WOOD >= 1")
 
 }
