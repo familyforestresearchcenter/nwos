@@ -13,19 +13,6 @@ nwos_estimates_geo_imp(
   variables.continuous = VARIABLES_CONTINUOUS
 )
 }
-\arguments{
-\item{quest}{= QUEST,}
-
-\item{variables.categorcial}{= VARIABLES_CATEGORICAL,}
-
-\item{variables.continuous}{= VARIABLES_CONTINUOUS}
-
-\item{own}{= 45,}
-
-\item{quest.meta}{= QUEST_META,}
-
-\item{plot}{= PLOTS,}
-}
 \value{
 data frame
 }

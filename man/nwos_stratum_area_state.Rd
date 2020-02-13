@@ -7,6 +7,8 @@
 nwos_stratum_area_state(state, data = po, s.name = "FFO", data.area = land.area, ac.name = "ACRES")
 }
 \arguments{
+\item{state}{state}
+
 \item{data}{= po}
 
 \item{s.name}{= "FFO"}

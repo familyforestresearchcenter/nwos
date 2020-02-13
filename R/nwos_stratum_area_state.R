@@ -2,7 +2,7 @@
 #'
 #' This function estimates NWOS stratum areas by state.
 #' @usage nwos_stratum_area_state(state, data = po, s.name = "FFO", data.area = land.area, ac.name = "ACRES")
-#' @param state
+#' @param state state
 #' @param data = po
 #' @param s.name = "FFO"
 #' @param data.area = land.area
