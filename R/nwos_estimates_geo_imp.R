@@ -3,15 +3,6 @@
 #' Generate estimates by geography and imputation
 #' This is functuion is designed to be called by nwos_estimates_geo
 #'
-#' @param geo.cd.list,
-#' @param imp,
-#' @param own = 45,
-#' @param domain,
-#' @param quest = QUEST,
-#' @param quest.meta = QUEST_META,
-#' @param plot = PLOTS,
-#' @param variables.categorcial = VARIABLES_CATEGORICAL,
-#' @param variables.continuous = VARIABLES_CONTINUOUS
 #'
 #' @return data frame
 #'
