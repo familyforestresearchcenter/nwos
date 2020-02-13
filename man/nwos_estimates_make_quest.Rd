@@ -12,13 +12,6 @@ nwos_estimates_make_quest(
   variables.continuous = VARIABLES_CONTINUOUS
 )
 }
-\arguments{
-\item{quest}{= QUEST}
-
-\item{variables.categorcial}{= VARIABLES_CATEGORICAL,}
-
-\item{variables.continuous}{= VARIABLES_CONTINUOUS)}
-}
 \value{
 tibble
 }
