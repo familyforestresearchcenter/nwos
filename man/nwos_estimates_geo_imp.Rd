@@ -7,27 +7,24 @@
 nwos_estimates_geo_imp(
   geo.cd.list,
   imp,
-  own = 45,
-  domain,
+  domain = "AC_WOOD >= 10",
   quest = QUEST,
-  quest.meta = QUEST_META,
-  plot = PLOTS,
   variables.categorcial = VARIABLES_CATEGORICAL,
   variables.continuous = VARIABLES_CONTINUOUS
 )
 }
 \arguments{
-\item{own}{= 45,}
-
 \item{quest}{= QUEST,}
-
-\item{quest.meta}{= QUEST_META,}
-
-\item{plot}{= PLOTS,}
 
 \item{variables.categorcial}{= VARIABLES_CATEGORICAL,}
 
 \item{variables.continuous}{= VARIABLES_CONTINUOUS}
+
+\item{own}{= 45,}
+
+\item{quest.meta}{= QUEST_META,}
+
+\item{plot}{= PLOTS,}
 }
 \value{
 data frame
@@ -37,6 +34,8 @@ Generate estimates by geography and imputation
 This is functuion is designed to be called by nwos_estimates_geo
 }
 \examples{
-nwos_estimates_geo_imp()
+nwos_estimates_geo_imp("1", 1)
+nwos_estimates_geo_imp("1", 2)
+mapply(nwos_estimates_geo_imp, 1, imp = 1:2, SIMPLIFY = F)
 
 }
