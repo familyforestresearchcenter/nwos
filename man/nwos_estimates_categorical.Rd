@@ -5,7 +5,7 @@
 \title{nwos_estimates_categorical}
 \usage{
 nwos_estimates_categorical(
-  variable.name = "MAN_PLAN",
+  variable.name = "OWNTYPE",
   level.name = "1",
   domain.name = "AC_WOOD >= 10"
 )
@@ -26,5 +26,6 @@ This is functuion is designed to be called by nwos_estimates_geo
 }
 \examples{
 nwos_estimates_categorical()
+nwos_estimates_categorical(domain.name = "AC_WOOD >= 1")
 
 }
