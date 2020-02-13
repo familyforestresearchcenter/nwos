@@ -2,7 +2,7 @@
 #'
 #' This function returns the calculated weights based on the NWOS sample design.
 #' @usage nwos_weights(stratum, point.count, response, area, stratum.area, stratum.area.correction = stratum.area, response.rate)
-#' @param state
+#' @param state state
 #' @param data = po
 #' @return
 #' vector of weights
