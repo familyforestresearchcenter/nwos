@@ -10,10 +10,11 @@
 #'
 #' @examples
 #' nwos_estimates_categorical()
+#' nwos_estimates_categorical(domain.name = "AC_WOOD >= 1")
 #'
 #' @export
 
-nwos_estimates_categorical <- function(variable.name = "MAN_PLAN",
+nwos_estimates_categorical <- function(variable.name = "OWNTYPE",
                                        level.name = "1",
                                        domain.name = "AC_WOOD >= 10") {
   subset.own.name = paste0("subset(design.own, ", domain.name, ")")
@@ -39,7 +40,7 @@ nwos_estimates_categorical <- function(variable.name = "MAN_PLAN",
               rename(VALUE = 1) %>%
               mutate(STATISTIC = "PROPORTION", UNITS = "ACRES", VARIANCE = SE^2) %>%
               select(-SE),
-            tibble(VALUE = plot.quest %>% filter(!!sym(variable.name) == 1) %>% count() %>% pull(),
+            tibble(VALUE = quest.geo.imp %>% filter(!!sym(variable.name) == 1) %>% count() %>% pull(),
                    STATISTIC = "N", UNITS = "RESPONSES")) %>%
     mutate(VARIABLE = variable.name, LEVEL = level.name) %>%
     select(VARIABLE, LEVEL, STATISTIC, UNITS, VALUE, VARIANCE)
