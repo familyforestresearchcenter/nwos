@@ -2,12 +2,6 @@
 #'
 #' Convert nwos.object to wide tables - separate tables for each umputation
 #'
-#' @param geo.cd.list,
-#' @param imp
-#' @param quest = QUEST
-#' @param variables.categorcial = VARIABLES_CATEGORICAL,
-#' @param variables.continuous = VARIABLES_CONTINUOUS)
-#'
 #' @return tibble
 #'
 #' @examples
