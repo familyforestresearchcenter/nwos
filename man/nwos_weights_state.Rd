@@ -7,6 +7,8 @@
 nwos_weights(stratum, point.count, response, area, stratum.area, stratum.area.correction = stratum.area, response.rate)
 }
 \arguments{
+\item{state}{state}
+
 \item{data}{= po}
 }
 \value{
