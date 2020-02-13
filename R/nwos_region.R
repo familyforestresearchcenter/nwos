@@ -4,7 +4,7 @@
 #' @usage nwos_region(svl = svl, data = own, states.ref = STATES_REF)
 #' @param svl = svl, data = own, states.ref = STATES_REF
 #' @keywords nwos
-#' @details
+#'
 #' @export
 #' @examples
 #' ??
