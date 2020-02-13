@@ -13,7 +13,9 @@
 #' @return data frame
 #'
 #' @examples
-#' nwos_estimates_geo()
+#' nwos_estimates_geo(imputations = 1:2)
+#' nwos_estimates_geo(imputations = 1:2, domain = "AC_WOOD >= 1")
+#' nwos_estimates_geo(domain = "AC_WOOD >= 1")
 #'
 #' @export
 
@@ -22,21 +24,21 @@ nwos_estimates_geo <- function(domain = "AC_WOOD >= 10",
                                cond.status = 1,
                                own = 45,
                                quest = QUEST,
-                               plot = PLOTS,
-                               imputations = 1:5) {
-  geo.cd.list = as.character(geo$GEO_CD)
-  QUEST_META <<- as_tibble(nwos_wide_metadata(quest)) %>% filter(!ITEM_TYPE %in% 4)
-
-  # Run by GEO and IMPUTATION
-  estimates <- do.call(rbind, mcmapply(geo.cd.list = as.list(rep(geo.cd.list, each = length(imputations))),
-                                       imp = as.list(rep(imputations, length(geo.cd.list))),
-                                       nwos.estimates.geo.imp,
+                               quest.meta = QUEST_META,
+                               imputations = 1:5,
+                               variables.categorcial = VARIABLES_CATEGORICAL,
+                               variables.continuous = VARIABLES_CONTINUOUS) {
+  # Generate estimates by GEO and IMPUTATION
+  estimates <- do.call(rbind, mcmapply(nwos_estimates_geo_imp,
+                                       geo.cd.list = geo$GEO_CD,
+                                       imp = imputations,
                                        domain = domain,
-                                       mc.cores = detectCores() - 1,
-                                       SIMPLIFY = F)) %>%
+                                       # quest = quest,
+                                       SIMPLIFY = F,
+                                       mc.cores = detectCores() - 1)) %>%
     rename(VARIANCE_ESTIMATE = VARIANCE)
 
-  #### Summarize Imputations ####
+  # Summarize Imputations
   estimates.imp.mean <- estimates %>%
     select(-IMPUTATION) %>%
     group_by(GEO_CD, VARIABLE, LEVEL, STATISTIC, UNITS) %>%
