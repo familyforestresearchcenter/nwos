@@ -30,7 +30,7 @@ nwos_full_metadata <- function(x){
                    CHECK_GROUP=NA)
   
   #metadata from quest
-  q <- nwos_wide_metadata(quest)
+  q <- nwos_wide_metadata(x)
   
   pq <- rbind(p,q[!q$COLUMN %in% c('STATECD_NWOS','OWNCD_NWOS'),])
   
