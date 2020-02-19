@@ -1,5 +1,5 @@
 ---
-title: 'The National Woodland Owner Survey (NWOS) Database: Database Description and Users’ Manual Version 1.0'
+title: 'The National Woodland Owner Survey Database (NWOS-DB): Database Description and Users’ Manual Version 1.0'
 author: "Jesse Caputo, Brett J. Butler, and Emma Sass"
 date: "January 29, 2020"
 #output: github_document
