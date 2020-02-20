@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   comment = "#>")
 ```
 
-NOTE: This manual is a current and up-to-date version of the document originally published in GTR-XXX
+NOTE: This manual is a current and up-to-date version of a document currently in review for publication.
 
 ## Chapter 1 - Introduction
 
@@ -158,7 +158,7 @@ This should install the package, including a number of vignettes (a long-form gu
 browseVignettes(package=’nwos’)
 ```
 
-One of these, 'nwos-db-manual', contains the bulk of this manual. Another,[‘get-NWOS-data’](get-NWOS-data.html), demonstrates some of the essential functions for accessing and manipulating NWOS data. It corresponds to the remainder of Chapter 4 in GTR-XXX.
+One of these, 'nwos-db-manual', contains the bulk of this manual. Another,[‘get-NWOS-data’](get-NWOS-data.html), demonstrates some of the essential functions for accessing and manipulating NWOS data. It corresponds to the remainder of Chapter 4 in the original publication.
 
 ## References
 
