@@ -20,8 +20,14 @@ nwos_estimates_geo_imp <- function(geo.cd.list,
                                    variables.categorcial = VARIABLES_CATEGORICAL,
                                    variables.continuous = VARIABLES_CONTINUOUS) {
   options(warn=-1)
-  if(grepl(", ", geo.cd.list)) geo.cd <- unlist(strsplit(geo.cd.list, split=", "))
-  else geo.cd <- geo.cd.list
+  if(grepl(", ", geo.cd.list)) {
+    geo.cd <- unlist(strsplit(geo.cd.list, split=", "))
+    var.method <- "approx"
+  }
+  else {
+    geo.cd <- geo.cd.list
+    var.method <- "full"
+  }
 
   quest.geo.imp <<- quest[[imp]] %>% filter(STATECD_NWOS %in% geo.cd)
 
@@ -29,12 +35,14 @@ nwos_estimates_geo_imp <- function(geo.cd.list,
                          strata = list(~ STATECD_NWOS + COND_STATUS_CD + OWNCD_NWOS, NULL),
                          subset = ~ RESP,
                          probs = list(NULL, ~ PROB),
-                         data = quest.geo.imp)
+                         data = quest.geo.imp,
+                         method = var.method)
   design.ac <<-  twophase(id = list(~ 1, ~ CN),
                          strata = list(~ STATECD_NWOS + COND_STATUS_CD + OWNCD_NWOS, NULL),
                          subset = ~ RESP,
                          probs = list(NULL, ~ PROB_AC),
-                         data = quest.geo.imp)
+                         data = quest.geo.imp,
+                         method = var.method)
 
   bind_rows(do.call(rbind, mapply(nwos_estimates_categorical,
                                   variable.name = variables.categorcial$VARIABLE,

@@ -12,17 +12,24 @@
 #'
 #' @export
 
-nwos_estimates_continuous <- function(variable.name = "AC_WOOD",
-                                      domain.name = "AC_WOOD >= 10") {
-  subset.own.name = paste0("subset(design.own, ", domain.name, ")")
+nwos_estimates_continuous <- function(domain = "AC_WOOD >= 10",
+                                      variable = "OWNTYPE",
+                                      design.own) {
+  subset.own = paste0("subset(design.own, ", domain, ")")
 
-  bind_rows(as_tibble(as.data.frame(svymean(~ eval(parse(text = variable.name)),
-                                            eval(parse(text = subset.own.name))))) %>%
+  estimates <- bind_rows(as_tibble(svymean(~ eval(parse(text = variable)),
+                                            eval(parse(text = subset.own)))) %>%
+              rename("VALUE" = 1, "SE" = 2) %>%
               mutate(STATISTIC = "MEAN", UNITS = "OWNERSHIPS", VARIANCE = SE^2) %>%
-              rename(VALUE = 1) %>% select(-SE),
-            as_tibble(as.data.frame(svyquantile(~ eval(parse(text = variable.name)),
-                                                eval(parse(text = subset.own.name)), 0.5))) %>%
+              select(-SE),
+            as_tibble(svyquantile(~ eval(parse(text = variable)),
+                                                eval(parse(text = subset.own)), 0.5)) %>%
               mutate(STATISTIC = "MEDIAN", UNITS = "OWNERSHIPS") %>% rename(VALUE = 1)) %>%
-    mutate(VARIABLE = variable.name) %>%
+    mutate(VARIABLE = variable) %>%
     select(VARIABLE, STATISTIC, UNITS, VALUE, VARIANCE)
+  
+  rm(design.own)
+  gc()
+  
+  return(estimates)
 }
