@@ -6,19 +6,24 @@
 \usage{
 nwos_estimates_make_quest(
   imp = 1,
-  quest = QUEST,
+  nwos = NWOS,
   own = 45,
   variables.categorcial = VARIABLES_CATEGORICAL,
   variables.continuous = VARIABLES_CONTINUOUS
 )
 }
 \value{
-tibble
+wide quest data frame
 }
 \description{
 Convert nwos.object to wide tables - separate tables for each umputation
 }
 \examples{
+NWOS <- readRDS("/Volumes/DATA/NWOS_20200212.RDS")
+VARIABLES_CATEGORICAL <- read.csv("DATA/VARIABLES_CATEGORICAL.csv")
+VARIABLES_CONTINUOUS <- read.csv("DATA/VARIABLES_CONTINUOUS.csv")
 nwos_estimates_make_quest()
+QUEST <- lapply(1:5, nwos_estimates_make_quest)
+saveRDS(QUEST, "~/Desktop/QUEST_20200212.RDS")
 
 }
