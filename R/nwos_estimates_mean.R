@@ -1,7 +1,7 @@
-#' NWOS Mean
+#' NWOS Estimate Mean
 #'
 #' Calculate means for the NWOS.
-#' @usage nwos_mean(weight, area = 1, domain = 1, variable)
+#' @usage nwos_estimates_mean(weight, area = 1, domain = 1, variable)
 #' @param weight vector of weights.
 #' @param area vector of area (e.g., forest acres in the stratum). Default = 1 (i.e., estimates are in terms of ownerships).
 #' @param stratum vector with 1 indicating inclusion in the stratum and 0 otherwise. Default = 1 (i.e., all ownerships are in the same stratum).
@@ -22,7 +22,7 @@
 #' nwos_mean(weight = wi$WEIGHT, variable = wi$Y_3)
 #' nwos_mean(weight = wi$WEIGHT, area = wi$AC_WOOD, variable = wi$Y_3)
 
-nwos_mean <- function(weight, area = 1, stratum = 1, domain = 1, variable)
+nwos_estimates_mean <- function(weight, area = 1, stratum = 1, domain = 1, variable)
 {
   nwos_total(weight = weight, area = area, stratum = stratum, domain = domain, variable = variable) /
     nwos_total(weight = weight, area = area, stratum = stratum, domain = domain, variable = 1)

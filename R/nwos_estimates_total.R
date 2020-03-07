@@ -1,4 +1,4 @@
-#' NWOS Total
+#' NWOS Estimates Total
 #'
 #' Estimator used to calculate NWOS totals.
 #' @usage nwos_total(weight, area = 1, stratum = 1, domain = 1, variable = 1)
@@ -24,6 +24,6 @@
 #' WI_FFO_AC_TOTAL <- nwos_total(weight = wi$WEIGHT, area = wi$AC_WOOD)
 #' WI_FFO_AC_TOTAL
 
-nwos_total <- function(weight, area = 1, stratum = 1, domain = 1, variable = 1) {
+nwos_estimates_total <- function(weight, area = 1, stratum = 1, domain = 1, variable = 1) {
   sum(weight * area * stratum * domain * variable, na.rm=T)
 }
