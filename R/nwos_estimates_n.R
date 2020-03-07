@@ -11,6 +11,14 @@
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 
-nwos_n <- function(point.count = 1, stratum = 1, domain = 1) {
-  sum(point.count * stratum * domain, na.rm=T)
-}
+nwos_estimates_n <- function(variable, data) {
+  data %>%
+    select(variable) %>%
+    rename(LEVEL = 1) %>%
+    group_by(LEVEL) %>%
+    count() %>%
+    ungroup() %>%
+    mutate(VARIABLE = variable,
+           LEVEL = as.character(LEVEL)) %>%
+    select(VARIABLE, LEVEL, VALUE = n)
+  }

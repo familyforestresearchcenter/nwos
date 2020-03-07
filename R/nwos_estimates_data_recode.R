@@ -14,7 +14,7 @@
 #' @examples
 #' ??
 
-nwos_data_recode <- function(data = QUEST_WIDE, meta.data = QUEST_META) {
+nwos_estimates_data_recode <- function(data = QUEST_WIDE, meta.data = QUEST_META) {
   data %>%
     # Recode data types
     mutate_at(vars(meta.data %>% filter(DATA_TYPE %in% "INTEGER") %>% pull(COLUMN)),
@@ -33,8 +33,6 @@ nwos_data_recode <- function(data = QUEST_WIDE, meta.data = QUEST_META) {
       INC_WOOD_CAT = cut(INC_WOOD, c(0, 1, 5, 20, 50, Inf), c(0, 1, 5, 20, 50), include.lowest = T, right = F, ordered_result = T),
       # Add total variable
       TOTAL = factor(1, levels = c(0, 1)),
-      # Add ONE variable
-      ONE = 1,
       # Change 8 to 0
       HOME_2 = factor(if_else(HOME %in% 8, "0", as.character(HOME))),
       CABIN_2 = factor(if_else(CABIN %in% 8, "0", as.character(CABIN))),

@@ -21,14 +21,14 @@
 #' nwos_quantile(weight = wi$WEIGHT, domain = wi$FFO, variable = wi$AC_WOOD)
 #' nwos_quantile(weight = wi$WEIGHT, area = wi$AC_WOOD, domain = wi$FFO, variable = wi$AC_WOOD)
 
-nwos_quantile <- function(weight, area = 1, domain = 1, variable,
+nwos_estimates_quantile <- function(weight, area = 1, stratum = 1, domain = 1, variable,
                           prob = c(0.00, 0.25, 0.50, 0.75, 1.00), max.iter = 1000)
 {
   x.quant <- numeric(0)
-  total <- nwos_total(weight = weight, area = area, domain = domain)
+  total <- nwos_estimates_total(weight = weight, area = area, stratum = stratum, domain = domain)
 
-  x.min <- min(variable[domain == 1 & weight > 0], na.rm=T)
-  x.max <- max(variable[domain == 1 & weight > 0], na.rm=T)
+  x.min <- min(variable[stratum == 1 & domain == 1 & weight > 0], na.rm=T)
+  x.max <- max(variable[stratum == 1 & domain == 1 & weight > 0], na.rm=T)
 
   for(p in 1:NROW(prob)) # By probability level
   {
@@ -44,8 +44,8 @@ nwos_quantile <- function(weight, area = 1, domain = 1, variable,
         {
           if(round(quant.iter,2) != (1-prob[p]))
           {
-            total.quant.iter <- nwos_total(weight = weight, area = area,
-                                           domain = domain * ifelse(variable >= x.quant.iter, 1, 0))
+            total.quant.iter <- nwos_estimates_total(weight = weight, area = area, stratum = stratum,
+                                                     domain = domain * ifelse(variable >= x.quant.iter, 1, 0))
             quant.iter <- total.quant.iter / total
             quant.iter.diff <- ifelse((x.quant.prev - x.quant.iter) > 10,
                                       (x.quant.prev - x.quant.iter) / 2,
@@ -58,6 +58,7 @@ nwos_quantile <- function(weight, area = 1, domain = 1, variable,
       } # End else loop
       x.quant <- c(x.quant, x.quant.prev)
   } # End prob loop
+  x.quant <- round(x.quant)
   names(x.quant) <- prob
   return(x.quant)
 }
