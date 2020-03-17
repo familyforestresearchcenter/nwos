@@ -24,6 +24,6 @@
 
 nwos_estimates_mean <- function(weight, area = 1, stratum = 1, domain = 1, variable)
 {
-  nwos_total(weight = weight, area = area, stratum = stratum, domain = domain, variable = variable) /
-    nwos_total(weight = weight, area = area, stratum = stratum, domain = domain, variable = 1)
+  nwos_estimates_total(weight = weight, area = area, stratum = stratum, domain = domain, variable = variable) /
+    nwos_estimates_total(weight = weight, area = area, stratum = stratum, domain = domain, variable = 1)
 }

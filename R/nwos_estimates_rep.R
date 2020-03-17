@@ -15,27 +15,22 @@
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
 #' @examples
-#' rep = 1:2
+#' rep = "0"
 #' variable.list = VARIABLE_LIST
 #' quest.list = QUEST_LIST
-#' rep.list = REPLICATES_LIST
+#' rep.list = REPLICATE_LIST
 #' geo.list = GEO_LIST
 #' stratum = "FFO"
-#' domain = "ONEPLUS"
+#' domain = "TENPLUS"
+#' i = 1
 #' g = 1
 #' v = 1
-#' x <- nwos_estimates_rep(variable.list = VARIABLE_LIST[1:5,], geo.list = GEO_LIST[1,])
-#' nwos_estimates_rep(variable.list = VARIABLE_LIST[524,], geo.list = GEO_LIST[1,])
 #' start.time <- Sys.time()
 #' nwos_estimates_rep(geo.list = GEO_LIST[1,])
-#' Sys.time() - start.time
-#' start.time <- Sys.time()
-#' x <- lapply(as.character(0:10), nwos_estimates_rep, variable.list = VARIABLE_LIST[1,], geo.list = GEO_LIST[1:2,])
-#' Sys.time() - start.time
-#' start.time <- Sys.time()
-#' x <- mclapply(as.character(0:10), nwos_estimates_rep, variable.list = VARIABLE_LIST[1,], geo.list = GEO_LIST[1,], mc.cores = 3)
-#' Sys.time() - start.time
-#' bind_rows(mapply(variable = "TOTAL", level = 1, nwos_estimates_variable_imp_rep, SIMPLIFY = F))
+#' Sys.time() - start.time # Time difference of 11.77129 secs
+#' #' start.time <- Sys.time()
+#' nwos_estimates_rep(geo.list = GEO_LIST[1,])
+#' Sys.time() - start.time # Time difference of 11.77129 secs
 
 nwos_estimates_rep <- function(rep = "0",
                                variable.list = VARIABLE_LIST,
@@ -43,7 +38,7 @@ nwos_estimates_rep <- function(rep = "0",
                                rep.list = REPLICATE_LIST,
                                geo.list = GEO_LIST,
                                stratum = "FFO",
-                               domain = "ONEPLUS") {
+                               domain = "TENPLUS") {
   values <- tibble()
 
   for(i in 1:length(quest.list)) { # By imputation
@@ -59,8 +54,7 @@ nwos_estimates_rep <- function(rep = "0",
       geo.cd <- unlist(strsplit(geo.list$GEO_CD[g], split=", "))
       geo.abb <- geo.list$GEO_ABB[g]
 
-      quest.imp.geo <- quest.imp %>%
-        filter(STATECD_NWOS %in% unlist(strsplit(geo.cd, split=", ")))
+      quest.imp.geo <- quest.imp %>% filter(STATECD_NWOS %in% geo.cd)
 
       for(v in 1:NROW(variable.list)) { # By Variable/Level
         values.variable <- tibble()
@@ -108,5 +102,10 @@ nwos_estimates_rep <- function(rep = "0",
         select(GEO, VARIABLE, LEVEL, IMP, REP, STATISTIC, UNITS, VALUE)
     } # End GEO
   } # End imp
-  return(values)
+  saveRDS(values, paste0("DATA/", stratum, "_", domain, "_", rep, ".RDS"))
+  rm(rep.list, quest.list, quest.imp, values)
+  gc(verbose = F)
+
+  return()
+  # return(values)
 }
