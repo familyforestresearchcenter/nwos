@@ -25,7 +25,7 @@ nwos_table_body_area()
 nwos_table_body_coop()
 }
 \examples{
-nwos_table_make_estimates_wide(quest.file = "INPUTS/ESTIMATES/NWOS_2018_FFO_ESTIMATES_20200221.RDS", 
+nwos_table_make_estimates_wide(quest.file = "INPUTS/ESTIMATES/NWOS_2018_FFO_ESTIMATES_20200221.RDS",
 domain = "AC_WOOD >= 1")
 
 }

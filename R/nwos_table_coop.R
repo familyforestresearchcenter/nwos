@@ -1,6 +1,7 @@
 #' nwos_table
 #'
 #' Create the body of an NWOS core, area, or cooperataion rate table
+#' @export
 #' @param data
 #' @details
 #' geo.abb

@@ -1,4 +1,5 @@
 #' nwos_table_toc_data
+#' @export
 
 nwos_table_toc_data <- function(geo.abb, ref.geo = REF_GEO, ref.tab = REF_TABLE,
                                 stratum = stratum.name, domain = domain.name,

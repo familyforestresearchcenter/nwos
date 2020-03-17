@@ -1,5 +1,6 @@
 #' nwos_table
 #'
+#' @export
 #' @param data
 #' @details For area and cooperation rate tables see ...
 #' nwos_table()
@@ -8,13 +9,13 @@
 
 nwos_table <- function(tab.num = 12.1, data = table.data,
                        stratum = stratum.name, domain = domain.name,
-                       yr = year, yr.range = year.range) { 
+                       yr = year, yr.range = year.range) {
   data <- data %>% filter(TABLE_NUMBER %in% tab.num,
                           !is.na(LABEL), !LABEL %in% "") %>%
     mutate(LABEL = gsub("+", "\\texttt{+}", LABEL, fixed = T),
-           # HEADER = if_else(HEADER %in% "Size of land holdings (ac)", 
+           # HEADER = if_else(HEADER %in% "Size of land holdings (ac)",
            #                  "\\specialcell{Size of land\\\\holdings (ac)}", HEADER),
-           # HEADER = if_else(HEADER %in% "Size of forest holdings (ac)", 
+           # HEADER = if_else(HEADER %in% "Size of forest holdings (ac)",
            #                  "\\specialcell{Size of forest\\\\holdings (ac)}", HEADER),
            HEADER = if_else(FOOTNOTE %in% "NOT_MUTUAL", paste0(HEADER, "$^b$"), HEADER),
            DESCRIPTION = gsub("<", "$<$", DESCRIPTION)) %>%
@@ -28,7 +29,7 @@ nwos_table <- function(tab.num = 12.1, data = table.data,
   if(domain %in% "10\\texttt{+} acres") dom <- "10\\texttt{+}"
   if(domain %in% "100\\texttt{+} acres") dom <- "100\\texttt{+}"
   if(domain %in% "1,000\\texttt{+} acres") dom <- "1000\\texttt{+}"
-  
+
   begin.tex <- c("\\pagebreak",
                  "\\begin{minipage}{6.5in}",
                  "\\raggedright",
@@ -37,17 +38,17 @@ nwos_table <- function(tab.num = 12.1, data = table.data,
                      paste0("\\bookmark[page=\\thepage,level=0]{Table ", as.integer(data$TABLE_NUMBER[1]), " -- ",
                           data$TABLE_NAME[1], "}"))}
                  else "")
-  
+
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
-                    "Table ", data$GEO_ABB[1], "-", 
+                    "Table ", data$GEO_ABB[1], "-",
                     as.integer(data$TABLE_NUMBER[1])," (", yr, "; FFO ", dom, ")--",
                     if(!data$DESCRIPTION[1] %in% "CONTINUED") {
-                      paste0("Estimated area and estimated number of ", 
+                      paste0("Estimated area and estimated number of ",
                              tolower(stratum),  " (", tolower(domain), ") ",
                              "by ", data$DESCRIPTION[1], ", " , data$GEO_NAME[1], ", ", yr.range)}
                     else "continued",
                     "}}\\\\")
-  
+
   body <- c("\\begin{center}",
             "\\begin{tabular}{p{1.5in} rr rr rr rr r}",
             "\\toprule",
@@ -68,7 +69,7 @@ nwos_table <- function(tab.num = 12.1, data = table.data,
             "\\bottomrule",
             "\\end{tabular}",
             "\\end{center}")
-  
+
   footnotes <- c("\\vspace{-0.25in}",
                  "\\begin{center}",
                  "\\begin{minipage}[c]{6in}",
@@ -79,9 +80,9 @@ nwos_table <- function(tab.num = 12.1, data = table.data,
                  "}",
                  "\\end{minipage}",
                  "\\end{center}")
-  
+
   end.tex <- c("\\end{minipage}",
                "\\\\")
-  
+
   c(begin.tex, caption, body, footnotes, end.tex)
 }
