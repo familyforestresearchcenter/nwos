@@ -12,7 +12,7 @@
 #' nwos_table_body()
 #' nwos_table_body_area()
 #' nwos_table_body_coop()
-#' @examples 
+#' @examples
 #' nwos_table_set(geo.abb = "US")
 #' geo.abb = "US"
 #' data = ESTIMATES_WIDE
@@ -22,19 +22,20 @@
 #' domain.name = "10\\texttt{+} acres"
 #' year = "2018"
 #' year.range = "2017-2018"
-#' 
+#'
+#' @export
 
-nwos_table_set <- function(geo.abb, 
+nwos_table_set <- function(geo.abb,
                            data = ESTIMATES_WIDE,
-                           ref.geo = GEO_LIST, 
+                           ref.geo = GEO_LIST,
                            ref.table = REF_TABLE,
-                           stratum.name = "Family Forest Ownerships", 
+                           stratum.name = "Family Forest Ownerships",
                            domain.name = "10\\texttt{+} acres",
-                           year = "2018", 
+                           year = "2018",
                            year.range = "2017-2018") {
   geo.name <- as.character(ref.geo %>% filter(GEO_ABB %in% geo.abb) %>% pull(GEO_NAME))
   # geo.abb <- as.character(ref.geo %>% filter(GEO_CD %in% geo.cd) %>% pull(GEO_ABB))
-  
+
   #### tex.preamable #####
   tex.preamable <- c("\\documentclass{article}",
                      "\\usepackage[english]{babel}",
@@ -56,14 +57,14 @@ nwos_table_set <- function(geo.abb,
                      "\\newcommand{\\specialcell}[2][c]{\\begin{tabular}[#1]{@{}c@{}}#2\\end{tabular}}",
                      ""
   )
-  
+
   #### tex.begin ####
   tex.begin <- c("\\begin{document}",
                  "\\chead {\\Large \\textbf{\\textcolor{red}{-- DRAFT --\\\\-- Do Not Cite or Quote --}}}",
                  "\\cfoot {}",
                  paste0("\\rfoot{\\small ", Sys.Date(),"}"),
                  "\\raggedright")
-  
+
   #### title ####
   title <- c("\\noindent \\Large \\textbf{USDA Forest Service \\vspace{.05in} \\\\",
              "National Woodland Owner Survey Summary Tables \\vspace{.05in} \\\\",
@@ -75,7 +76,7 @@ nwos_table_set <- function(geo.abb,
                      "\\normalsize $^*$ Exluding interior Alaska \\\\", ""),
              "\\bigskip",
              "\\bigskip",
-             paste0("\\normalsize Suggested citation: Butler Brett J.; Butler, Sarah M.; Caputo, Jesse; Dias, Jaqueline; ", 
+             paste0("\\normalsize Suggested citation: Butler Brett J.; Butler, Sarah M.; Caputo, Jesse; Dias, Jaqueline; ",
                     "Robillard, Amanda; Sass, Emma M. \\textcolor{red}{In review}. Family Forest Ownerships of the United States, 2018: ",
                     "Results from the USDA Forest Service, National Woodland Owner Survey. Res. Bull. NRS-\\textcolor{red}{XX}. ",
                     "Madison, WI: U.S. Department of Agriculture, Forest Service, Northern Research Station. ",
@@ -92,7 +93,7 @@ nwos_table_set <- function(geo.abb,
                     "forest land).\\\\"),
              "\\bigskip",
              "\\bigskip")
-  
+
   #### toc ####
   toc.data <- nwos_table_toc_data(geo.abb, stratum = stratum.name, domain = domain.name, yr = year, yr.range = year.range)
   toc <- lapply(unique(toc.data$TABLE_NUMBER), nwos_table_toc, toc.data, domain = domain.name)

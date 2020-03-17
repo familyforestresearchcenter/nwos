@@ -4,12 +4,13 @@
 #' @param data
 #' @details For area and cooperation rate tables see ...
 #' nwos_table_raw()
+#' @export
 
 nwos_tables_raw <- function(area_data = NA, coop_data = NA,
                             quest_data = QUEST_EST, quest_tab_meta_data = REF_TABLE) {
   # Area
   # Coop
-  # Quest 
+  # Quest
   # !!Need to add proportions!!
   q <- left_join(quest_data %>%
                    filter(STATE %in% "1") %>% # For testing
@@ -31,12 +32,12 @@ nwos_tables_raw <- function(area_data = NA, coop_data = NA,
   q
   q %>% filter(VARIABLE %in% "AC_WOOD_CAT") %>% distinct(LEVEL) %>% pull()
   # Update row names, levels, etc. (using meta data)
-  quest_tab_meta_data <- quest_tab_meta_data %>% 
-    select(TABLE, LEVELS, LABELS) 
-  quest_tab_meta_data <- 
-    do.call(rbind.data.frame, 
-            lapply(1:NROW(quest_tab_meta_data), 
-                   function(x) {tibble(TABLE = rep(quest_tab_meta_data$TABLE[x], 
+  quest_tab_meta_data <- quest_tab_meta_data %>%
+    select(TABLE, LEVELS, LABELS)
+  quest_tab_meta_data <-
+    do.call(rbind.data.frame,
+            lapply(1:NROW(quest_tab_meta_data),
+                   function(x) {tibble(TABLE = rep(quest_tab_meta_data$TABLE[x],
                                                    length(unlist(strsplit(quest_tab_meta_data[x,]$LEVELS, ",")))),
                                        LEVEL = unlist(strsplit(quest_tab_meta_data[x,]$LEVELS, ",")),
                                        LABEL = unlist(strsplit(quest_tab_meta_data[x,]$LABELS, ",")))}))
