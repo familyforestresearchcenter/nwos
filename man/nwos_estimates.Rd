@@ -7,31 +7,32 @@
 nwos_total_svl(state, variable, level, data = QUEST, area = NA, weights = "WEIGHT")
 }
 \arguments{
-\item{data}{= QUEST_WIDE}
-
-\item{area}{= NA}
-
-\item{weights}{= "WEIGHT"}
-
 \item{state}{= "1"}
 
 \item{variable}{= "HOME"}
 
 \item{level}{= "1",}
+
+\item{data}{= QUEST_WIDE}
+
+\item{area}{= NA}
+
+\item{weights}{= "WEIGHT"}
 }
 \description{
 Estimator used to calculate NWOS totals by state, variable and level.
 }
 \examples{
-state = "1"
-variable = "OWNTYPE"
-level = "1"
-data = QUEST[[1]]
-area = NA
-weights = "WEIGHT"
-stratum = NA
-domain = NA
-??
+quest.list = QUEST_LIST
+variable.list = VARIABLE_LIST
+geo.list = GEO_LIST
+rep = "0"
+rep.list = REPLICATE_LIST
+stratum = "FFO"
+domain = "ONEPLUS"
+start.time <- Sys.time()
+x <- nwos_estimates(geo.list = GEO_LIST[1,], rep = (0:100))
+Sys.time() - start.time
 }
 \references{
 Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
