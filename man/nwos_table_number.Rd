@@ -4,7 +4,7 @@
 \alias{nwos_table_number}
 \title{nwos_round}
 \usage{
-nwos_table_number(x, d = 0)
+nwos_table_number(x, d = 0, less.one = T)
 }
 \description{
 Converts units (e.g., to thousands) and rounds simialr to base except it adds another digit for values less than 1

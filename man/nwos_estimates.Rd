@@ -6,19 +6,6 @@
 \usage{
 nwos_total_svl(state, variable, level, data = QUEST, area = NA, weights = "WEIGHT")
 }
-\arguments{
-\item{state}{= "1"}
-
-\item{variable}{= "HOME"}
-
-\item{level}{= "1",}
-
-\item{data}{= QUEST_WIDE}
-
-\item{area}{= NA}
-
-\item{weights}{= "WEIGHT"}
-}
 \description{
 Estimator used to calculate NWOS totals by state, variable and level.
 }

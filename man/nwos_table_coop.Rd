@@ -9,21 +9,13 @@ nwos_table_coop(
   data = COOP,
   ref.geo = REF_GEO,
   ref.tab = REF_TABLE,
-  yr = year,
-  yr.range = year.range,
-  stratum = stratum.name
+  year = YEAR,
+  year.range = YEAR_RANGE
 )
 }
 \description{
 Create the body of an NWOS core, area, or cooperataion rate table
 }
 \details{
-geo.abb
-data = COOP
-ref.geo = REF_GEO
-ref.tab = REF_TABLE
-yr = year
-yr.range = year.range
-stratum = stratum.name
-nwos_table_coop()
+nwos_table_coop("US")
 }

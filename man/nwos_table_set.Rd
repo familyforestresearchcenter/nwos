@@ -6,23 +6,17 @@
 \usage{
 nwos_table_set(
   geo.abb,
-  data = ESTIMATES_WIDE,
   ref.geo = GEO_LIST,
   ref.table = REF_TABLE,
-  stratum.name = "Family Forest Ownerships",
-  domain.name = "10\\\\texttt{+} acres",
-  year = "2018",
-  year.range = "2017-2018"
+  stratum = STRATUM,
+  stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME,
+  domain = DOMAIN,
+  domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME,
+  year = YEAR,
+  year.range = YEAR_RANGE
 )
-}
-\arguments{
-\item{TAB_TYPE}{table type. AREA = area by ownership category. COOP = cooperation rate. QUEST (Default) = questionnaire content.}
-
-\item{POP}{. Default = "Family".}
-
-\item{DOMAIN}{= NA}
-
-\item{YEARS}{Default = "2017-2018"}
 }
 \description{
 Create the body of an NWOS table

@@ -5,7 +5,7 @@
 \title{nwos_tables_data}
 \usage{
 nwos_table_data(
-  data = ESTIMATES_WIDE,
+  data,
   units = "thousands",
   ref.geo = REF_GEO,
   ref.tab = REF_TABLE,
@@ -13,10 +13,19 @@ nwos_table_data(
   ref.lab = REF_LABEL
 )
 }
+\arguments{
+\item{data}{table.data}
+}
 \description{
 Create the body of an NWOS core, area, or cooperataion rate table
 }
 \details{
 For area and cooperation rate tables see ...
+data <- nwos_table_make_wide(readRDS("INPUTS/ESTIMATES/NWOS_2018_FFO_TENPLUS_US.RDS"))
+units = "thousands"
+ref.geo = REF_GEO
+ref.tab = REF_TABLE
+ref.var = REF_VARIABLE
+ref.lab = REF_LABEL
 nwos_table_data()
 }

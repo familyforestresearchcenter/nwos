@@ -2,15 +2,7 @@
 #'
 #' Estimator used to calculate NWOS totals by state, variable and level.
 #' @usage nwos_total_svl(state, variable, level, data = QUEST, area = NA, weights = "WEIGHT")
-#' @param state = "1"
-#' @param variable = "HOME"
-#' @param variable
-#' @param level = "1",
-#' @param data = QUEST_WIDE
-#' @param area = NA
-#' @param weights = "WEIGHT"
 #' @keywords nwos
-#' @details
 #' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.

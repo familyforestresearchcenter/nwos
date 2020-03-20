@@ -2,10 +2,6 @@
 #'
 #' This function returns the calculated weights based on the NWOS sample design and is designed to be used with an apply function, such as lapply.
 #' @usage nwos_weights_replicates(r, index.rep, index, stratum, response, area, stratum.area, stratum.area.correction = stratum.area, response.rate)
-#' @param state
-#' @param data = po
-#' @param s.name = "FFO"
-#' @param r.name = "RESPONSE"
 #' @return
 #' list of vector of weights
 #' @keywords nwos

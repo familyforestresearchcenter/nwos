@@ -5,12 +5,14 @@
 \title{nwos_table}
 \usage{
 nwos_table(
-  tab.num = 12.1,
+  tab.num,
   data = table.data,
-  stratum = stratum.name,
-  domain = domain.name,
-  yr = year,
-  yr.range = year.range
+  stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME,
+  domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME,
+  year = YEAR,
+  year.range = YEAR_RANGE
 )
 }
 \description{

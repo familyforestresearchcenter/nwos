@@ -6,13 +6,6 @@
 \usage{
 nwos_weights_replicates(r, index.rep, index, stratum, response, area, stratum.area, stratum.area.correction = stratum.area, response.rate)
 }
-\arguments{
-\item{data}{= po}
-
-\item{s.name}{= "FFO"}
-
-\item{r.name}{= "RESPONSE"}
-}
 \value{
 list of vector of weights
 }

@@ -7,8 +7,8 @@
 nwos_table_area(
   geo.abb,
   data = AREA,
-  yr = year,
-  yr.range = year.range,
+  year = YEAR,
+  year.range = YEAR_RANGE,
   ref.tab = REF_TABLE,
   ref.geo = REF_GEO
 )

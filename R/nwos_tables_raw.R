@@ -1,7 +1,6 @@
 #' nwos_tables_raw
 #'
 #' Create the body of an NWOS core, area, or cooperataion rate table
-#' @param data
 #' @details For area and cooperation rate tables see ...
 #' nwos_table_raw()
 #' @export

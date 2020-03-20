@@ -1,13 +1,6 @@
 #' nwos.table.row
 #'
 #' Create the body of an NWOS table
-#' @param GEO
-#' @param TAB.NUM
-#' @param TAB.TYPE table type. AREA = area by ownership category. COOP = cooperation rate. QUEST (Default) = questionnaire content.
-#' @param POP . Default = "Family".
-#' @param DOMAIN = NA
-#' @param TABLE
-#' @param YEARS Default = "2017-2018"
 #' @details For area and cooperation rate tables see ...
 #' nwos.table.row(data.row = data[1,])
 #' @export
@@ -19,4 +12,4 @@ nwos_table_row <- function(i, data) {
          nwos_table_number(data$OWN[i]), " & ", nwos_table_number(data$OWN_SE[i]), " & ",
          nwos_table_number(data$AC_PERC[i]), " & ", nwos_table_number(data$AC_PERC_SE[i]), " & ",
          nwos_table_number(data$OWN_PERC[i]), " & ", nwos_table_number(data$OWN_PERC_SE[i]), " & ",
-         nwos_table_number(data$N[i]), " \\\\")}
+         nwos_table_number(data$N[i], less.one = F), " \\\\")}

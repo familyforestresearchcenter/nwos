@@ -6,15 +6,6 @@
 \usage{
 nwos_table_row(i, data)
 }
-\arguments{
-\item{TAB.TYPE}{table type. AREA = area by ownership category. COOP = cooperation rate. QUEST (Default) = questionnaire content.}
-
-\item{POP}{. Default = "Family".}
-
-\item{DOMAIN}{= NA}
-
-\item{YEARS}{Default = "2017-2018"}
-}
 \description{
 Create the body of an NWOS table
 }

@@ -33,10 +33,12 @@ nwos_estimates_data_recode <- function(data = QUEST_WIDE, meta.data = QUEST_META
       INC_WOOD_CAT = cut(INC_WOOD, c(0, 1, 5, 20, 50, Inf), c(0, 1, 5, 20, 50), include.lowest = T, right = F, ordered_result = T),
       # Add total variable
       TOTAL = factor(1, levels = c(0, 1)),
-      # Change 8 to 0
+      # Change 8s
       HOME_2 = factor(if_else(HOME %in% 8, "0", as.character(HOME))),
       CABIN_2 = factor(if_else(CABIN %in% 8, "0", as.character(CABIN))),
-      FARM_2 = factor(if_else(FARM %in% 8, "0", as.character(FARM)))) %>%
+      FARM_2 = factor(if_else(FARM %in% 8, "0", as.character(FARM))),
+      CUT_FORESTER_2 = factor(if_else(CUT_FORESTER %in% 8, "0", as.character(CUT_FORESTER))),
+      EASE_5YR_2 = factor(if_else(EASE_5YR %in% 8, "-2", as.character(EASE_5YR)))) %>%
     # Drop unused factor levels
     mutate_if(is.factor, factor)
 }

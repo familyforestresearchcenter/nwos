@@ -1,13 +1,6 @@
 #' nwos_table_set
 #'
 #' Create the body of an NWOS table
-#' @param GEO
-#' @param TAB_NUM
-#' @param TAB_TYPE table type. AREA = area by ownership category. COOP = cooperation rate. QUEST (Default) = questionnaire content.
-#' @param POP . Default = "Family".
-#' @param DOMAIN = NA
-#' @param TABLE
-#' @param YEARS Default = "2017-2018"
 #' @details For area and cooperation rate tables see ...
 #' nwos_table_body()
 #' nwos_table_body_area()
@@ -26,13 +19,20 @@
 #' @export
 
 nwos_table_set <- function(geo.abb,
-                           data = ESTIMATES_WIDE,
+                           # data = ESTIMATES_WIDE,
                            ref.geo = GEO_LIST,
                            ref.table = REF_TABLE,
-                           stratum.name = "Family Forest Ownerships",
-                           domain.name = "10\\texttt{+} acres",
-                           year = "2018",
-                           year.range = "2017-2018") {
+                           stratum = STRATUM,
+                           stratum.abb = STRATUM_ABB,
+                           stratum.name = STRATUM_NAME,
+                           domain = DOMAIN,
+                           domain.abb = DOMAIN_ABB,
+                           domain.name = DOMAIN_NAME,
+                           year = YEAR,
+                           year.range = YEAR_RANGE) {
+  data <- nwos_table_make_wide(readRDS(paste0("INPUTS/ESTIMATES/NWOS_2018_", stratum, "_", domain, "_", geo.abb, ".RDS")))
+
+  # Convert
   geo.name <- as.character(ref.geo %>% filter(GEO_ABB %in% geo.abb) %>% pull(GEO_NAME))
   # geo.abb <- as.character(ref.geo %>% filter(GEO_CD %in% geo.cd) %>% pull(GEO_ABB))
 
@@ -98,19 +98,17 @@ nwos_table_set <- function(geo.abb,
   toc.data <- nwos_table_toc_data(geo.abb, stratum = stratum.name, domain = domain.name, yr = year, yr.range = year.range)
   toc <- lapply(unique(toc.data$TABLE_NUMBER), nwos_table_toc, toc.data, domain = domain.name)
 
-  # #### tables ####
-  table.area <- nwos_table_area(geo.abb, AREA, yr = year, yr.range = year.range)
-  table.coop <- nwos_table_coop(geo.abb, COOP, yr = year, yr.range = year.range, stratum = stratum.name)
-  table.total <- nwos_table_total(geo.abb, data, stratum = stratum.name, domain = domain.name, yr = year, yr.range = year.range)
+  #### tables ####
+  table.area <- nwos_table_area(geo.abb, AREA)
+  table.coop <- nwos_table_coop(geo.abb, COOP)
+  table.total <- nwos_table_total(geo.abb, data)
 
   table.data <- nwos_table_data(data)
-  nwos.tables <- lapply(unique(table.data$TABLE_NUMBER), nwos_table, table.data,
-                        stratum = stratum.name, domain = domain.name, yr = year, yr.range = year.range)
+  nwos.tables <- lapply(unique(table.data[["cat"]]$TABLE_NUMBER), nwos_table, table.data)
 
   #### tex.end ####
   tex.end <- c("\\end{document}")
 
-  c(tex.preamable, tex.begin, title, toc, table.area, table.coop, table.total, tex.end)
   c(tex.preamable, tex.begin, title, toc, table.area, table.coop, table.total, nwos.tables, tex.end)
 }
 
