@@ -2,24 +2,15 @@
 #'
 #' Create the body of an NWOS core, area, or cooperataion rate table
 #' @export
-#' @param data
 #' @details
-#' geo.abb
-#' data = COOP
-#' ref.geo = REF_GEO
-#' ref.tab = REF_TABLE
-#' yr = year
-#' yr.range = year.range
-#' stratum = stratum.name
-#' nwos_table_coop()
+#' nwos_table_coop("US")
 
 nwos_table_coop <- function(geo.abb,
                             data = COOP,
                             ref.geo = REF_GEO,
                             ref.tab = REF_TABLE,
-                            yr = year,
-                            yr.range = year.range,
-                            stratum = stratum.name) {
+                            year = YEAR,
+                            year.range = YEAR_RANGE) {
   ref.geo <- ref.geo %>% filter(GEO_ABB %in% geo.abb)
   ref.tab <- ref.tab %>% filter(TABLE %in% "COOP_RATE")
 
@@ -41,10 +32,10 @@ nwos_table_coop <- function(geo.abb,
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
                     "Table ", ref.geo$GEO_ABB, "-",
-                    ref.tab$TABLE_NUMBER," (", yr,"; FFO 1\\texttt{+})--",
+                    ref.tab$TABLE_NUMBER," (", year,"; FFO 1\\texttt{+})--",
                     "Sample size and cooperation rate for family forest ownerships$^{*}$ ",
                     "for the USDA Forest Service, National Woodland Owner Survey, ",
-                    ref.geo$GEO_NAME, ", ", yr.range,
+                    ref.geo$GEO_NAME, ", ", year.range,
                     "}}\\\\")
 
   body <- c("\\begin{center}",

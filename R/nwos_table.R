@@ -1,16 +1,17 @@
 #' nwos_table
 #'
 #' @export
-#' @param data
 #' @details For area and cooperation rate tables see ...
 #' nwos_table()
 #' nwos_table_area()
 #' nwos_table_coop()
 
-nwos_table <- function(tab.num = 12.1, data = table.data,
-                       stratum = stratum.name, domain = domain.name,
-                       yr = year, yr.range = year.range) {
-  data <- data %>% filter(TABLE_NUMBER %in% tab.num,
+nwos_table <- function(tab.num, data = table.data,
+                       stratum.abb = STRATUM_ABB, stratum.name = STRATUM_NAME,
+                       domain.abb = DOMAIN_ABB, domain.name = DOMAIN_NAME,
+                       year = YEAR, year.range = YEAR_RANGE) {
+  # if() data.foot <- data
+  data.cat <- data[["cat"]] %>% filter(TABLE_NUMBER %in% tab.num,
                           !is.na(LABEL), !LABEL %in% "") %>%
     mutate(LABEL = gsub("+", "\\texttt{+}", LABEL, fixed = T),
            # HEADER = if_else(HEADER %in% "Size of land holdings (ac)",
@@ -20,32 +21,29 @@ nwos_table <- function(tab.num = 12.1, data = table.data,
            HEADER = if_else(FOOTNOTE %in% "NOT_MUTUAL", paste0(HEADER, "$^b$"), HEADER),
            DESCRIPTION = gsub("<", "$<$", DESCRIPTION)) %>%
     arrange(SUBTABLE_NUMBER, ORDER)
-  sub <- data %>% select(SUBTABLE_NUMBER) %>% distinct() %>% pull()
-  h.sub <- data %>% select(HEADER) %>% distinct() %>% pull()
-  h <- data %>% select(HEADER) %>% distinct() %>% pull()
-  foot <- data %>% select(FOOTNOTE) %>% distinct() %>% pull()
-  dom <- "XX"
-  if(domain %in% "1\\texttt{+} acres") dom <- "1\\texttt{+}"
-  if(domain %in% "10\\texttt{+} acres") dom <- "10\\texttt{+}"
-  if(domain %in% "100\\texttt{+} acres") dom <- "100\\texttt{+}"
-  if(domain %in% "1,000\\texttt{+} acres") dom <- "1000\\texttt{+}"
+  data.cont <- data[["cont"]] %>% filter(TABLE_NUMBER %in% tab.num)
+  tab <- data.cat %>% select(TABLE) %>% distinct() %>% pull()
+  sub <- data.cat %>% select(SUBTABLE_NUMBER) %>% distinct() %>% pull()
+  h.sub <- data.cat %>% select(HEADER) %>% distinct() %>% pull()
+  h <- data.cat %>% select(HEADER) %>% distinct() %>% pull()
+  foot <- data.cat %>% select(FOOTNOTE) %>% distinct() %>% pull()
 
   begin.tex <- c("\\pagebreak",
                  "\\begin{minipage}{6.5in}",
                  "\\raggedright",
-                 if(!data$DESCRIPTION[1] %in% "CONTINUED") {
-                   c(paste0("\\hypertarget{", as.integer(data$TABLE_NUMBER[1]), "}{\\hspace{20 mm}}\\\\"),
-                     paste0("\\bookmark[page=\\thepage,level=0]{Table ", as.integer(data$TABLE_NUMBER[1]), " -- ",
-                          data$TABLE_NAME[1], "}"))}
+                 if(!data.cat$DESCRIPTION[1] %in% "CONTINUED") {
+                   c(paste0("\\hypertarget{", as.integer(data.cat$TABLE_NUMBER[1]), "}{\\hspace{20 mm}}\\\\"),
+                     paste0("\\bookmark[page=\\thepage,level=0]{Table ", as.integer(data.cat$TABLE_NUMBER[1]), " -- ",
+                          data.cat$TABLE_NAME[1], "}"))}
                  else "")
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
-                    "Table ", data$GEO_ABB[1], "-",
-                    as.integer(data$TABLE_NUMBER[1])," (", yr, "; FFO ", dom, ")--",
-                    if(!data$DESCRIPTION[1] %in% "CONTINUED") {
+                    "Table ", data.cat$GEO_ABB[1], "-",
+                    as.integer(data.cat$TABLE_NUMBER[1])," (", year, "; ", stratum.abb, ", ", domain.abb, ")--",
+                    if(!data.cat$DESCRIPTION[1] %in% "CONTINUED") {
                       paste0("Estimated area and estimated number of ",
-                             tolower(stratum),  " (", tolower(domain), ") ",
-                             "by ", data$DESCRIPTION[1], ", " , data$GEO_NAME[1], ", ", yr.range)}
+                             tolower(stratum.name),  " (", tolower(domain.name), ") ",
+                             "by ", data.cat$DESCRIPTION[1], ", " , data.cat$GEO_NAME[1], ", ", year.range)}
                     else "continued",
                     "}}\\\\")
 
@@ -60,10 +58,10 @@ nwos_table <- function(tab.num = 12.1, data = table.data,
             "& \\multicolumn{4}{c}{\\textit{- - - - - - - - thousands - - - - - - - }} & \\multicolumn{4}{c}{\\textit{- - - - - - - - percent - - - - - - - }}&\\\\",
             if(length(sub) == 1){
               c(paste0("\\raggedright ", h, " & & & & & & \\\\"),
-                unlist(lapply(1:NROW(data), nwos_table_row, data = data)))}
+                unlist(lapply(1:NROW(data.cat), nwos_table_row, data = data.cat)))}
             else{
               unlist(lapply(sub, function(j) {
-                data <- data %>% filter(SUBTABLE_NUMBER %in% j)
+                data <- data.cat %>% filter(SUBTABLE_NUMBER %in% j)
                 c(paste0("\\raggedright ", h.sub[j], " & & & & & & \\\\"),
                   unlist(lapply(1:NROW(data), nwos_table_row, data = data)))}))},
             "\\bottomrule",
@@ -75,7 +73,52 @@ nwos_table <- function(tab.num = 12.1, data = table.data,
                  "\\begin{minipage}[c]{6in}",
                  "{\\noindent \\raggedright \\hangindent=0.1in",
                  "$^a$ SE = standard error \\\\",
-                 ifelse(foot %in% "NOT_MUTUAL", "$^b$ Categories are not mutually exclusive \\\\", ""),
+                 ifelse(foot == "NOT_MUTUAL", "$^b$ Categories are not mutually exclusive \\\\", ""),
+                 ifelse(tab == "SIZE",
+                        paste0("The average (mean) forest holding size is ",
+                               nwos_table_number(data.cont$MEAN, d = 1),
+                               " acres per ownership (SE = ",
+                               nwos_table_number(data.cont$MEAN_SE, d = 1, less.one = F),
+                               "); median = ",
+                               nwos_table_number(data.cont$MEDIAN),
+                               " acres per ownership. \\\\"), ""),
+                 ifelse(tab == "OWNTYPE_NUM",
+                        paste0("The average (mean) number of owners is ",
+                               nwos_table_number(data.cont$MEAN, d = 1),
+                               " per ownership (SE = ",
+                               nwos_table_number(data.cont$MEAN_SE, d = 1, less.one = F),
+                               "); median = ",
+                               nwos_table_number(data.cont$MEDIAN),
+                               " owners per ownership. \\\\",
+                               "The total number of owners is estimated to be ",
+                               nwos_table_number(data.cont$OWNERS),
+                               " (SE = ",
+                               nwos_table_number(data.cont$OWNERS_SE),
+                               "). \\\\"), ""),
+                 ifelse(tab == "ACQ",
+                        paste0("The average (mean) land tenure is ",
+                               nwos_table_number(data.cont$MEAN, d = 1),
+                               " years (SE = ",
+                               nwos_table_number(data.cont$MEAN_SE, d = 1, less.one = F),
+                               "); median = ",
+                               nwos_table_number(data.cont$MEDIAN),
+                               " years. \\\\"), ""),
+                 ifelse(tab == "DEMO",
+                        paste0("The average (mean) age is ",
+                               nwos_table_number(data.cont$MEAN, d = 1),
+                               " years (SE = ",
+                               nwos_table_number(data.cont$MEAN_SE, d = 1, less.one = F),
+                               "); median = ",
+                               nwos_table_number(data.cont$MEDIAN),
+                               " years. \\\\"), ""),
+                 ifelse(tab == "INC_WOOD_CAT",
+                        paste0("The average (mean) percentage income from forestland is ",
+                               nwos_table_number(data.cont$MEAN, d = 1),
+                               " (SE = ",
+                               nwos_table_number(data.cont$MEAN_SE, d = 1, less.one = F),
+                               "); median = ",
+                               nwos_table_number(data.cont$MEDIAN, less.one = F),
+                               " percent. \\\\"), ""),
                  "Note: Data may not add to totals due to rounding",
                  "}",
                  "\\end{minipage}",

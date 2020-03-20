@@ -6,8 +6,8 @@
 \usage{
 nwos_estimates_summary(
   geo.list = GEO_LIST,
-  domain = "FFO",
-  stratum = "TENPLUS"
+  stratum = "FFO",
+  domain = "TENPLUS"
 )
 }
 \description{
@@ -16,6 +16,7 @@ Combine and ummarize Imputations
 \examples{
 domain = "FFO"
 stratum = "ONEPLUS"
-nwos_estimates_summary()
+# Need to run nwos_estimates_combine first
+nwos_estimates_summary(geo.list = GEO_LIST[55,])
 
 }

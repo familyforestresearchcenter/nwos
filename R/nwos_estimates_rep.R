@@ -2,15 +2,7 @@
 #'
 #' Estimator used to calculate NWOS totals by state, variable and level.
 #' @usage nwos_total_svl(state, variable, level, data = QUEST, area = NA, weights = "WEIGHT")
-#' @param state = "1"
-#' @param variable = "HOME"
-#' @param variable
-#' @param level = "1",
-#' @param data = QUEST_WIDE
-#' @param area = NA
-#' @param weights = "WEIGHT"
 #' @keywords nwos
-#' @details
 #' @export
 #' @references
 #' Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newotwn Square, PA.
@@ -31,6 +23,7 @@
 #' #' start.time <- Sys.time()
 #' nwos_estimates_rep(geo.list = GEO_LIST[1,])
 #' Sys.time() - start.time # Time difference of 11.77129 secs
+#' nwos_estimates_rep(geo.list = GEO_LIST[55,], variable.list = VARIABLE_LIST[525,], write = F)
 
 nwos_estimates_rep <- function(rep = "0",
                                variable.list = VARIABLE_LIST,
@@ -38,7 +31,8 @@ nwos_estimates_rep <- function(rep = "0",
                                rep.list = REPLICATE_LIST,
                                geo.list = GEO_LIST,
                                stratum = "FFO",
-                               domain = "TENPLUS") {
+                               domain = "TENPLUS",
+                               write = T) {
   values <- tibble()
 
   for(i in 1:length(quest.list)) { # By imputation
@@ -89,6 +83,12 @@ nwos_estimates_rep <- function(rep = "0",
                                                      VALUE = nwos_estimates_quantile(weight = quest.imp.geo$WEIGHT,
                                                                                      variable = quest.imp.geo[[variable$VARIABLE]],
                                                                                      p = 0.5)))
+          if(variable$VARIABLE == "OWNERS_NUMBER") {
+            values.variable <- bind_rows(values.variable,
+                                         tibble(IMP = i, STATISTIC = "TOTAL", UNITS = "OWNERS",
+                                                VALUE =  nwos_estimates_total(weight = quest.imp.geo$WEIGHT,
+                                                                             variable = quest.imp.geo$OWNERS_NUMBER)))
+          }
         }
 
         values.geo <- values.geo %>%
@@ -102,10 +102,14 @@ nwos_estimates_rep <- function(rep = "0",
         select(GEO, VARIABLE, LEVEL, IMP, REP, STATISTIC, UNITS, VALUE)
     } # End GEO
   } # End imp
-  saveRDS(values, paste0("DATA/", stratum, "_", domain, "_", rep, ".RDS"))
-  rm(rep.list, quest.list, quest.imp, values)
-  gc(verbose = F)
 
-  return()
-  # return(values)
+  if(write){
+    saveRDS(values, paste0("DATA/", stratum, "_", domain, "_", rep, ".RDS"))
+    rm(rep.list, quest.list, quest.imp, values)
+    gc(verbose = F)
+
+    return()
+  }
+
+  else return(values)
 }

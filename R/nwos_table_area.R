@@ -2,7 +2,6 @@
 #'
 #' Create the body of an NWOS core, area, or cooperataion rate table
 #' @export
-#' @param data
 #' @details For area and cooperation rate tables see ...
 #' geo.abb = "AL"
 #' data = AREA
@@ -15,7 +14,7 @@
 #' nwos_table_coop()
 
 nwos_table_area <- function(geo.abb, data = AREA,
-                            yr = year, yr.range = year.range,
+                            year = YEAR, year.range = YEAR_RANGE,
                             ref.tab = REF_TABLE, ref.geo = REF_GEO) {
   ref.geo <- ref.geo %>% filter(GEO_ABB %in% geo.abb)
   ref.tab <- ref.tab %>% filter(TABLE %in% "FOREST_AREA")
@@ -33,9 +32,9 @@ nwos_table_area <- function(geo.abb, data = AREA,
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
                     "Table ", ref.geo$GEO_ABB, "-",
-                    ref.tab$TABLE_NUMBER," (", yr,")--",
+                    ref.tab$TABLE_NUMBER," (", year,")--",
                     "Estimated area of forest land by ownership category, ",
-                    ref.geo$GEO_NAME, ", ", yr.range,
+                    ref.geo$GEO_NAME, ", ", year.range,
                     "}}\\\\")
 
   body <- c("\\begin{center}",
@@ -58,9 +57,9 @@ nwos_table_area <- function(geo.abb, data = AREA,
                    " \\\\"),
             "\\rowcolor{gray!25}",
             paste0("\\hspace{0.5em} Other private  & ",
-                   nwos_table_number(data %>% filter(OWNCAT %in% "OTHER_RPIVATE") %>% pull(ACRES) / 1e3), "  & ",
-                   nwos_table_number(sqrt(data %>% filter(OWNCAT %in% "OTHER_RPIVATE") %>% pull(VARIANCE)) / 1e3), "  & ",
-                   nwos_table_number(data %>% filter(OWNCAT %in% "OTHER_RPIVATE") %>% pull(PROPORTION) * 100, d = 1),
+                   nwos_table_number(data %>% filter(OWNCAT %in% "OTHER_PRIVATE") %>% pull(ACRES) / 1e3), "  & ",
+                   nwos_table_number(sqrt(data %>% filter(OWNCAT %in% "OTHER_PRIVATE") %>% pull(VARIANCE)) / 1e3), "  & ",
+                   nwos_table_number(data %>% filter(OWNCAT %in% "OTHER_PRIVATE") %>% pull(PROPORTION) * 100, d = 1),
                    " \\\\"),
             "\\cmidrule{2-4}",
             paste0("\\hspace{0.5em} Total private  & ",

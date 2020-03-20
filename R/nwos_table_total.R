@@ -14,16 +14,12 @@
 
 nwos_table_total <- function(geo.abb, data = QUEST_EST,
                              ref.geo = REF_GEO, ref.tab = REF_TABLE,
-                             stratum = stratum.name, domain = domain.name,
-                             yr = year, yr.range = year.range) {
+                             stratum.abb = STRATUM_ABB, stratum.name = STRATUM_NAME,
+                             domain.abb = DOMAIN_ABB, domain.name = DOMAIN_NAME,
+                             year = YEAR, year.range = YEAR_RANGE) {
   ref.geo <- ref.geo %>% filter(GEO_ABB %in% geo.abb)
   ref.tab <- ref.tab %>% filter(TABLE %in% "TOTAL")
   data <- data %>% filter(GEO_ABB %in% geo.abb, VARIABLE %in% "TOTAL")
-  dom <- "XX"
-  if(domain %in% "AC_WOOD >= 1") dom <- "1\\texttt{+}"
-  if(domain %in% "AC_WOOD >= 10") dom <- "10\\texttt{+}"
-  if(domain %in% "AC_WOOD >= 100") dom <- "100\\texttt{+}"
-  if(domain %in% "AC_WOOD >= 1000") dom <- "1000\\texttt{+}"
 
   begin.tex <- c("\\pagebreak",
                  "\\begin{minipage}{6.5in}",
@@ -34,10 +30,10 @@ nwos_table_total <- function(geo.abb, data = QUEST_EST,
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
                     "Table ", ref.geo$GEO_ABB, "-",
-                    ref.tab$TABLE_NUMBER," (", yr, "; FFO ", dom, ")--",
+                    ref.tab$TABLE_NUMBER," (", year, "; ",  stratum.abb, ", ", domain.abb, ")--",
                     "Total estimated area and estimated number of ",
-                    tolower(stratum),  " (", tolower(domain), ") ",
-                    ", " , ref.geo$GEO_NAME, ", ", yr.range,
+                    tolower(stratum.name),  " (", tolower(domain.name), ")",
+                    ", " , ref.geo$GEO_NAME, ", ", year.range,
                     "}}\\\\")
 
   body <- c("\\begin{center}",

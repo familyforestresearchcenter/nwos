@@ -9,10 +9,12 @@ nwos_table_total(
   data = QUEST_EST,
   ref.geo = REF_GEO,
   ref.tab = REF_TABLE,
-  stratum = stratum.name,
-  domain = domain.name,
-  yr = year,
-  yr.range = year.range
+  stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME,
+  domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME,
+  year = YEAR,
+  year.range = YEAR_RANGE
 )
 }
 \description{
