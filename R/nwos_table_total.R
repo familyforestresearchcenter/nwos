@@ -19,6 +19,10 @@ nwos_table_total <- function(geo.abb, data = QUEST_EST,
                              year = YEAR, year.range = YEAR_RANGE) {
   ref.geo <- ref.geo %>% filter(GEO_ABB %in% geo.abb)
   ref.tab <- ref.tab %>% filter(TABLE %in% "TOTAL")
+
+  geo.name <- ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"),
+                     paste0(ref.geo$GEO_NAME, "$^{*}$"), ref.geo$GEO_NAME)
+
   data <- data %>% filter(GEO_ABB %in% geo.abb, VARIABLE %in% "TOTAL")
 
   begin.tex <- c("\\pagebreak",
@@ -29,11 +33,11 @@ nwos_table_total <- function(geo.abb, data = QUEST_EST,
                         ref.tab$TABLE_NAME, "}"))
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
-                    "Table ", ref.geo$GEO_ABB, "-",
+                    "Table ", gsub("_", "\\_", ref.geo$GEO_ABB, fixed = T), "-",
                     ref.tab$TABLE_NUMBER," (", year, "; ",  stratum.abb, ", ", domain.abb, ")--",
                     "Total estimated area and estimated number of ",
                     tolower(stratum.name),  " (", tolower(domain.name), ")",
-                    ", " , ref.geo$GEO_NAME, ", ", year.range,
+                    ", " , geo.name, ", ", year.range,
                     "}}\\\\")
 
   body <- c("\\begin{center}",
@@ -54,6 +58,7 @@ nwos_table_total <- function(geo.abb, data = QUEST_EST,
                  "\\begin{center}",
                  "\\begin{minipage}[c]{3in}",
                  "{\\noindent \\raggedright \\hangindent=0.1in",
+                 ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"), "$^{**}$ Excluding Interior Alaska \\\\", ""),
                  "$^a$ SE = standard error",
                  "}",
                  "\\end{minipage}",

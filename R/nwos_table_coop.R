@@ -14,6 +14,9 @@ nwos_table_coop <- function(geo.abb,
   ref.geo <- ref.geo %>% filter(GEO_ABB %in% geo.abb)
   ref.tab <- ref.tab %>% filter(TABLE %in% "COOP_RATE")
 
+  geo.name <- ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"),
+                     paste0(ref.geo$GEO_NAME, "$^{**}$"), ref.geo$GEO_NAME)
+
   data <- data %>% filter(GEO_ABB %in% geo.abb) %>% select(-GEO_CD)
   I <- data %>% filter(RESPONSE_CAT %in% "I") %>% pull(COUNT) # Complete surveys
   NC <- data %>% filter(RESPONSE_CAT %in% "NC") %>% pull(COUNT) # Non-contact
@@ -31,8 +34,8 @@ nwos_table_coop <- function(geo.abb,
                         ref.tab$TABLE_NAME, "}"))
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
-                    "Table ", ref.geo$GEO_ABB, "-",
-                    ref.tab$TABLE_NUMBER," (", year,"; FFO 1\\texttt{+})--",
+                    "Table ", gsub("_", "\\_", ref.geo$GEO_ABB, fixed = T), "-",
+                    ref.tab$TABLE_NUMBER," (", year,"; FFO)--",
                     "Sample size and cooperation rate for family forest ownerships$^{*}$ ",
                     "for the USDA Forest Service, National Woodland Owner Survey, ",
                     ref.geo$GEO_NAME, ", ", year.range,
@@ -41,17 +44,18 @@ nwos_table_coop <- function(geo.abb,
   body <- c("\\begin{center}",
             " \\begin{tabular}{ccccccc}",
             "\\toprule",
-            paste0("\\textbf{\\specialcell{Sample\\\\size}} & \\textbf{Non-contact} & \\textbf{Unknown} &",
+            paste0("\\textbf{\\specialcell{Sample\\\\size}} & \\textbf{\\specialcell{No/insufficient\\\\contact information}} &",
                    "\\textbf{Nonresponses} & \\textbf{\\specialcell{Partial\\\\responses}} & ",
                    "\\textbf{\\specialcell{Complete\\\\responses}} & ",
                    "\\textbf{\\specialcell{Cooperation\\\\rate$^a$}} \\\\"),
             "\\midrule",
-            paste0("\\multicolumn{6}{c}{\\textit",
+            paste0("\\multicolumn{5}{c}{\\textit",
                    "{- - - - - - - - - - - - - - - - - - - - - - - - number ",
                    "- - - - - - - - - - - - - - - - - - - - - - - -}} & \\textit{percent} \\\\"),
             paste0(nwos_table_number(SAMPLE), " & ",
-                   nwos_table_number(NC), " & ",
-                   nwos_table_number(UN), " & ",
+                   nwos_table_number(NC + UN), " & ",
+                   # nwos_table_number(NC), " & ",
+                   # nwos_table_number(UN), " & ",
                    nwos_table_number(R), " & ",
                    nwos_table_number(P), " & ",
                    nwos_table_number(I), " & ",
@@ -65,6 +69,7 @@ nwos_table_coop <- function(geo.abb,
                  "\\begin{minipage}[c]{6in}",
                  "{\\noindent \\raggedright \\hangindent=0.1in",
                  "$^{*}$ These numbers are for all family forest ownerships with 1\\texttt{+} acres of forest land. \\\\",
+                 ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"), "$^{**}$ Excluding Interior Alaska \\\\", ""),
                  "$^a$ $Cooperation Rate=\\frac{Complete Responses}{Complete Responses+Partial Responses+Nonresponses}$",
                  "}",
                  "\\end{minipage}",
