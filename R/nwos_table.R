@@ -28,6 +28,9 @@ nwos_table <- function(tab.num, data = table.data,
   h <- data.cat %>% select(HEADER) %>% distinct() %>% pull()
   foot <- data.cat %>% select(FOOTNOTE) %>% distinct() %>% pull()
 
+  geo.name <- ifelse(data.cat$GEO_ABB[1] %in% c("US", "WEST", "PACIFIC_COAST"),
+                     paste0(data.cat$GEO_NAME[1], "$^{*}$"), data.cat$GEO_NAME[1])
+
   begin.tex <- c("\\pagebreak",
                  "\\begin{minipage}{6.5in}",
                  "\\raggedright",
@@ -38,12 +41,12 @@ nwos_table <- function(tab.num, data = table.data,
                  else "")
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
-                    "Table ", data.cat$GEO_ABB[1], "-",
+                    "Table ", gsub("_", "\\_", data.cat$GEO_ABB[1], fixed = T), "-",
                     as.integer(data.cat$TABLE_NUMBER[1])," (", year, "; ", stratum.abb, ", ", domain.abb, ")--",
                     if(!data.cat$DESCRIPTION[1] %in% "CONTINUED") {
                       paste0("Estimated area and estimated number of ",
                              tolower(stratum.name),  " (", tolower(domain.name), ") ",
-                             "by ", data.cat$DESCRIPTION[1], ", " , data.cat$GEO_NAME[1], ", ", year.range)}
+                             "by \\emph{", data.cat$DESCRIPTION[1], "}, " , geo.name, ", ", year.range)}
                     else "continued",
                     "}}\\\\")
 
@@ -72,6 +75,7 @@ nwos_table <- function(tab.num, data = table.data,
                  "\\begin{center}",
                  "\\begin{minipage}[c]{6in}",
                  "{\\noindent \\raggedright \\hangindent=0.1in",
+                 ifelse(data.cat$GEO_ABB[1] %in% c("US", "WEST", "PACIFIC_COAST"), "$^{*}$ Excluding Interior Alaska \\\\", ""),
                  "$^a$ SE = standard error \\\\",
                  ifelse(foot == "NOT_MUTUAL", "$^b$ Categories are not mutually exclusive \\\\", ""),
                  ifelse(tab == "SIZE",
@@ -112,7 +116,7 @@ nwos_table <- function(tab.num, data = table.data,
                                nwos_table_number(data.cont$MEDIAN),
                                " years. \\\\"), ""),
                  ifelse(tab == "INC_WOOD_CAT",
-                        paste0("The average (mean) percentage income from forestland is ",
+                        paste0("The average (mean) percentage income from forest land is ",
                                nwos_table_number(data.cont$MEAN, d = 1),
                                " (SE = ",
                                nwos_table_number(data.cont$MEAN_SE, d = 1, less.one = F),

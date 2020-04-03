@@ -32,6 +32,8 @@ nwos_estimates_rep <- function(rep = "0",
                                geo.list = GEO_LIST,
                                stratum = "FFO",
                                domain = "TENPLUS",
+                               calc.mean = T,
+                               calc.median = T,
                                write = T) {
   values <- tibble()
 
@@ -75,19 +77,24 @@ nwos_estimates_rep <- function(rep = "0",
         }
 
         if(variable$TYPE == "CONTINUOUS") { # Continuous variables
-          values.variable <- bind_rows(values.variable,
-                                       tibble(IMP = i, STATISTIC = "MEAN", UNITS = "OWNERSHIPS",
-                                              VALUE =  nwos_estimates_mean(weight = quest.imp.geo$WEIGHT,
-                                                                           variable = quest.imp.geo[[variable$VARIABLE]])),
-                                              tibble(IMP = i, STATISTIC = "MEDIAN", UNITS = "OWNERSHIPS",
-                                                     VALUE = nwos_estimates_quantile(weight = quest.imp.geo$WEIGHT,
-                                                                                     variable = quest.imp.geo[[variable$VARIABLE]],
-                                                                                     p = 0.5)))
+          if(calc.mean){
+            values.variable <- bind_rows(values.variable,
+                                         tibble(IMP = i, STATISTIC = "MEAN", UNITS = "OWNERSHIPS",
+                                                VALUE =  nwos_estimates_mean(weight = quest.imp.geo$WEIGHT,
+                                                                             variable = quest.imp.geo[[variable$VARIABLE]])))
+          }
+          if(calc.median) {
+            values.variable <- bind_rows(values.variable,
+                                         tibble(IMP = i, STATISTIC = "MEDIAN", UNITS = "OWNERSHIPS",
+                                                VALUE = nwos_estimates_quantile(weight = quest.imp.geo$WEIGHT,
+                                                                                variable = quest.imp.geo[[variable$VARIABLE]],
+                                                                                p = 0.5)))
+          }
           if(variable$VARIABLE == "OWNERS_NUMBER") {
             values.variable <- bind_rows(values.variable,
                                          tibble(IMP = i, STATISTIC = "TOTAL", UNITS = "OWNERS",
                                                 VALUE =  nwos_estimates_total(weight = quest.imp.geo$WEIGHT,
-                                                                             variable = quest.imp.geo$OWNERS_NUMBER)))
+                                                                              variable = quest.imp.geo$OWNERS_NUMBER)))
           }
         }
 

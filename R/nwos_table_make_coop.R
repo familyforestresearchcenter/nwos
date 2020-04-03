@@ -6,10 +6,10 @@
 
 nwos_table_make_coop <- function(COOP) {
   COOP <- COOP %>%
-    filter(GEO_CD %in% (GEO_LIST %>% filter(GEO_LEVEL %in% c("STATE", "SUBSTATE")) %>% pull(GEO_CD))) %>%
-    left_join(GEO_LIST %>% select(GEO_ABB, GEO_CD))
+    filter(GEO_CD %in% (REF_GEO %>% filter(GEO_LEVEL %in% c("STATE", "SUBSTATE")) %>% pull(GEO_CD))) %>%
+    left_join(REF_GEO %>% select(GEO_ABB, GEO_CD))
 
-  GEO_LIST_REGION <- GEO_LIST %>% filter(GEO_LEVEL %in% c("NATION", "REGION", "SUBREGION") | GEO_ABB %in% c("OK", "TX"))
+  GEO_LIST_REGION <- REF_GEO %>% filter(GEO_LEVEL %in% c("NATION", "REGION", "SUBREGION") | GEO_ABB %in% c("OK", "TX"))
 
   COOP_REGION <- bind_rows(lapply(1:NROW(GEO_LIST_REGION),
                                   function(x) {
