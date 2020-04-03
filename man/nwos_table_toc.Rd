@@ -4,7 +4,7 @@
 \alias{nwos_table_toc}
 \title{nwos_table_toc}
 \usage{
-nwos_table_toc(table.number, toc.data, domain)
+nwos_table_toc(table.number, toc.data, domain, domain.abb)
 }
 \description{
 nwos_table_toc

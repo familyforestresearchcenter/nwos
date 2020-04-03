@@ -4,11 +4,7 @@
 \alias{nwos_estimates_summary}
 \title{nwos_estimates_summary}
 \usage{
-nwos_estimates_summary(
-  geo.list = GEO_LIST,
-  stratum = "FFO",
-  domain = "TENPLUS"
-)
+nwos_estimates_summary(geo.abb, stratum = "FFO", domain = "TENPLUS")
 }
 \description{
 Combine and ummarize Imputations
@@ -17,6 +13,8 @@ Combine and ummarize Imputations
 domain = "FFO"
 stratum = "ONEPLUS"
 # Need to run nwos_estimates_combine first
-nwos_estimates_summary(geo.list = GEO_LIST[55,])
+geo.abb <- GEO_LIST$GEO_ABB
+nwos_estimates_summary(geo.abb[55])
+mclapply(geo.abb, nwos_estimates_summary, mc.cores = N_CORES)
 
 }
