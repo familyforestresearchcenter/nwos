@@ -6,7 +6,8 @@
 \usage{
 nwos_table_set(
   geo.abb,
-  ref.geo = GEO_LIST,
+  data = ESTIMATES,
+  ref.geo = REF_GEO,
   ref.table = REF_TABLE,
   stratum = STRATUM,
   stratum.abb = STRATUM_ABB,
@@ -15,7 +16,8 @@ nwos_table_set(
   domain.abb = DOMAIN_ABB,
   domain.name = DOMAIN_NAME,
   year = YEAR,
-  year.range = YEAR_RANGE
+  year.range = YEAR_RANGE,
+  min.n = 100
 )
 }
 \description{
@@ -23,19 +25,21 @@ Create the body of an NWOS table
 }
 \details{
 For area and cooperation rate tables see ...
-nwos_table_body()
-nwos_table_body_area()
-nwos_table_body_coop()
 }
 \examples{
 nwos_table_set(geo.abb = "US")
-geo.abb = "US"
-data = ESTIMATES_WIDE
-ref.geo = GEO_LIST
+geo.abb = "AL"
+ref.geo = REF_GEO
 ref.table = REF_TABLE
-stratum.name = "Family Forest Ownerships"
-domain.name = "10\\\\texttt{+} acres"
-year = "2018"
-year.range = "2017-2018"
+stratum = STRATUM
+stratum.abb = STRATUM_ABB
+stratum.name = STRATUM_NAME
+domain = DOMAIN
+domain.abb = DOMAIN_ABB
+domain.name = DOMAIN_NAME
+year = YEAR
+year.range = YEAR_RANGE
+supp = T
+wd = WD
 
 }
