@@ -137,11 +137,15 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
   #get plots summary table
   file <- "T:/FS/RD/FIA/NWOS/ESTIMATION/FULL_SAMPLE_TABLES/"
   file <- paste(file,toupper(study),'_',cycle,'.csv',sep='')
-  plots <- read.csv(file)
-  if (!is.na(states)){
-	  plots <- plots[plots$STATECD_NWOS %in% states,]
+  if (file %in% dir()){
+	  plots <- read.csv(file)
+	  if (!is.na(states)){
+		  plots <- plots[plots$STATECD_NWOS %in% states,]
+	  }
+  } else {
+	  plots <- as.data.frame(NA)
   }
-    
+  
   ls <- list(quest,sample,metadata,fields,weights,imps,plots)
   ls <- new("nwos.object",quest=ls[[1]],
 	sample=ls[[2]],
