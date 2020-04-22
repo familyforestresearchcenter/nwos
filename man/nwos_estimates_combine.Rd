@@ -2,16 +2,10 @@
 % Please edit documentation in R/nwos_estimates_combine.R
 \name{nwos_estimates_combine}
 \alias{nwos_estimates_combine}
-\title{nwos_estimates_summary}
+\title{nwos_estimates_combine}
 \usage{
-nwos_estimates_combine(domain = "FFO", stratum = "TENPLUS")
+nwos_estimates_combine(stratum = "FFO", domain = "ONEPLUS")
 }
 \description{
-Combine and ummarize Imputations
-}
-\examples{
-domain = "FFO"
-stratum = "ONEPLUS"
-nwos_estimates_summary()
-
+Combine rep output by rep_geo and geo
 }
