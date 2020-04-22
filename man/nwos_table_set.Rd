@@ -28,7 +28,8 @@ For area and cooperation rate tables see ...
 }
 \examples{
 nwos_table_set(geo.abb = "US")
-geo.abb = "AL"
+geo.abb = "WEST"
+data = ESTIMATES
 ref.geo = REF_GEO
 ref.table = REF_TABLE
 stratum = STRATUM
@@ -39,7 +40,5 @@ domain.abb = DOMAIN_ABB
 domain.name = DOMAIN_NAME
 year = YEAR
 year.range = YEAR_RANGE
-supp = T
-wd = WD
 
 }

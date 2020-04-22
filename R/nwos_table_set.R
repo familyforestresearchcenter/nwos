@@ -5,7 +5,8 @@
 #' For area and cooperation rate tables see ...
 #' @examples
 #' nwos_table_set(geo.abb = "US")
-#' geo.abb = "AL"
+#' geo.abb = "WEST"
+#' data = ESTIMATES
 #' ref.geo = REF_GEO
 #' ref.table = REF_TABLE
 #' stratum = STRATUM
@@ -16,8 +17,6 @@
 #' domain.name = DOMAIN_NAME
 #' year = YEAR
 #' year.range = YEAR_RANGE
-#' supp = T
-#' wd = WD
 #'
 #' @export
 
@@ -46,10 +45,12 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
     # geo.abb <- as.character(ref.geo %>% filter(GEO_CD %in% geo.cd) %>% pull(GEO_ABB))
 
     if(geo.level %in% c("REGION", "SUBREGION")) {
-      state.list <- ref.geo %>% filter(GEO_CD %in% unlist(strsplit(geo.cd, ", "))) %>%
-        mutate(GEO_NAME = if_else(GEO_CD %in% c(40.1, 40.2), "Oklahoma", GEO_NAME),
-               GEO_NAME = if_else(GEO_CD %in% c(48.1, 48.2), "Texas", GEO_NAME)) %>%
-        select(GEO_NAME) %>% distinct() %>% pull()
+      ref.geo <- bind_rows(tibble(GEO_CD = c("2", "40", "48"), GEO_NAME = c("Alaska - Coastal", "Oklahoma", "Texas")))
+      state.list <- ref.geo %>% filter(GEO_CD %in% as.integer(unlist(strsplit(geo.cd, ", ")))) %>%
+        # mutate(GEO_NAME = if_else(GEO_CD %in% c(40.1, 40.2), "Oklahoma", GEO_NAME),
+        #        GEO_NAME = if_else(GEO_CD %in% c(48.1, 48.2), "Texas", GEO_NAME)) %>%
+        select(GEO_NAME) %>% distinct() %>% arrange(GEO_NAME) %>% pull()
+
       state.list <- paste0(paste(state.list[1:(NROW(state.list) - 1)], collapse = ", "),
                            ", and ", state.list[NROW(state.list)])
     }
