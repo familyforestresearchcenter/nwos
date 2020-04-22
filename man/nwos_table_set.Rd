@@ -28,7 +28,7 @@ For area and cooperation rate tables see ...
 }
 \examples{
 nwos_table_set(geo.abb = "US")
-geo.abb = "WEST"
+geo.abb = "SOUTH"
 data = ESTIMATES
 ref.geo = REF_GEO
 ref.table = REF_TABLE
