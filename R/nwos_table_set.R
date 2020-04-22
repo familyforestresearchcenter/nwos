@@ -97,7 +97,7 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
                       paste0("\\normalsize $^*$ Includes ", state.list, " \\\\"), ""),
                "\\bigskip",
                "\\bigskip",
-               paste0("\\normalsize Suggested citation: Butler Brett J.; Butler, Sarah M.; Caputo, Jesse; Dias, Jaqueline; ",
+               paste0("\\normalsize Suggested citation: Butler Brett J.; Butler, Sarah M.; Caputo, Jesse; Dias, Jacqueline; ",
                       "Robillard, Amanda; Sass, Emma M. \\textcolor{red}{In review}. Family Forest Ownerships of the United States, 2018: ",
                       "Results from the USDA Forest Service, National Woodland Owner Survey. Res. Bull. NRS-\\textcolor{red}{XX}. ",
                       "Madison, WI: U.S. Department of Agriculture, Forest Service, Northern Research Station. ",
