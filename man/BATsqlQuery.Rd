@@ -4,16 +4,10 @@
 \alias{BATsqlQuery}
 \title{BATsqlQuery}
 \usage{
-BATsqlQuery(
-  ids,
-  table = "PLOT_OWNER",
-  field = "CN",
-  idtag = "<I>",
-  ttag = "<T>",
-  ftag = "<F>",
+BATsqlQuery(ids, table = "PLOT_OWNER", field = "CN", idtag = "<I>",
+  ttag = "<T>", ftag = "<F>",
   query = "SELECT * FROM FS_NWOS.<T> WHERE <F> IN ('<I>')",
-  conn = "con"
-)
+  conn = "con")
 }
 \arguments{
 \item{ids}{is a character vector containing NWOS CNs to be queried.}

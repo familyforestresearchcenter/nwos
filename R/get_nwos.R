@@ -133,18 +133,6 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
   imps <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_QUEST_IMPUTED.csv")
   imps <- imps[imps$RESPONSE_CN %in% sample$CN
                        ,c('RESPONSE_CN','RESPONSE_VALUE','IMPUTATION','METADATA_CN')]
-
-  #get plots summary table
-  file <- "T:/FS/RD/FIA/NWOS/ESTIMATION/FULL_SAMPLE_TABLES/"
-  file <- paste(file,toupper(study),'_',cycle,'.csv',sep='')
-  if (file %in% dir()){
-	  plots <- read.csv(file)
-	  if (!is.na(states)){
-		  plots <- plots[plots$STATECD_NWOS %in% states,]
-	  }
-  } else {
-	  plots <- as.data.frame(NA)
-  }
   
   ls <- list(quest,sample,metadata,fields,weights,imps,plots)
   ls <- new("nwos.object",quest=ls[[1]],
@@ -152,8 +140,7 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
 	metadata=ls[[3]],
 	fields=ls[[4]],
 	weights=ls[[5]],
-	imputations=ls[[6]],
-	plots=ls[[7]])
+	imputations=ls[[6]])
   
   return(ls)
   
