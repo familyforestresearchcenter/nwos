@@ -4,15 +4,9 @@
 \alias{nwos_table_toc_data}
 \title{nwos_table_toc_data}
 \usage{
-nwos_table_toc_data(
-  geo.abb,
-  ref.geo = REF_GEO,
-  ref.tab = REF_TABLE,
-  stratum = stratum.name,
-  domain = domain.name,
-  yr = year,
-  yr.range = year.range
-)
+nwos_table_toc_data(geo.abb, ref.geo = REF_GEO, ref.tab = REF_TABLE,
+  stratum = stratum.name, domain = domain.name, yr = year,
+  yr.range = year.range)
 }
 \description{
 nwos_table_toc_data
