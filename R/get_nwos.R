@@ -134,7 +134,7 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
   imps <- imps[imps$RESPONSE_CN %in% sample$CN
                        ,c('RESPONSE_CN','RESPONSE_VALUE','IMPUTATION','METADATA_CN')]
   
-  ls <- list(quest,sample,metadata,fields,weights,imps,plots)
+  ls <- list(quest,sample,metadata,fields,weights,imps)
   ls <- new("nwos.object",quest=ls[[1]],
 	sample=ls[[2]],
 	metadata=ls[[3]],
