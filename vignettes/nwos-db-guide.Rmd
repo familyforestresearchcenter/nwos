@@ -1,6 +1,6 @@
 ---
 title: 'The National Woodland Owner Survey Database (NWOS-DB): Database Description and Users’ Guide Version 1.0'
-author: "Jesse Caputo, Brett J. Butler, and Emma Sass"
+author: "Jesse Caputo, Brett J. Butler, and Emma M. Sass"
 date: "June 2020"
 output: rmarkdown::html_vignette
 vignette: >
@@ -161,7 +161,7 @@ This should install the package, including a number of vignettes (a long-form gu
 browseVignettes(package=’nwos’)
 ```
 
-One of these, 'nwos-db-guide', contains the bulk of this manual. Another,[‘get-NWOS-data’](get-NWOS-data.html), demonstrates some of the essential functions for accessing and manipulating NWOS data. It corresponds to the remainder of Chapter 4 in the original publication.
+One of these, [‘get-NWOS-data’](get-NWOS-data.html), demonstrates some of the essential functions for accessing and manipulating NWOS data.
 
 ## References
 
