@@ -1,5 +1,5 @@
 ---
-title: 'The National Woodland Owner Survey Database (NWOS-DB): Database Description and Users’ Guide Version 1.0'
+title: "The National Woodland Owner Survey Database (NWOS-DB): Database Description and Users' Guide Version 1.0"
 author: "Jesse Caputo, Brett J. Butler, and Emma M. Sass"
 date: "June 2020"
 output: rmarkdown::html_vignette
