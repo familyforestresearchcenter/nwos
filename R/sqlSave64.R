@@ -26,7 +26,7 @@ sqlSave64 <- function(data,tname,vtypes){
   dir <- tempdir()
   data <- paste(dir,'\\querydata.RData',sep='')
   script <- paste(dir,'\\queryscript.R',sep='')
-  save(list=c("df","tn","tn","dir","data"),file=data)
+  save(list=c("df","tn","vt","dir","data"),file=data)
   
   #create temporary script to run query in temporary directory
   sink(script)

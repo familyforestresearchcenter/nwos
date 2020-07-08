@@ -30,8 +30,7 @@ BATsqlQuery64 <- function(ids,
                         idtag='<I>',
                         ttag='<T>',
                         ftag='<F>',
-                        query="SELECT * FROM FS_NWOS.<T> WHERE <F> IN ('<I>')",
-                        conn='con'){
+                        query="SELECT * FROM FS_NWOS.<T> WHERE <F> IN ('<I>')"){
   ids <- unique(ids)
   q <- gsub(ttag,table,query)
   q <- gsub(ftag,field,q)
