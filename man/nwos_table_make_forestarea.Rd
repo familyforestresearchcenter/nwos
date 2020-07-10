@@ -2,14 +2,10 @@
 % Please edit documentation in R/nwos_table_make_forestarea.R
 \name{nwos_table_make_forestarea}
 \alias{nwos_table_make_forestarea}
-\title{nwos_table_make_coop}
+\title{nwos_table_make_forestarea}
 \usage{
 nwos_table_make_forestarea(AREA)
 }
 \description{
-nwos_table_make_coop
-}
-\examples{
-# data <- readRDS("INPUTS/ESTIMATES/NWOS_2018_FFO_COOP.RDS")
-nwos_table_make_coop(data)
+nwos_table_make_forestarea
 }
