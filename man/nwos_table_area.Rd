@@ -18,13 +18,13 @@ Create the body of an NWOS core, area, or cooperataion rate table
 }
 \details{
 For area and cooperation rate tables see ...
-geo.abb = "AL"
+geo.abb = "US"
 data = AREA
 yr = year
 yr.range = year.range
 ref.tab = REF_TABLE
 ref.geo = REF_GEO
 nwos_table()
-nwos_table_area(geo.abb = "AL")
+nwos_table_area(geo.abb = "US")
 nwos_table_coop()
 }
