@@ -4,7 +4,7 @@
 \alias{nwos_estimates_combine}
 \title{nwos_estimates_combine}
 \usage{
-nwos_estimates_combine(stratum = "FFO", domain = "ONEPLUS")
+nwos_estimates_combine(stratum = "FFO", domain = "ONEPLUS", wd = "DATA")
 }
 \description{
 Combine rep output by rep_geo and geo
