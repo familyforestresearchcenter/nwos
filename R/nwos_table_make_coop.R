@@ -5,21 +5,22 @@
 #' @export
 
 nwos_table_make_coop <- function(COOP) {
-  COOP <- COOP %>%
-    filter(GEO_CD %in% (REF_GEO %>% filter(GEO_LEVEL %in% c("STATE", "SUBSTATE")) %>% pull(GEO_CD))) %>%
-    left_join(REF_GEO %>% select(GEO_ABB, GEO_CD))
+  state.substate.list <-  unlist(strsplit(REF_GEO %>% filter(GEO_LEVEL %in% c("STATE", "SUBSTATE")) %>% pull(GEO_CD), split = ", "))
+  coop <- COOP %>%
+    filter(GEO_CD %in% state.substate.list) %>%
+    left_join(REF_GEO %>% select(GEO_ABB, GEO_CD), by = "GEO_CD")
 
-  GEO_LIST_REGION <- REF_GEO %>% filter(GEO_LEVEL %in% c("NATION", "REGION", "SUBREGION") | GEO_ABB %in% c("OK", "TX"))
+  geo.region.list <- REF_GEO %>% filter(GEO_LEVEL %in% c("NATION", "REGION", "SUBREGION") | GEO_ABB %in% c("OK", "TX"))
 
-  COOP_REGION <- bind_rows(lapply(1:NROW(GEO_LIST_REGION),
+  coop.region <- bind_rows(lapply(1:NROW(geo.region.list),
                                   function(x) {
-                                    COOP %>%
-                                      filter(GEO_CD %in% unlist(strsplit(GEO_LIST_REGION$GEO_CD[x], split = ", "))) %>%
+                                    coop %>%
+                                      filter(GEO_CD %in% unlist(strsplit(geo.region.list$GEO_CD[x], split = ", "))) %>%
                                       select(RESPONSE_CAT, COUNT) %>%
                                       group_by(RESPONSE_CAT) %>%
                                       summarize(COUNT = sum (COUNT)) %>%
                                       ungroup() %>%
-                                      mutate(GEO_CD = GEO_LIST_REGION$GEO_CD[x],
-                                             GEO_ABB = GEO_LIST_REGION$GEO_ABB[x])}))
-  COOP %>% bind_rows(COOP_REGION)
+                                      mutate(GEO_CD = geo.region.list$GEO_CD[x],
+                                             GEO_ABB = geo.region.list$GEO_ABB[x])}))
+  coop %>% bind_rows(coop.region)
 }

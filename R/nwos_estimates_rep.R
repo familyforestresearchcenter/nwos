@@ -34,7 +34,8 @@ nwos_estimates_rep <- function(rep = "0",
                                domain = "TENPLUS",
                                calc.mean = T,
                                calc.median = T,
-                               write = T) {
+                               write = T,
+                               wd = "DATA") {
   values <- tibble()
 
   for(i in 1:length(quest.list)) { # By imputation
@@ -111,7 +112,7 @@ nwos_estimates_rep <- function(rep = "0",
   } # End imp
 
   if(write){
-    saveRDS(values, paste0("DATA/", stratum, "_", domain, "_", rep, ".RDS"))
+    saveRDS(values, paste0(wd, "/REP/", stratum, "_", domain, "_", rep, ".RDS"))
     rm(rep.list, quest.list, quest.imp, values)
     gc(verbose = F)
 

@@ -13,10 +13,11 @@
 #' @export
 #'
 
-nwos_estimates_summary <- function(geo.abb, stratum = "FFO", domain = "TENPLUS") {
+nwos_estimates_summary <- function(geo.abb, stratum = "FFO", domain = "TENPLUS", wd = "DATA") {
   print(geo.abb)
-  data <- readRDS(paste0("DATA/", stratum, "/", domain, "/GEO/" ,
-                         stratum, "_", domain, "_", geo.abb, ".RDS"))
+  # data <- readRDS(paste0(wd, "/", stratum, "/", domain, "/GEO/" ,
+  #                        stratum, "_", domain, "_", geo.abb, ".RDS"))
+  data <- readRDS(paste0(wd, "/GEO/", stratum, "_", domain, "_", geo.abb, ".RDS"))
 
   m <- data %>% filter(!is.na(IMP)) %>% distinct(IMP) %>% count() %>% pull()
 
@@ -65,10 +66,8 @@ nwos_estimates_summary <- function(geo.abb, stratum = "FFO", domain = "TENPLUS")
            DOMAIN = domain) %>%
     select(GEO_ABB = GEO, STRATUM, DOMAIN, VARIABLE, LEVEL, STATISTIC, UNITS, VALUE, VARIANCE)
 
-  estimates %>% filter(VARIABLE == "OWNERS_NUMBER")
-  estimates %>% filter(VARIABLE == "CUT_FORESTER_2")
-  estimates %>% filter(VARIABLE == "EASE_5YR_2") %>% distinct(LEVEL)
-
-  saveRDS(estimates, paste0("DATA/", stratum, "/", domain, "/SUMMARY/NWOS_2018_" ,
+  # saveRDS(estimates, paste0(wd, "/", stratum, "/", domain, "/SUMMARY/NWOS_2018_" ,
+  #                           stratum, "_", domain, "_", geo.abb, ".RDS"))
+  saveRDS(estimates, paste0(wd, "/SUMMARY/NWOS_2018_" ,
                             stratum, "_", domain, "_", geo.abb, ".RDS"))
 }

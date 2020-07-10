@@ -1,3 +1,33 @@
+#' nwos_table_make_coop
+#' @examples
+#' # data <- readRDS("INPUTS/ESTIMATES/NWOS_2018_FFO_COOP.RDS")
+#' nwos_table_make_coop(data)
+#' @export
+
+nwos_table_make_forestarea <- function(AREA) {
+  state.substate.list <-  unlist(strsplit(REF_GEO %>% filter(GEO_LEVEL %in% c("STATE", "SUBSTATE")) %>% pull(GEO_CD), split = ", "))
+  area <- AREA %>%
+    select(GEO_CD = STATECD, OWNGRP, ACRES, ACRES_VARIANCE) %>%
+    mutate(GEO_CD = as.character(GEO_CD)) %>%
+    filter(GEO_CD %in% state.substate.list) %>%
+    left_join(REF_GEO %>% select(GEO_ABB, GEO_CD), by = "GEO_CD")
+
+  geo.region.list <- REF_GEO %>% filter(GEO_LEVEL %in% c("NATION", "REGION", "SUBREGION") | GEO_ABB %in% c("OK", "TX"))
+
+  area.region <- bind_rows(lapply(1:NROW(geo.region.list),
+                                  function(x) {
+                                    area %>%
+                                      filter(GEO_CD %in% unlist(strsplit(geo.region.list$GEO_CD[x], split = ", "))) %>%
+                                      select(OWNGRP, ACRES, ACRES_VARIANCE) %>%
+                                      group_by(OWNGRP) %>%
+                                      summarize(ACRES = sum(ACRES),
+                                                ACRES_VARIANCE = sum(ACRES_VARIANCE)) %>%
+                                      ungroup() %>%
+                                      mutate(GEO_CD = geo.region.list$GEO_CD[x],
+                                             GEO_ABB = geo.region.list$GEO_ABB[x])}))
+  area %>% bind_rows(area.region)
+}
+
 # REF_GEO  <- as_tibble(read.csv("INPUTS/REF/REF_GEO.csv", stringsAsFactors = F))
 # REF_STATE <- as_tibble(read.csv("~/Dropbox (FFRC)/NWOS/DB/REF_TABLES/REF_STATE.csv", stringsAsFactors = F)) %>%
 #   filter(!STATECD_NWOS %in% "2.2") %>%
