@@ -3,10 +3,6 @@ title: "Using the nwos package to calculate estimates"
 author: "Brett J. Butler"
 date: "June 2020"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{calculate-NWOS-estimates}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 ---
 
 The nwos package was designed to generate estimates for the U.S. Forest Service's National Woodland Owner Survey. The functions incorporate the NWOS sample design to generate estimates. Estimates can be generated for totals, proportions, means, medians, and associated variances. The background on the estimators is provided in Butler and Caputo (In review).
@@ -31,7 +27,8 @@ library(tidyverse)
 
 ## Load data
 ```{r load data}
-wi <- tbl_df(read.csv("../data/wi.csv")) 
+data(wi)
+wi <- tbl_df(wi) 
 wi <- wi %>% mutate(ROW_NAME = row.names(wi),
                     AC_WOOD = ACRES_FOREST)
 ```
@@ -219,4 +216,4 @@ wi$WEIGHT_TRIMMED <- nwos_weights_trimmed(weights = wi$WEIGHT)
 ```
 
 ## References
-Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newtown Square, PA.
+Butler, B.J.; Caputo, J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Madison, WI.
