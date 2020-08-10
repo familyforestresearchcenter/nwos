@@ -11,6 +11,8 @@ Converts units (e.g., to thousands) and rounds simialr to base except it adds an
 }
 \details{
 For area and cooperation rate tables see ...
-nwos_number_format(1100)
-nwos_number_format(900)
+nwos_table_number(1100)
+nwos_table_number(900)
+nwos_table_number(0)
+nwos_table_number(NA)
 }

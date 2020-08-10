@@ -3,7 +3,7 @@
 #' Create the body of an NWOS core, area, or cooperataion rate table
 #' @export
 #' @details For area and cooperation rate tables see ...
-#' geo.abb = "US"
+#' geo.abb = "AL"
 #' data = AREA
 #' yr = year
 #' yr.range = year.range
@@ -11,7 +11,7 @@
 #' ref.geo = REF_GEO
 #' nwos_table()
 #' nwos_table_area(geo.abb = "US")
-#' nwos_table_coop()
+#' nwos_table_area("TX")
 
 nwos_table_area <- function(geo.abb, data = AREA,
                             year = YEAR, year.range = YEAR_RANGE,
@@ -43,7 +43,7 @@ nwos_table_area <- function(geo.abb, data = AREA,
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
                     "Table ", gsub("_", "\\_", ref.geo$GEO_ABB, fixed = T), "-",
-                    ref.tab$TABLE_NUMBER," (", year,")--",
+                    ref.tab$TABLE_NUMBER," (", year,").--",
                     "Estimated area of forest land by ownership category, ",
                     geo.name, ", ", year.range,
                     "}}\\\\")
@@ -87,8 +87,8 @@ nwos_table_area <- function(geo.abb, data = AREA,
                    nwos_table_number(sqrt(data %>% filter(OWNGRP %in% "Federal") %>% pull(ACRES_VARIANCE)) / 1e3),
                    " \\\\"),
             paste0("\\hspace{0.5em} State  & ",
-                   nwos_table_number(data %>% filter(OWNGRP %in% "STATE") %>% pull(ACRES) / 1e3), "  & ",
-                   nwos_table_number(sqrt(data %>% filter(OWNGRP %in% "STATE") %>% pull(ACRES_VARIANCE)) / 1e3),
+                   nwos_table_number(data %>% filter(OWNGRP %in% "State") %>% pull(ACRES) / 1e3), "  & ",
+                   nwos_table_number(sqrt(data %>% filter(OWNGRP %in% "State") %>% pull(ACRES_VARIANCE)) / 1e3),
                    " \\\\"),
             '\\rowcolor{gray!25}',
             paste0("\\hspace{0.5em} Local  & ",
@@ -114,9 +114,9 @@ nwos_table_area <- function(geo.abb, data = AREA,
                  "\\begin{center}",
                  "\\begin{minipage}[c]{3.25in}",
                  "{\\noindent \\raggedright \\hangindent=0.1in",
-                 ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"), "$^{*}$ Excluding Interior Alaska \\\\", ""),
+                 ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"), "$^{*}$ Excluding Interior Alaska. \\\\", ""),
                  "$^a$ SE = standard error\\\\",
-                 "Note: Data may not add to totals due to rounding",
+                 "Note: Data may not add to totals due to rounding.",
                  "}",
                  "\\end{minipage}",
                  "\\end{center}")

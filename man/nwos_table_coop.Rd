@@ -11,5 +11,5 @@ nwos_table_coop(geo.abb, data = COOP, ref.geo = REF_GEO,
 Create the body of an NWOS core, area, or cooperataion rate table
 }
 \details{
-nwos_table_coop("US")
+nwos_table_coop("TX")
 }
