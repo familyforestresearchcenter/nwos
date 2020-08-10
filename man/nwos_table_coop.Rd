@@ -17,5 +17,5 @@ nwos_table_coop(
 Create the body of an NWOS core, area, or cooperataion rate table
 }
 \details{
-nwos_table_coop("US")
+nwos_table_coop("TX")
 }

@@ -28,7 +28,7 @@ For area and cooperation rate tables see ...
 }
 \examples{
 nwos_table_set(geo.abb = "US")
-geo.abb = "SOUTH"
+geo.abb = "US"
 data = ESTIMATES
 ref.geo = REF_GEO
 ref.table = REF_TABLE
@@ -40,5 +40,6 @@ domain.abb = DOMAIN_ABB
 domain.name = DOMAIN_NAME
 year = YEAR
 year.range = YEAR_RANGE
+min.n = 100
 
 }

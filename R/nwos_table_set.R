@@ -5,7 +5,7 @@
 #' For area and cooperation rate tables see ...
 #' @examples
 #' nwos_table_set(geo.abb = "US")
-#' geo.abb = "SOUTH"
+#' geo.abb = "US"
 #' data = ESTIMATES
 #' ref.geo = REF_GEO
 #' ref.table = REF_TABLE
@@ -17,6 +17,7 @@
 #' domain.name = DOMAIN_NAME
 #' year = YEAR
 #' year.range = YEAR_RANGE
+#' min.n = 100
 #'
 #' @export
 
@@ -70,7 +71,6 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
                        "\\usepackage[hidelinks]{hyperref}",
                        "\\usepackage[all]{nowidow}",
                        "\\usepackage[numbered]{bookmark}",
-                       "\\usepackage[colorlinks=false]{hyperref}",
                        "\\usepackage{fancyhdr}",
                        "\\renewcommand{\\headrulewidth}{0pt}",
                        "\\pagestyle{fancy}",
@@ -81,7 +81,7 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
 
     #### tex.begin ####
     tex.begin <- c("\\begin{document}",
-                   "\\chead {\\Large \\textbf{\\textcolor{red}{-- DRAFT --\\\\-- Do Not Cite or Quote --}}}",
+                   # "\\chead {\\Large \\textbf{\\textcolor{red}{-- DRAFT --\\\\-- Do Not Cite or Quote --}}}",
                    "\\cfoot {}",
                    paste0("\\rfoot{\\small ", Sys.Date(),"}"),
                    "\\raggedright")
@@ -90,7 +90,7 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
     title <- c("\\noindent \\Large \\textbf{USDA Forest Service \\vspace{.05in} \\\\",
                "National Woodland Owner Survey Summary Tables \\vspace{.05in} \\\\",
                paste0(stratum.name, " (", domain.name, ") \\vspace{.05in} \\\\"),
-               if_else(geo.level %in% c("NATIONAL", "REGIONAL", "SUBREGIONAL"),
+               ifelse(geo.level %in% c("NATION", "REGION", "SUBREGION"),
                        paste0(geo.name, "$^*$, ", year, "} \\vspace{.05in} \\\\"),
                        paste0(geo.name, ", ", year, "} \\vspace{.05in} \\\\")),
                ifelse(geo.level %in% c("NATION"),
@@ -99,21 +99,21 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
                       paste0("\\normalsize $^*$ Includes ", state.list, " \\\\"), ""),
                "\\bigskip",
                "\\bigskip",
-               paste0("\\normalsize Suggested citation: Butler Brett J.; Butler, Sarah M.; Caputo, Jesse; Dias, Jacqueline; ",
+               paste0("\\normalsize Suggested citation: Butler, Brett J.; Butler, Sarah M.; Caputo, Jesse; Dias, Jacqueline; ",
                       "Robillard, Amanda; Sass, Emma M. 2020. Family Forest Ownerships of the United States, 2018: ",
                       "Results from the USDA Forest Service, National Woodland Owner Survey. Gen. Tech. Rep. NRS-199. ",
                       "Madison, WI: U.S. Department of Agriculture, Forest Service, Northern Research Station. ",
                       "\\href{https://doi.org/10.2737/NRS-GTR-199}{https://doi.org/10.2737/NRS-GTR-199}. \\\\"),
                "\\bigskip",
                "\\bigskip",
-               paste0("\\normalsize Separate sets of survey summary tables are available (as sample sizes permit) ",
+               paste0("\\normalsize Separate sets of survey summary tables are available ",
                       "for the nation, regions, subregions, and states where the number of survey responses received ",
                       "meets or exceeds the minimum sample size of 100 (see Table 1 in the text of Gen. Tech. Rep. ",
-                      "NRS-199). The naming convention for tables is Table XX-\\texttt{\\#} (YYYY; SSS DDD) ",
+                      "NRS-199). The naming convention for tables is Table XX-\\texttt{\\#} (YYYY; SSS, DDD) ",
                       "where XX indicates the state, region, or nation abbreviation, \\texttt{\\#} is the table number, ",
                       "YYYY is the nominal year of the NWOS cycle, SSS is the stratum of interest ",
-                      "(FFO = family forest ownerships), and DDD is the domain of interest (e.g., 10\\texttt{+} acres of ",
-                      "forest land).\\\\"),
+                      "(FFO = family forest ownerships), and DDD is the domain of interest (1\\texttt{+}, ",
+                      "10\\texttt{+}, 100\\texttt{+}, or 1,000\\texttt{+} acres of forest land).\\\\"),
                "\\bigskip",
                "\\bigskip")
 

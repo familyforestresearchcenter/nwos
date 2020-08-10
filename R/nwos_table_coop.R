@@ -3,7 +3,7 @@
 #' Create the body of an NWOS core, area, or cooperataion rate table
 #' @export
 #' @details
-#' nwos_table_coop("US")
+#' nwos_table_coop("TX")
 
 nwos_table_coop <- function(geo.abb,
                             data = COOP,
@@ -26,6 +26,9 @@ nwos_table_coop <- function(geo.abb,
   COOP_RATE <- I / (I + P + R)
   SAMPLE <-   I + NC + P + R + UN
 
+  geo.name <- ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"),
+                     paste0(ref.geo$GEO_NAME, "$^{*}$"), ref.geo$GEO_NAME)
+
   begin.tex <- c("\\pagebreak",
                  "\\begin{minipage}{6.5in}",
                  "\\raggedright",
@@ -35,10 +38,10 @@ nwos_table_coop <- function(geo.abb,
 
   caption <- paste0("{\\setlength\\textwidth{5in} \\noindent \\textbf{",
                     "Table ", gsub("_", "\\_", ref.geo$GEO_ABB, fixed = T), "-",
-                    ref.tab$TABLE_NUMBER," (", year,"; FFO)--",
+                    ref.tab$TABLE_NUMBER," (", year,"; FFO).--",
                     "Sample size and cooperation rate for family forest ownerships$^{*}$ ",
                     "for the USDA Forest Service, National Woodland Owner Survey, ",
-                    ref.geo$GEO_NAME, ", ", year.range,
+                    geo.name, ", ", year.range,
                     "}}\\\\")
 
   body <- c("\\begin{center}",
@@ -69,7 +72,7 @@ nwos_table_coop <- function(geo.abb,
                  "\\begin{minipage}[c]{6in}",
                  "{\\noindent \\raggedright \\hangindent=0.1in",
                  "$^{*}$ These numbers are for all family forest ownerships with 1\\texttt{+} acres of forest land. \\\\",
-                 ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"), "$^{**}$ Excluding Interior Alaska \\\\", ""),
+                 ifelse(ref.geo$GEO_ABB %in% c("US", "WEST", "PACIFIC_COAST"), "$^{**}$ Excluding Interior Alaska. \\\\", ""),
                  "$^a$ $Cooperation Rate=\\frac{Complete Responses}{Complete Responses+Partial Responses+Nonresponses}$",
                  "}",
                  "\\end{minipage}",
