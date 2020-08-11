@@ -11,14 +11,17 @@
 #' @examples
 #' ??
 
-nwos_weights_replicates_state <- function(state, data = po, s.name = "FFO", r.name = "RESPONSE") {
+nwos_weights_replicates_state <- function(state, data = po, 
+                                          s.name = "FFO", r.name = "RESPONSE", a.name = "AC_WOOD",
+                                          data.stratum.area = ffo.acres.rep,
+                                          data.response.rate = ffo.rr.rep) {
   sapply(1:length(REPLICATES[[state]]),
          nwos_weights_replicates,
          index.rep = REPLICATES[[state]],
          index = data %>% filter(STATECD_NWOS %in% state) %>% pull(PLOT_OWNER_CN_INTEGER),
          stratum = data %>% filter(STATECD_NWOS %in% state) %>% pull(!!s.name),
          response = data %>% filter(STATECD_NWOS %in% state) %>% pull(!!r.name),
-         area = data %>% filter(STATECD_NWOS %in% state) %>% pull(AC_WOOD),
-         stratum.area = ffo.acres.rep[[state]],
-         response.rate = ffo.rr.rep[[state]])
+         area = data %>% filter(STATECD_NWOS %in% state) %>% pull(a.name),
+         stratum.area = data.stratum.area[[state]],
+         response.rate = data.response.rate[[state]])
 }
