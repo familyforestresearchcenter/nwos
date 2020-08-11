@@ -2,9 +2,9 @@
 #'
 #' This function estimates NWOS stratum areas for NWOS replicates and is designed to be used with an apply function, such as sapply.
 #' @usage nwos_stratum_area_apply(index.rep, index, stratum, state.area)
-#' @param state
-#' @param data = po
-#' @param s.name = "FFO"
+#' @param state state or geographic area
+#' @param data dataframe
+#' @param s.name stratum name
 #' @details
 #' point.count in nwos_stratum_area is  set to 1 since the replicates are an expanded list (one observation per sample point).
 #' @return
