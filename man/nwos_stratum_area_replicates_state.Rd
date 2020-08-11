@@ -10,9 +10,11 @@ nwos_stratum_area_apply(index.rep, index, stratum, state.area)
 nwos_stratum_area_apply(index.rep, index, stratum, state.area)
 }
 \arguments{
-\item{data}{= po}
+\item{state}{state or geographic area}
 
-\item{s.name}{= "FFO"}
+\item{data}{dataframe}
+
+\item{s.name}{stratum name}
 }
 \value{
 Area of forestland in the stratum.
