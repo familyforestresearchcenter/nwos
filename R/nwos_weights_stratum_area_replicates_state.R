@@ -16,7 +16,7 @@
 #' WI_FFO_AREA_REP <- sapply(WI_REPLICATES, nwos_stratum_area_apply, index = wi$ROW_NAME, stratum = wi$FFO, state.area = 33898733)
 #' WI_FFO_AREA_REP
 
-nwos_stratum_area_replicates_state <- function(state, data = po, s.name = "FFO") {
+nwos_weights_stratum_area_replicates_state <- function(state, data = po, s.name = "FFO") {
   sapply(REPLICATES[[state]],
          nwos_stratum_area_replicates,
          index = data %>% filter(STATECD_NWOS %in% state) %>% pull(PLOT_OWNER_CN_INTEGER),
