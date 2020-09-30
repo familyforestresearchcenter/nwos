@@ -7,11 +7,9 @@
 nwos_estimates_data_add_variables(data = QUEST_WIDE, meta.data = QUEST_META, box2 = c(names(data)[grepl("OBJ_", names(data))], names(data)[grepl("CNC_", names(data))], "ATT_WOODED", "ATT_SELL", "KNOW_WOOD", "WANT_KNOW_WOOD", "EMO_WOOD", "WOOD_COMMUNITY"))
 }
 \arguments{
-\item{data}{= QUEST_WIDE}
+\item{x}{list number. Only applicable if is data is a list of data frames, instead of a single data frame. This used mainly for apply functions.}
 
-\item{minority}{Logical value indicating if the OWN1_MINORITY variable should be created. Default = F}
-
-\item{tele}{Logical value indicating if the TELE related variables should be created. Default = F}
+\item{data}{data frame or list of data frames}
 }
 \description{
 Add variables to an NWOS dataframe

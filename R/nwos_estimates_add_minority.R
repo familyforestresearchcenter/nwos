@@ -1,21 +1,20 @@
-#' Add MINORITY Variable to NWOS Dataset
+#' Add MINORITY Variable to an NWOS Data Set
 #'
-#' Add variables to an NWOS dataframe
-#' @usage nwos_estimates_data_add_variables(data = QUEST_WIDE, meta.data = QUEST_META, box2 = c(names(data)[grepl("OBJ_", names(data))], names(data)[grepl("CNC_", names(data))], "ATT_WOODED", "ATT_SELL", "KNOW_WOOD", "WANT_KNOW_WOOD", "EMO_WOOD", "WOOD_COMMUNITY"))
-#' @param data = QUEST_WIDE
-#' @param minority Logical value indicating if the OWN1_MINORITY variable should be created. Default = F
-#' @param tele Logical value indicating if the TELE related variables should be created. Default = F
+#' Add variables to an NWOS data frame
+#' @usage nwos_estimates_add_minority(x = NA, data = QUEST)
+#' @param x list number. Only applicable if is data is a list of data frames, instead of a single data frame. This used mainly for apply functions.
+#' @param data data frame or list of data frames
 #' @keywords nwos
 #' @details
 #' The default values create the variables used in the NWOS tables.
 #' @export
 #' @examples
-#' nwos_estimates_data_add_variables(minority = T, tele = T)
+#' nwos_estimates_add_minority()
 
-nwos_estimates_add_minority <- function(data = QUEST_WIDE) {
+nwos_estimates_add_minority <- function(x = NA, data = QUEST) {
   require(tidyverse)
-
-  data <- data %>%
+  if(!is.data.frame(data)) data <- data[[x]]
+  data %>%
     mutate(OWN1_MINORITY = factor(if_else((OWN1_ETH == 1 | OWN1_RACE_ASIAN == 1 | OWN1_RACE_BLACK == 1 |
                                              OWN1_RACE_HAWAIIAN == 1 | OWN1_RACE_INDIAN == 1), 1,
                                           if_else((OWN1_ETH == -1 | OWN1_RACE_ASIAN == -1), -1,
