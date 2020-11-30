@@ -18,10 +18,11 @@ nwos_estimates_add_tele <- function(x = NA, data = QUEST) {
 
   # Attitudinal
   tele.att <- data %>%
-    select(OBJ_TIM, OBJ_BEA, OBJ_NAT, OBJ_PRI, OBJ_HUNT, OBJ_REC) %>%
-    mutate(across(OBJ_TIM, .fns = function(x) if_else(x %in% 4:5, 1, 0))) %>%
-    mutate(across(-OBJ_TIM, .fns = function(x) if_else(x == 5, 1, 0))) %>%
-    mutate(TELE_ATT_FINANCIAL = as.factor(OBJ_TIM),
+    select(OBJ_TIM, OBJ_INV, OBJ_BEA, OBJ_NAT, OBJ_PRI, OBJ_HUNT, OBJ_REC) %>%
+    # mutate(across(OBJ_TIM, .fns = function(x) if_else(x %in% 4:5, 1, 0))) %>%
+    mutate(across(.fns = function(x) if_else(x %in% 4:5, 1, 0))) %>% # -OBJ_TIM,
+    mutate(TELE_ATT_FINANCIAL = as.factor(if_else(OBJ_TIM == 1 | OBJ_INV == 1,
+                                                  1, 0)),
            TELE_ATT_AMENITY = as.factor(if_else(OBJ_BEA == 1 | OBJ_NAT == 1 | OBJ_PRI == 1 |
                                                   OBJ_HUNT == 1 | OBJ_REC == 1,
                                                 1, 0)))

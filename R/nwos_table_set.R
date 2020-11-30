@@ -82,7 +82,8 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
     #### tex.begin ####
     tex.begin <- c("\\begin{document}",
                    # "\\chead {\\Large \\textbf{\\textcolor{red}{-- DRAFT --\\\\-- Do Not Cite or Quote --}}}",
-                   "\\cfoot {}",
+                   # "\\cfoot {}",
+                   "\\cfoot{\\small \\thepage}",
                    paste0("\\rfoot{\\small ", Sys.Date(),"}"),
                    "\\raggedright")
 
@@ -108,7 +109,7 @@ nwos_table_set <- function(geo.abb, # geo.abb = "SOUTH"
                "\\bigskip",
                paste0("\\normalsize Separate sets of survey summary tables are available ",
                       "for the nation, regions, subregions, and states where the number of survey responses received ",
-                      "meets or exceeds the minimum sample size of 100 (see Table 1 in the text of Gen. Tech. Rep. ",
+                      "meets or exceeds the minimum sample size of 100 (see Table 3 in the text of Gen. Tech. Rep. ",
                       "NRS-199). The naming convention for tables is Table XX-\\texttt{\\#} (YYYY; SSS, DDD) ",
                       "where XX indicates the state, region, or nation abbreviation, \\texttt{\\#} is the table number, ",
                       "YYYY is the nominal year of the NWOS cycle, SSS is the stratum of interest ",
