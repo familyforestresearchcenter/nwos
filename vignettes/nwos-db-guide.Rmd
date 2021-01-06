@@ -158,7 +158,7 @@ devtools::install_github('familyforestresearchcenter/nwos',build_vignettes=T)
 This should install the package, including a number of vignettes (a long-form guide to using an R package). These can be viewed using the command:
 
 ```{r browse, eval=FALSE, echo=TRUE}
-browseVignettes(package=’nwos’)
+browseVignettes(package='nwos')
 ```
 
 One of these, [‘get-NWOS-data’](get-NWOS-data.html), demonstrates some of the essential functions for accessing and manipulating NWOS data.
