@@ -4,16 +4,9 @@
 \alias{BATsqlQuery64}
 \title{BATsqlQuery64}
 \usage{
-BATsqlQuery64(
-  ids,
-  table = "PLOT_OWNER",
-  field = "CN",
-  idtag = "<I>",
-  ttag = "<T>",
-  ftag = "<F>",
-  query = "SELECT * FROM FS_NWOS.<T> WHERE <F> IN ('<I>')",
-  conn = "con"
-)
+BATsqlQuery64(ids, table = "PLOT_OWNER", field = "CN", idtag = "<I>",
+  ttag = "<T>", ftag = "<F>",
+  query = "SELECT * FROM FS_NWOS.<T> WHERE <F> IN ('<I>')")
 }
 \arguments{
 \item{ids}{is a character vector containing NWOS CNs to be queried.}

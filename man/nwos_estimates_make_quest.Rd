@@ -4,13 +4,9 @@
 \alias{nwos_estimates_make_quest}
 \title{nwos_estimates_make_quest}
 \usage{
-nwos_estimates_make_quest(
-  imp = 1,
-  nwos = NWOS,
-  own = 45,
+nwos_estimates_make_quest(imp = 1, nwos = NWOS, own = 45,
   variables.categorcial = VARIABLES_CATEGORICAL,
-  variables.continuous = VARIABLES_CONTINUOUS
-)
+  variables.continuous = VARIABLES_CONTINUOUS)
 }
 \value{
 wide quest data frame

@@ -1,5 +1,7 @@
 ---
-title: "Accessing the NWOS database"
+title: "Accessing the NWOS database (NWOS-DB)"
+author: "Jesse Caputo"
+date: "December 2020"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{get-NWOS-data}
@@ -15,14 +17,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-The NWOS database can be queried using a database client and SQL (standard query language) scripts. For administrative users, this is often a useful and necessary means of access – particularly for special-purpose or ad hoc tasks. For the average user, however, a more reliable method is to use to the ‘nwos’ R package. This package contains a number of standardized functions for downloading, manipulating, and analyzing NWOS data in a clear and consistent manner.
+The NWOS database (NWOS-DB) can be queried using a database client and SQL (standard query language) scripts. For administrative users, this is often a useful and necessary means of access – particularly for special-purpose or infrequent tasks. For the average user, however, a more reliable method is to use to the nwos R package. This R package contains a number of standardized functions for downloading, manipulating, and analyzing NWOS data in a clear and consistent manner.
 
-In order to use this package, the user must have access to a USDA computer that has been mapped to the internal Forest Service network (i.e. T drive). The computer must be configured with the correct DSN (data source name) for the Forest Service production space (i.e. Oracle instance). With these in place, the user should be able to connect to the production space from a desktop installation of R (R Core Team 2019). In addition to the base installation, the user will need the ‘RODBC’ (Ripley and Lapsley 2019) and ‘devtools’ (Wickham et al. 2019) packages. Finally, it is necessary for the user to have connection privileges to the Forest Service production space and to have been assigned a role within the NWOS database. This vignette is written from the perspective of a new user with the ANALYST role.
+In order to use the full capacity of the package, the user must have access to a USDA computer that has been mapped to the internal Forest Service network (i.e. T drive), with read permissions for the NWOS folder space. The computer must be configured with the correct DSN (data source name) for the Forest Service production space (i.e. Oracle instance). In addition to the base R installation, the user will need the RODBC and devtools packages. Finally, it is necessary for the user to have connection privileges to the Forest Service production space and to have been assigned a role within NWOS-DB. With these in place, the user should be able to connect to the production space from a desktop installation of R. The remainder of this chapter is written from the perspective of a user with the ANALYST role. Note: NWOS data is confidential and must be handled using appropriate protocols, including storing any downloaded data on USDA computers or encrypted external media (e.g. flash drives, CDs). Accessing NWOS data without proper credentials is strictly forbidden.
  
 
 ## Downloading and Preparing NWOS Data
 
-The primary function for downloading data is get_nwos(). This function creates and passes a query to the NWOS database to obtain the raw questionnaire results for a particular study and cycle. This query joins the QUEST, SAMPLE, and RESPONSE tables and filters them by study and cycle variables. For example:
+The primary function for downloading data is get_nwos(). This function creates and passes a query to NWOS-DB to obtain the raw questionnaire results for a particular study and cycle. This query joins the QUEST, SAMPLE, and RESPONSE tables and filters them by study and cycle variables. For example:
 
 ```{r getquest}
 library(nwos)
@@ -32,22 +34,24 @@ quest <- get_nwos(cycle = '2018', study = 'base')
 will download the raw responses for the 2018 base survey. Additional ‘states’^[The name of the ‘states’ parameter is derived from the STATECD_NWOS field in the PLOT_OWNER and SAMPLE tables. Both refer more broadly to survey units where these are other than state (e.g. cities for the urban NWOS)]  and ‘questions’ parameters can be used to limit the download to a narrower slice of the data (improving transfer speed). For example:
 
 ```{r ri}
-quest <- get_nwos(cycle='2018', study='base', states=c('44'), questions=c('AC_WOOD','AC_LAN'))
+quest <- get_nwos(cycle='2018', study='base', states=c('44'), questions=c('AC_WOOD','AC_LAND'))
 ```
 
-would retrieve data for two questions (AC_WOOD and AC_LAND) and only for the state of Rhode Island. get_nwos() returns an ‘nwos.object’ object, a type of list object containing several different datasets in individual ‘slots’. These include slots for the raw response data, sample-level data, and metadata. If weights and imputations for the study of interest have already been calculated (see Butler et al. IN REVIEW), these will also be included in additional slots^[get_nwos() is normally only used to retrieve data for which weights and imputations have already been calculated. One exception to this is during the process of creating the weights and imputations in the first place!]. The ‘nwos.object’ is of limited utility to most users in its raw form. A number of helper functions are included in the package in order to transform the raw object into more useable forms. One of the most powerful of these is nwos_wide(). This function creates an R dataframe in a wide format suitable for most common types of data analysis. Here, wide format means a format in which every row corresponds to one respondent’s questionnaire and every column corresponds to either a question or an attribute of the respondent. Survey weights are included and imputed values can also be inserted. For example, the command:
+would retrieve data for two questions (AC_WOOD and AC_LAND) and only for the state of Rhode Island. get_nwos() returns an "nwos.object" object, a type of list object containing several different datasets in individual slots. These include slots for the raw response data, sample-level data, and metadata. If weights and imputations for the study of interest have already been calculated, these will also be included in additional slots. The "nwos.object" is of limited utility to most users in its raw form. A number of helper functions are included in the package in order to transform the raw object into more useable forms. One of the most powerful of these is nwos_wide(). This function creates an R dataframe in a wide format suitable for most common types of data analysis. Here, wide format means a format in which every row corresponds to one respondent’s questionnaire and every column corresponds to either a question or an attribute of the respondent. Survey weights are included and imputed values can also be inserted. For example, the command:
 
 ```{r wide}
 qwide <- nwos_wide(quest, imputations='1')
 ```
 
-will return a wide table with all null values (i.e. nonresponse) replaced with the values of the first imputation set. As part of the base survey, five imputation sets were created (see Butler et al. IN REVIEW for more on imputation). In addition to the numbers 1 through 5, the imputations parameter can be set to “none” - in which case no imputed values will be inserted and unanswered questions will appear as null values (i.e. ‘-1’) – and “random”, in which case of the five imputation sets will be randomly selected.
+will return a wide table with all null values (i.e. nonresponse) replaced with the values of the first imputation set. As part of the base survey, five imputation sets were created. In addition to the numbers 1 through 5, the imputations parameter can be set to “none” - in which case no imputed values will be inserted and unanswered questions will appear as null values (i.e. ‘-1’) – and “random”, in which case of the five imputation sets will be randomly selected.
 
 The wide table will in most cases have a large number of columns (more than 250 in the case of base NWOS). Many of these are coded and a large number have names that may not be intuitive to a new user. A useful function, therefore, is nwos_wide_metadata(). This function, when applied to the original ‘nwos.object’ object, will generate a dataframe containing all the metadata that relate to the wide format. This includes a description of each column, the data type for each column, the factor levels for the coded responses, and other attributes. The DATA_TYPE and UNITS_FACTORS columns are particularly important, because the question columns in the wide table are generated as character fields, with categorical questions also being coded.
 
 ```{r widemd}
 qwmd <- nwos_wide_metadata(quest)
 ```
+
+The wide format contains one record for every valid, returned survey and one column for every question and every piece of metadata.
 
 For other purposes, including certain plotting and statistical functions, a long table may be preferred. This is a table where each question – not each questionnaire – is represented is by an individual row. A long table (and corresponding metadata table) can be generated by:
 
@@ -71,29 +75,27 @@ plcomp <- nwos_plots_complete(plots)
 This returns a dataframe with a single row for each sample plot (or point) in the sample, along with plot-level land and ownership attributes. The dataframe also includes sample-level attributes, such as strata and response category (for calculating response and cooperation rate). For those points that are associated with a valid response, there will be a non-null value in the RESPONSE_CN field. This is particularly useful as it can be used to join response data to the point data. One common use for this is to attach sample point coordinates to survey responses for spatial analysis:
 
 ```{r spatial}
-quest.spatial <- merge(x=plcomp, y=qwide, by.x='RESPONSE_CN', by.y='CN')
+quest.coord <- merge(x=plcomp, y=qwide, by.x='RESPONSE_CN', by.y='CN')
 ```
 
 ## Other Functions
 
-In addition to functions for retrieving data and preparing it for analysis, the ‘nwos’ package contains a number of functions for use and analysis of data. There are a number of functions for making population-level estimates, calculating response and cooperation rates, and other purposes. For users with the ADMIN role, there are functions for loading, altering, and deleting records to and from the database. You can use the help() function to access a menu with a list of functions and links to the documentation for each:
+In addition to functions for retrieving data and preparing it for analysis, the nwos package contains a number of functions for use and analysis of data. There are a number of functions for making population-level estimates, calculating response and cooperation rates, and other purposes. For users with the Admin role, there are functions for loading, altering, and deleting records to and from the database. You can use the help() function to access a menu with a list of functions and links to the documentation for each:
 
 ```{r help}
 help(package='nwos')
 ```
 
-One function that may be useful to readers of this document is the get_nwos_db_catalog() function. This function will render a current, up-to-date copy of the database catalog on the users’ hard drive. The catalog is generated as an HTML file, readable in any web browser or text editor. This catalog lists all the tables, fields, and codes relevant to the database – equivalent to the information in Supplement 1. As the database evolves and changes, however, it is useful to be able to periodically generate an up-to-date version.
+One function that may be useful to readers of this document is the get_nwos_db_catalog() function. This function will render a current, up-to-date copy of the database catalog on the users’ hard drive. The catalog is generated as an HTML file, readable in any web browser or text editor. This catalog lists all the tables, fields, and codes relevant to the database. As the database evolves and changes, it is useful to be able to periodically generate an up-to-date version.
 
 ```{r catalog}
 get_nwos_db_catalog(dir='C:/my_nwos_analyses', file='NWOS_DB_catalog')
 ```
 
-Finally, many users will want to be able to export quest data in other formats to use with software other than R. Fortunately, prepared response data (both long and wide formats), ‘completed’ plot tables, and individual slots of ‘nwos.object’s and ‘nwos.plot.object’s all take the form of regular R dataframes and can be exported in a number of formats using standard R functions. Additionally, the nwos_export() function can be used to export response data as text in either a long or wide format:
+Finally, many users will want to be able to export quest data in other formats to use with software other than R. Fortunately, prepared response data (both long and wide formats), completed plot tables, and individual slots of "nwos.object" objects and "nwos.plot.object" objectives all take the form of regular R dataframes and can be exported in a number of formats using standard R functions. Additionally, the nwos_export() function can be used to export response data as text in any of the wide,long, or full formats:
 
 ```{r export}
 nwos_export(quest, dir='C:/my_nwos_analyses', format='wide', imputations='1')
 ```
 
-This will export a copy of the formatted response data in the listed directory as a CSV file, along with a copy of the corresponding metadata (also in CSV). This provides the user with the fundamental data necessary to begin analysis elsewhere. The nwos_export() function can pass the ‘imputations’ parameter  through using either the long or wide table format.
-
-
+This will export a copy of the formatted response data in the listed directory as a CSV file, along with a copy of the corresponding metadata (also in CSV). This provides the user with the fundamental data necessary to begin analysis elsewhere. The nwos_export() function will pass the ‘imputations’ parameter  through any format.

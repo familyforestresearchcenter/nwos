@@ -1,13 +1,13 @@
 ---
 title: "Using the nwos package to calculate estimates"
 author: "Brett J. Butler"
-date: "June 2020"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 ---
 
-The nwos package was designed to generate estimates for the U.S. Forest Service's National Woodland Owner Survey. The functions incorporate the NWOS sample design to generate estimates. Estimates can be generated for totals, proportions, means, medians, and associated variances. The background on the estimators is provided in Butler and Caputo (In review).
+The nwos package was designed to generate estimates for the U.S. Forest Service's National Woodland Owner Survey. The functions incorporate the NWOS sample design to generate estimates. Estimates can be generated for totals, proportions, means, medians, and associated variances. The background on the estimators is provided in Butler (In review).
 
-This vignette shows the basic steps necessary to generate estimates using this package. The examples below use the ``wi'' dataset supplied with the package. A description of this dataset is included in Butler and Caputo (In review).
+This vignette shows the basic steps necessary to generate estimates using this package. The package can be downloaded from GitHub (devtools::install_git("git://github.com/bbutler01/nwos.git")). The examples below use the ``wi'' dataset supplied with the package. A description of this dataset is included in Butler (In review).
 
 The basic steps are:
 * Install packages and load data
@@ -27,8 +27,7 @@ library(tidyverse)
 
 ## Load data
 ```{r load data}
-data(wi)
-wi <- tbl_df(wi) 
+wi <- tbl_df(read.csv("../data/wi.csv")) 
 wi <- wi %>% mutate(ROW_NAME = row.names(wi),
                     AC_WOOD = ACRES_FOREST)
 ```
@@ -216,4 +215,4 @@ wi$WEIGHT_TRIMMED <- nwos_weights_trimmed(weights = wi$WEIGHT)
 ```
 
 ## References
-Butler, B.J.; Caputo, J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Madison, WI.
+Butler, B.J. In review. Weighting for the US Forest Service, National Woodland Owner Survey. U.S. Department of Agriculture, Forest Service, Northern Research Station. Newtown Square, PA.
