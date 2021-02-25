@@ -5,10 +5,10 @@
 #' @export
 #'
 
-nwos_estimates_combine <- function(stratum = "FFO", domain = "ONEPLUS", wd = "DATA") {
+nwos_estimates_combine <- function(stratum = "FFO", domain = "ONEPLUS", wd = "DATA", n.cores = 1) {
   require(tidyverse)
   require(parallel)
-  N_CORES <- detectCores() - 1
+  # n.cores <- detectCores() - 1
 
   files <- list.files(paste0(wd, "/REP"), pattern = ".RDS")
   files <- files[!files %in% c("QUEST_20200212.RDS", "REP_WEIGHTS_20200212.RDS")]
@@ -27,7 +27,7 @@ nwos_estimates_combine <- function(stratum = "FFO", domain = "ONEPLUS", wd = "DA
     # data <- readRDS(i)
     data <- readRDS(paste0(wd, "/REP/", i))
 
-    invisible(mclapply(geo.list, write_geo_rep, mc.cores = N_CORES))
+    invisible(mclapply(geo.list, write_geo_rep, mc.cores = n.cores))
     # invisible(lapply(geo.list, write_geo_rep))
 
   }
@@ -39,7 +39,7 @@ nwos_estimates_combine <- function(stratum = "FFO", domain = "ONEPLUS", wd = "DA
     files.geo <- files.geo.list[grep(paste0("_", i, ".RDS"), files.geo.list)]
     data <- bind_rows(mclapply(files.geo,
                                function(x) {readRDS(x) %>% mutate(REP = as.numeric(REP))},
-                               mc.cores = N_CORES))
+                               mc.cores = n.cores))
     # data <- bind_rows(lapply(files.geo,
     #                            function(x) {readRDS(x) %>% mutate(REP = as.numeric(REP))}))
     saveRDS(data, paste0(wd, "/GEO/" , stratum, "_", domain, "_", i, ".RDS"))
