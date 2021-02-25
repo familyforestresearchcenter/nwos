@@ -55,8 +55,13 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
   #edit queries based on function parameters
   q <- gsub("<CYTAG>",cycle,q) #insert cycle
   q2 <- gsub("<CYTAG>",cycle,q2) #insert cycle
-  q <- gsub("<STTAG>",study,q) #insert study
-  q2 <- gsub("<STTAG>",study,q2) #insert study
+  if (study=='base intensified'){ #insert study
+    q <- gsub("= '<STTAG>'","IN ('base','base intensified')", q)
+    q2 <- gsub("= '<STTAG>'","IN ('base','base intensified')", q2)
+  } else {
+    q <- gsub("<STTAG>",study,q)
+    q2 <- gsub("<STTAG>",study,q2)
+  }
   if (!is.na(states[1])){ #insert states (if listed)
     q <- gsub("<STAG>",paste(states,collapse="','"),q)
 	  q2 <- gsub("<STAG>",paste(states,collapse="','"),q2)
@@ -126,6 +131,7 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
   
   #get weights
   weights <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_WEIGHTS.csv")
+  weights <- weights[weights$NWOS_STUDY==study,]
   weights <- weights[weights$RESPONSE_CN %in% sample$CN
                        ,c('RESPONSE_CN','FINAL_WEIGHTS','PLOT_COUNT')]
 
