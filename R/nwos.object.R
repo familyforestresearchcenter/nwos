@@ -8,7 +8,6 @@
 #' @slot fields is a data.frame containing metadata for columns in sample and quest
 #' @slot weights is a data.frame containing survey weights
 #' @slot imputations is a data.frame containing imputation sets
-#' @slot plots is a data.frame containing the full (ie. plot-level) sample
 #'
 #' @export
 
@@ -17,5 +16,4 @@ nwos.object <- setClass("nwos.object",representation(quest='data.frame',
                                         metadata='data.frame',
                                         fields='data.frame',
                                         weights='data.frame',
-										imputations='data.frame',
-										plots='data.frame'))
+										imputations='data.frame'))

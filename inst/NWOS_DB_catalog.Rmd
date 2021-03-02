@@ -1,5 +1,5 @@
 ---
-title: "National Woodland Owner Survey (NWOS) Raw Database Catalog"
+title: "National Woodland Owner Survey Database (NWOS-DB) Catalog"
 author: "Jesse Caputo"
 date: '`r format(Sys.time(),"%d %B %Y")`'
 output: html_document
@@ -20,12 +20,12 @@ CODES <- sqlQuery64("SELECT * FROM FS_NWOS.CODES")
 
 TABLES <- TABLES[order(TABLES$TABLE_NAME),] #reorder
 FIELDS <- FIELDS[order(FIELDS$TABLE_NAME,FIELDS$COLUMN),]
-CODES <- CODES[order(CODES$TABLE_NAME,CODES$FIELD_NAME),]
+CODES <- CODES[order(CODES$TABLE_NAME,CODES$FIELD_NAME,as.numeric(CODES$CODE)),]
 ```
 
 ## Introduction
 
-This document contains a prelimninary catalog of tables, fields, and codes in the current version of the NWOS Database.
+This document contains a current and up-to-date catalog of tables, fields, and codes in the NWOS Database (NWOS-DB).
 
 ## Tables
 

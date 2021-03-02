@@ -4,16 +4,9 @@
 \alias{nwos_table}
 \title{nwos_table}
 \usage{
-nwos_table(
-  tab.num,
-  data = table.data,
-  stratum.abb = STRATUM_ABB,
-  stratum.name = STRATUM_NAME,
-  domain.abb = DOMAIN_ABB,
-  domain.name = DOMAIN_NAME,
-  year = YEAR,
-  year.range = YEAR_RANGE
-)
+nwos_table(tab.num, data = table.data, stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME, domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME, year = YEAR, year.range = YEAR_RANGE)
 }
 \description{
 nwos_table
