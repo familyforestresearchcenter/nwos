@@ -4,8 +4,14 @@
 \alias{nwos_table_area}
 \title{nwos_table}
 \usage{
-nwos_table_area(geo.abb, data = AREA, year = YEAR,
-  year.range = YEAR_RANGE, ref.tab = REF_TABLE, ref.geo = REF_GEO)
+nwos_table_area(
+  geo.abb,
+  data = AREA,
+  year = YEAR,
+  year.range = YEAR_RANGE,
+  ref.tab = REF_TABLE,
+  ref.geo = REF_GEO
+)
 }
 \description{
 Create the body of an NWOS core, area, or cooperataion rate table

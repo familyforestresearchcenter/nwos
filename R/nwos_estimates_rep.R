@@ -112,6 +112,7 @@ nwos_estimates_rep <- function(rep = "0",
   } # End imp
 
   if(write){
+    dir.create(paste0(wd, "/REP"), showWarnings = FALSE)
     saveRDS(values, paste0(wd, "/REP/", stratum, "_", domain, "_", rep, ".RDS"))
     rm(rep.list, quest.list, quest.imp, values)
     gc(verbose = F)

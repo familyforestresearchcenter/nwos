@@ -5,11 +5,19 @@
 \alias{nwos_estimates_summary}
 \title{nwos_estimates_summary}
 \usage{
-nwos_estimates_summary(geo.abb, stratum = "FFO", domain = "TENPLUS",
-  wd = "DATA")
+nwos_estimates_summary(
+  geo.abb,
+  stratum = "FFO",
+  domain = "TENPLUS",
+  wd = "DATA"
+)
 
-nwos_estimates_summary(geo.abb, stratum = "FFO", domain = "TENPLUS",
-  wd = "DATA")
+nwos_estimates_summary(
+  geo.abb,
+  stratum = "FFO",
+  domain = "TENPLUS",
+  wd = "DATA"
+)
 }
 \description{
 Combine and ummarize Imputations
