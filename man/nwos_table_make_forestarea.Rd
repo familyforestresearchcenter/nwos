@@ -9,3 +9,7 @@ nwos_table_make_forestarea(AREA)
 \description{
 nwos_table_make_forestarea
 }
+\examples{
+AREA_AL <- readRDS("INPUTS/ESTIMATES/NWOS_FOREST_AREA_2018_20190909.RDS") \%>\% filter(STATECD == 1)
+nwos_table_make_forestarea(readRDS("INPUTS/ESTIMATES/NWOS_FOREST_AREA_2018_20190909.RDS"))
+}

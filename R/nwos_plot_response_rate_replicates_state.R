@@ -2,7 +2,7 @@
 #'
 #' This function calculates response rates for NWOS replicates and is designed to be used with an apply function, such as sapply.
 #' @usage nwos_response_rate_replicates_state(state, data = po, s.name = "FFO", r.name = "RESPONSE")
-#' @param state
+#' @param state = state
 #' @param data = po
 #' @param s.name = "FFO"
 #' @param r.name = "RESPONSE"

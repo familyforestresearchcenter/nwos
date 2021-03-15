@@ -2,8 +2,6 @@
 #'
 #' Generate replicates by state that can be used for NWOS bootstrapping variance estimation.
 #' @usage nwos_replicates_state(x, data = po)
-#' @param x
-#' @param data
 #' @return
 #' ??
 #' @references

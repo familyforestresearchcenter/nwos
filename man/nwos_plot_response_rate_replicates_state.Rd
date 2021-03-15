@@ -7,6 +7,8 @@
 nwos_response_rate_replicates_state(state, data = po, s.name = "FFO", r.name = "RESPONSE")
 }
 \arguments{
+\item{state}{= state}
+
 \item{data}{= po}
 
 \item{s.name}{= "FFO"}
