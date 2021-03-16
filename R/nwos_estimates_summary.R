@@ -14,9 +14,10 @@
 #'
 
 nwos_estimates_summary <- function(geo.abb, stratum = "FFO", domain = "TENPLUS", wd = "DATA") {
+  dir.create(paste0(wd, "/SUMMARY"), showWarnings = FALSE)
+
   print(geo.abb)
-  # data <- readRDS(paste0(wd, "/", stratum, "/", domain, "/GEO/" ,
-  #                        stratum, "_", domain, "_", geo.abb, ".RDS"))
+
   data <- readRDS(paste0(wd, "/GEO/", stratum, "_", domain, "_", geo.abb, ".RDS"))
 
   m <- data %>% filter(!is.na(IMP)) %>% distinct(IMP) %>% count() %>% pull()
@@ -66,8 +67,8 @@ nwos_estimates_summary <- function(geo.abb, stratum = "FFO", domain = "TENPLUS",
            DOMAIN = domain) %>%
     select(GEO_ABB = GEO, STRATUM, DOMAIN, VARIABLE, LEVEL, STATISTIC, UNITS, VALUE, VARIANCE)
 
-  # saveRDS(estimates, paste0(wd, "/", stratum, "/", domain, "/SUMMARY/NWOS_2018_" ,
-  #                           stratum, "_", domain, "_", geo.abb, ".RDS"))
   saveRDS(estimates, paste0(wd, "/SUMMARY/NWOS_2018_" ,
                             stratum, "_", domain, "_", geo.abb, ".RDS"))
+  rm(data, total, prop, estimates.mean, estimates.var.within, estimates.var.between, estimates)
+  gc()
 }

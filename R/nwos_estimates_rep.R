@@ -108,7 +108,12 @@ nwos_estimates_rep <- function(rep = "0",
         bind_rows(values.geo) %>%
         mutate(REP = rep) %>%
         select(GEO, VARIABLE, LEVEL, IMP, REP, STATISTIC, UNITS, VALUE)
+
+      rm(quest.imp.geo, quest.imp.geo.variable, values.variable, values.geo)
+      gc()
     } # End GEO
+    rm(quest.imp)
+    gc()
   } # End imp
 
   if(write){
