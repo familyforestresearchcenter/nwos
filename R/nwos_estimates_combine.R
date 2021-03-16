@@ -11,6 +11,7 @@ nwos_estimates_combine <- function(stratum = "FFO", domain = "ONEPLUS", wd = "DA
   # n.cores <- detectCores() - 1
 
   dir.create(paste0(wd, "/REP_GEO"), showWarnings = FALSE)
+  dir.create(paste0(wd, "/GEO"), showWarnings = FALSE)
 
   files <- list.files(paste0(wd, "/REP"), pattern = ".RDS")
   files <- files[!files %in% c("QUEST_20200212.RDS", "REP_WEIGHTS_20200212.RDS")]
