@@ -1,15 +1,17 @@
 #' Add TELE Variables to NWOS Dataset
 #'
 #' Add variables to an NWOS dataframe
-#' @usage nwos_estimates_data_add_variables(data = QUEST_WIDE, meta.data = QUEST_META, box2 = c(names(data)[grepl("OBJ_", names(data))], names(data)[grepl("CNC_", names(data))], "ATT_WOODED", "ATT_SELL", "KNOW_WOOD", "WANT_KNOW_WOOD", "EMO_WOOD", "WOOD_COMMUNITY"))
+#' @usage nwos_estimates_add_tele(x, data = QUEST_WIDE)
 #' @param x list number. Only applicable if is data is a list of data frames, instead of a single data frame. This used mainly for apply functions.
 #' @param data data frame or list of data frames
 #' @keywords nwos
 #' @details
-#' The default values create the variables used in the NWOS tables.
+#' TELE_ATT: 1= Woodland retreat; 2 = Workign the land; 3 = Supplemental income; 4 = Uninvolved
+#' TELE_PRIME: 1= Model; 2 = Prime; 3 = Defector; 4 = Write-off
 #' @export
 #' @examples
-#' nwos_estimates_data_add_variables(minority = T, tele = T)
+#' nwos_estimates_add_tele(x = 1 , data = QUEST_LIST)
+
 
 nwos_estimates_add_tele <- function(x = NA, data = QUEST) {
   require(tidyverse)
@@ -18,30 +20,22 @@ nwos_estimates_add_tele <- function(x = NA, data = QUEST) {
 
   # Attitudinal
   tele.att <- data %>%
-    select(OBJ_TIM, OBJ_INV, OBJ_BEA, OBJ_NAT, OBJ_PRI, OBJ_HUNT, OBJ_REC) %>%
-    # mutate(across(OBJ_TIM, .fns = function(x) if_else(x %in% 4:5, 1, 0))) %>%
-    mutate(across(.fns = function(x) if_else(x %in% 4:5, 1, 0))) %>% # -OBJ_TIM,
-    mutate(TELE_ATT_FINANCIAL = as.factor(if_else(OBJ_TIM == 1 | OBJ_INV == 1,
-                                                  1, 0)),
-           TELE_ATT_AMENITY = as.factor(if_else(OBJ_BEA == 1 | OBJ_NAT == 1 | OBJ_PRI == 1 |
-                                                  OBJ_HUNT == 1 | OBJ_REC == 1,
-                                                1, 0)))
-
-  tele.att.mat <- tibble(TELE_ATT_FINANCIAL = as.factor(c(0, 1, 1, 0)),
-                         TELE_ATT_AMENITY = as.factor(c(1, 1, 0, 0)),
-                         TELE_ATTITUDINAL = as.factor(c(1, 2, 3, 4)))
-  # 1= Woodland retreat; 2 = Workign the land; 3 = Supplemental income; 4 = Uninvolved
-
-  tele.att <- tele.att %>%
-    left_join(tele.att.mat, by = c("TELE_ATT_FINANCIAL", "TELE_ATT_AMENITY")) %>%
-    select(TELE_ATT_FINANCIAL, TELE_ATT_AMENITY, TELE_ATTITUDINAL)
+    mutate(TELE_ATT_FINANCIAL = factor(if_else(OBJ_TIM %in% 4:5, 1, 0)),
+           TELE_ATT_AMENITY = factor(if_else((OBJ_BEA == 5 | OBJ_NAT == 5 | OBJ_PRI == 5 |
+                                                  OBJ_HUNT == 5 | OBJ_REC == 5), 1, 0)),
+           TELE_ATT = factor(case_when(TELE_ATT_FINANCIAL == 0 & TELE_ATT_AMENITY == 1 ~ 1, # 1 = Woodland retreat
+                                       TELE_ATT_FINANCIAL == 1 & TELE_ATT_AMENITY == 1 ~ 2, # 2 = Workign the land
+                                       TELE_ATT_FINANCIAL == 1 & TELE_ATT_AMENITY == 0 ~ 3, # 3 = Supplemental income
+                                       TELE_ATT_FINANCIAL == 0 & TELE_ATT_AMENITY == 0 ~ 4))) # 4 = Uninvolved
 
   # Prime Prospects
   tele.prime.att <- data %>%
     select(OBJ_NAT, OBJ_WAT, OBJ_WIL, CNC_HEIR, ATT_WOODED) %>%
     mutate(across(.fns = function(x) if_else(x %in% 4:5, 1, 0))) %>%
     mutate(TELE_PRIME_ATTITUDE = rowSums(.)) %>%
-    mutate(TELE_PRIME_ATTITUDE_CAT = cut(TELE_PRIME_ATTITUDE, c(0, 1, 4, Inf), labels = 0:2, include.lowest = T, right = F))
+    mutate(TELE_PRIME_ATTITUDE_CAT = factor(case_when(TELE_PRIME_ATTITUDE == 0 ~ 0,
+                                                      TELE_PRIME_ATTITUDE %in% 1:3 ~ 1,
+                                                      TELE_PRIME_ATTITUDE >= 4 ~ 2)))
 
   tele.prime.beh <- data %>%
     mutate(ADVICE_PRO = if_else(ADV_SRC_STATE==1 | ADV_SRC_FED==1 | ADV_SRC_PRIV==1, 1, 0)) %>%
@@ -49,15 +43,20 @@ nwos_estimates_add_tele <- function(x = NA, data = QUEST) {
            ACT_RED_FIRE, ACT_CONTROL_BURN, ACT_INVA, ACT_INS, ACT_WILD, ADVICE_PRO) %>%
     mutate(across(.fns = function(x) if_else(x == 1, 1, 0))) %>%
     mutate(TELE_PRIME_BEHAVIOR =rowSums(.)) %>%
-    mutate(TELE_PRIME_BEHVAIOR_CAT = cut(TELE_PRIME_BEHAVIOR, c(0, 1, 4, Inf), labels = 0:2, include.lowest = T, right = F))
-
-  tele.prime.mat <- tibble(TELE_PRIME_ATTITUDE_CAT = as.factor(c(2, 2, 1, 1, 2, 1, 0, 0, 0)),
-                           TELE_PRIME_BEHVAIOR_CAT = as.factor(c(2, 1, 1, 0, 0, 2, 2, 1, 0)),
-                           TELE_PRIME = as.factor(c(1, 2, 2, 2, 2, 3, 3, 3, 4))) # 1= Model; 2 = Prime; 3 = Defector; 4 = Write-off
+    mutate(TELE_PRIME_BEHVAIOR_CAT = factor(case_when(TELE_PRIME_BEHAVIOR == 0 ~ 0,
+                                                      TELE_PRIME_BEHAVIOR %in% 1:3 ~ 1,
+                                                      TELE_PRIME_BEHAVIOR >= 4 ~ 2)))
 
   tele.prime <- bind_cols(tele.prime.att, tele.prime.beh) %>%
-    left_join(tele.prime.mat, by = c("TELE_PRIME_ATTITUDE_CAT", "TELE_PRIME_BEHVAIOR_CAT")) %>%
-    select(TELE_PRIME_ATTITUDE, TELE_PRIME_ATTITUDE_CAT, TELE_PRIME_BEHAVIOR, TELE_PRIME_BEHVAIOR_CAT, TELE_PRIME)
+    mutate(TELE_PRIME = factor(case_when(TELE_PRIME_ATTITUDE_CAT == 2 & TELE_PRIME_BEHVAIOR_CAT == 2 ~ 1, # 1 = Model
+                                         TELE_PRIME_ATTITUDE_CAT == 2 & TELE_PRIME_BEHVAIOR_CAT == 1 ~ 2, # 2 = Prime
+                                         TELE_PRIME_ATTITUDE_CAT == 2 & TELE_PRIME_BEHVAIOR_CAT == 0 ~ 2,
+                                         TELE_PRIME_ATTITUDE_CAT == 1 & TELE_PRIME_BEHVAIOR_CAT == 2 ~ 2,
+                                         TELE_PRIME_ATTITUDE_CAT == 1 & TELE_PRIME_BEHVAIOR_CAT == 1 ~ 2,
+                                         TELE_PRIME_ATTITUDE_CAT == 1 & TELE_PRIME_BEHVAIOR_CAT == 0 ~ 2,
+                                         TELE_PRIME_ATTITUDE_CAT == 0 & TELE_PRIME_BEHVAIOR_CAT == 2 ~ 3, # 3 = Defector
+                                         TELE_PRIME_ATTITUDE_CAT == 0 & TELE_PRIME_BEHVAIOR_CAT == 1 ~ 3,
+                                         TELE_PRIME_ATTITUDE_CAT == 0 & TELE_PRIME_BEHVAIOR_CAT == 0 ~ 4))) # 4 = Write-off
 
   # Engagement
   tele.eng <- data %>%
@@ -66,12 +65,15 @@ nwos_estimates_add_tele <- function(x = NA, data = QUEST) {
     mutate(across(.fns = as.character)) %>%
     mutate(across(.fns = as.numeric)) %>%
     mutate(TELE_ACT_COUNT =rowSums(.)) %>%
-    mutate(TELE_ENGAGEMENT = cut(TELE_ACT_COUNT, c(0, 1, 2, 4, Inf), labels = 0:3, include.lowest = T, right = F)) %>%
+    mutate(TELE_ENGAGEMENT = factor(case_when(TELE_ACT_COUNT == 0 ~ 0,
+                                              TELE_ACT_COUNT == 1 ~ 1,
+                                              TELE_ACT_COUNT %in% 2:3 ~ 2,
+                                              TELE_ACT_COUNT >= 4 ~ 3))) %>%
     select(TELE_ACT_COUNT, TELE_ENGAGEMENT)
 
   # Combine
   tele <- bind_cols(tele.att, tele.prime, tele.eng) %>%
-    select(TELE_ATT_FINANCIAL, TELE_ATT_AMENITY, TELE_ATTITUDINAL,
+    select(TELE_ATT_FINANCIAL, TELE_ATT_AMENITY, TELE_ATT,
            TELE_PRIME_ATTITUDE, TELE_PRIME_ATTITUDE_CAT, TELE_PRIME_BEHAVIOR, TELE_PRIME_BEHVAIOR_CAT, TELE_PRIME,
            TELE_ACT_COUNT, TELE_ENGAGEMENT)
 

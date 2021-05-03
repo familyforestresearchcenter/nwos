@@ -4,7 +4,7 @@
 \alias{nwos_estimates_add_tele}
 \title{Add TELE Variables to NWOS Dataset}
 \usage{
-nwos_estimates_data_add_variables(data = QUEST_WIDE, meta.data = QUEST_META, box2 = c(names(data)[grepl("OBJ_", names(data))], names(data)[grepl("CNC_", names(data))], "ATT_WOODED", "ATT_SELL", "KNOW_WOOD", "WANT_KNOW_WOOD", "EMO_WOOD", "WOOD_COMMUNITY"))
+nwos_estimates_add_tele(x, data = QUEST_WIDE)
 }
 \arguments{
 \item{x}{list number. Only applicable if is data is a list of data frames, instead of a single data frame. This used mainly for apply functions.}
@@ -15,9 +15,10 @@ nwos_estimates_data_add_variables(data = QUEST_WIDE, meta.data = QUEST_META, box
 Add variables to an NWOS dataframe
 }
 \details{
-The default values create the variables used in the NWOS tables.
+TELE_ATT: 1= Woodland retreat; 2 = Workign the land; 3 = Supplemental income; 4 = Uninvolved
+TELE_PRIME: 1= Model; 2 = Prime; 3 = Defector; 4 = Write-off
 }
 \examples{
-nwos_estimates_data_add_variables(minority = T, tele = T)
+nwos_estimates_add_tele(x = 1 , data = QUEST_LIST)
 }
 \keyword{nwos}
