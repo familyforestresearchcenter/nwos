@@ -11,12 +11,13 @@
 #' @examples
 #' nwos_estimates_add_minority()
 
-nwos_estimates_add_minority <- function(x = NA, data = QUEST) {
+add_minority <- function(x = NA, data = QUEST) {
   require(tidyverse)
   if(!is.data.frame(data)) data <- data[[x]]
   data %>%
-    mutate(OWN1_MINORITY = factor(if_else((OWN1_ETH == 1 | OWN1_RACE_ASIAN == 1 | OWN1_RACE_BLACK == 1 |
-                                             OWN1_RACE_HAWAIIAN == 1 | OWN1_RACE_INDIAN == 1), 1,
-                                          if_else((OWN1_ETH == -1 | OWN1_RACE_ASIAN == -1), -1,
-                                                  if_else((OWN1_ETH == -2 | OWN1_RACE_ASIAN == -2), -2, 0)))))
+    mutate(OWN1_MINORITY = factor(case_when(OWN1_ETH == 1 | OWN1_RACE_ASIAN == 1 | OWN1_RACE_BLACK == 1 |
+                                             OWN1_RACE_HAWAIIAN == 1 | OWN1_RACE_INDIAN == 1 ~ 1,
+                                          OWN1_ETH == -1 | OWN1_RACE_ASIAN == -1 ~ -1,
+                                          OWN1_ETH == -2 | OWN1_RACE_ASIAN == -2 ~ -2, 
+                                          TRUE ~ 0)))
 }
