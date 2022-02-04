@@ -16,7 +16,8 @@ nwos_urban_table_set(
   domain = DOMAIN,
   domain.abb = DOMAIN_ABB,
   domain.name = DOMAIN_NAME,
-  year = YEAR
+  year = YEAR,
+  out.file = "HTML/TEST.html"
 )
 }
 \description{

@@ -30,9 +30,10 @@ nwos_urban_table_set <- function(geo.abb, # geo.abb = "BALT"
                                  domain = DOMAIN,
                                  domain.abb = DOMAIN_ABB,
                                  domain.name = DOMAIN_NAME,
-                                 year = YEAR) {
+                                 year = YEAR,
+                                 out.file = "HTML/TEST.html") {
   #### Setup ####
-  coop.table.data <- NULL
+  coop.table.data <- data.coop
   table.data <- nwos_urban_table_data(data %>% filter(GEO_ABB == geo.abb))
 
   geo.name <- as.character(ref.geo %>% filter(GEO_ABB %in% geo.abb) %>% pull(GEO_NAME))
@@ -149,6 +150,7 @@ nwos_urban_table_set <- function(geo.abb, # geo.abb = "BALT"
                                  domain.abb = DOMAIN_ABB,
                                  domain.name = DOMAIN_NAME,
                                  year = YEAR)))
+  tables.html[1:29]
   #### End ####
   end.html <- c("",
                 "</body>",
@@ -157,7 +159,7 @@ nwos_urban_table_set <- function(geo.abb, # geo.abb = "BALT"
 
   #### Combine & Write ####
   html <- c(start.html, title.html, cite.html, toc.html, tables.html, end.html)
-  writeLines(html, "HTML/TEST.html")
+  writeLines(html, out.file)
 
   return()
 }
