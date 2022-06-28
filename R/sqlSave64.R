@@ -39,7 +39,7 @@ sqlSave64 <- function(data,tname,vtypes){
   sink()
   
   #open 32-bit instance and run temporary script
-  rl <- paste0(Sys.getenv("R_HOME"), "/bin/i386/Rscript.exe") #location of 32-bit R
+  rl <- paste0(Sys.getenv("R_HOME"), "/bin/x64/Rscript.exe") #location of 32-bit R
   rc <- paste(rl,script) #script to be run in 32-bit R
   system(rc) #send full R call to system
 }
