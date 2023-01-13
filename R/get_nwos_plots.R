@@ -7,18 +7,19 @@
 #'
 #' @param cycle is a string containing the NWOS cycle desired.
 #' @param study is a string containing the NWOS study desired.
+#' @param yrs is a vector containing the specific years desired with the NWOS cycle.
 #'
 #' @return an nwos.plots object
 #'
 #' @examples
-#' get_nwos_plots(cycle='2018',study='base')
+#' get_nwos_plots(cycle='2018',study='base',yrs=2017:2018)
 #'
 #' @export
 
-get_nwos_plots <- function(cycle = "2018",study='base'){
+get_nwos_plots <- function(cycle = "2018",study='base',yrs=NA){
   
-  if (study!='base'){
-	  stop("get_nwos_plots() currently does not include functionality for studies other than 'base'")
+  if (!study %in% c('base','islands')){
+	  stop("get_nwos_plots() currently does not include functionality for studies other than 'base' and 'islands'")
   }
   
   #changing global settings
@@ -41,8 +42,16 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   LEFT JOIN FS_NWOS.OWNER o
   ON p.OWNER_CN = o.CN
   WHERE p.NWOS_CYCLE = '<CYTAG>'
+  AND p.NWOSYR IN '(<YRTAG>)'
   AND (p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON = 'Augmentation')"
   q <- gsub("<CYTAG>",cycle,q)
+  if (!is.na(yrs)){
+	years <- paste(yrs,collapse=',')
+	q <- gsub("<YRTAG>",years,q)
+  } else {
+	q <- gsub("<YRTAG>","p.nwosyr",q)
+  }
+  
   PO <- sqlQuery64(q)
   
   PO$STATECD_NWOS <- as.character(PO$STATECD_NWOS) #statecd to character
@@ -61,6 +70,13 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   #update OWNCD_NWOS from OA
   IN.OA <- PO$PLOT_OWNER_CN %in% OA$CN #index of those with updates
   PO$OWNCD_NWOS[IN.OA] <- OA$OWNCD_ASSIGNED[match(PO$PLOT_OWNER_CN[IN.OA],OA$CN)]
+  
+  CA <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_COND_ASSIGNED.csv") #import lookup table for randomly assigned condition classes
+  CA <- CA[CA$NWOS_CYCLE==cycle,] #subset to this cycle
+  
+  #update OWNCD_NWOS from OA
+  IN.CA <- PO$PLOT_OWNER_CN %in% CA$CN #index of those with updates
+  PO$OWNCD_NWOS[IN.CA] <- CA$COND_ASSIGNED[match(PO$PLOT_OWNER_CN[IN.CA],CA$CN)]
   
   PO <- PO[nullif(PO$COND_STATUS_CD) != '4',] #drop census water from sample
   
@@ -104,6 +120,8 @@ get_nwos_plots <- function(cycle = "2018",study='base'){
   q <- gsub("<CYTAG>",cycle,q)
   q <- gsub("<STTAG>",study,q)
   SR <- sqlQuery64(q)
+  
+  PO <- PO[PO$STATECD_NWOS %in% SR$STATECD_NWOS,] #reduce PO to sampled geographies
   
   #combine RESPONSE_CD and NONRESPONSE_REASON in single column
   SR$RESPONSE <- ifelse(SR$RESPONSE_CD=='1','R',SR$NONRESPONSE_REASON)
