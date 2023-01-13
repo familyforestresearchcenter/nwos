@@ -4,11 +4,8 @@
 \alias{get_nwos_plots_intensified}
 \title{get_nwos_plots_intensified}
 \usage{
-get_nwos_plots_intensified(
-  cycle = "2018",
-  study = "base intensified",
-  states = NA
-)
+get_nwos_plots_intensified(cycle = "2018", study = "base intensified",
+  states = NA)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}
