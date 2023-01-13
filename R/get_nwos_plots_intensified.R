@@ -136,7 +136,7 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
     years <- paste(yrs,collapse=',')
     q <- gsub("<YRTAG>",years,q)
   } else {
-    q <- gsub("<YRTAG>","p.NWOSYR",q)
+    q <- gsub("<YRTAG>","s.NWOSYR",q)
   }
   SR <- sqlQuery64(q)
   

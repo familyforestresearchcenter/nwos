@@ -126,7 +126,7 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city='HOUS',yrs=NA
     years <- paste(yrs,collapse=',')
     q <- gsub("<YRTAG>",years,q)
   } else {
-    q <- gsub("<YRTAG>","p.NWOSYR",q)
+    q <- gsub("<YRTAG>","s.NWOSYR",q)
   }
   SR <- sqlQuery64(q)
   
