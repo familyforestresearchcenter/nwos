@@ -8,18 +8,19 @@
 #' @param cycle is a string containing the NWOS cycle desired.
 #' @param study is a string containing the NWOS study desired.
 #' @param city is a string containing the NWOS city code desired.
+#' @param yrs is a vector containing the specific years desired with the NWOS cycle.
 #'
 #' @return an nwos.plots object
 #'
 #' @examples
-#' get_nwos_plots_urban(cycle='2023',study='urban',city='HOUS')
+#' get_nwos_plots_urban(cycle='2023',study='urban',city='HOUS',yrs='2019')
 #'
 #' @export
 
-get_nwos_plots_urban <- function(cycle = "2023",study='urban',city='HOUS'){
+get_nwos_plots_urban <- function(cycle = "2023",study='urban',city='HOUS',yrs=NA){
   
   if (study!='urban'){
-	  stop("get_nwos_plots_HOUS() currently does not include functionality for studies other than 'urban'")
+	  stop("get_nwos_plots_urban() currently does not include functionality for studies other than 'urban'")
   }
   
   #changing global settings
@@ -44,9 +45,16 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city='HOUS'){
   ON p.OWNER_CN = o.CN
   WHERE p.NWOS_CYCLE = '<CYTAG>'
   AND p.STATECD_NWOS = '<CTTAG>'
+  AND p.NWOSYR IN (<YRTAG>)
   AND p.ORIGIN_OTHER_REASON LIKE '%Urban%'"
   q <- gsub("<CYTAG>",cycle,q)
   q <- gsub("<CTTAG>",city,q)
+  if (all(!is.na(yrs))){
+    years <- paste(yrs,collapse=',')
+    q <- gsub("<YRTAG>",years,q)
+  } else {
+    q <- gsub("<YRTAG>","p.NWOSYR",q)
+  }
   PO <- sqlQuery64(q)
   
   PO$STATECD_NWOS <- as.character(PO$STATECD_NWOS) #statecd to character
@@ -109,10 +117,17 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city='HOUS'){
   AND s.NWOS_CYCLE = '<CYTAG>'
   AND s.NWOS_STUDY = '<STTAG>'
   AND s.STATECD_NWOS = '<CTTAG>'
+  AND s.NWOSYR IN (<YRTAG>)
   AND (r.NONRESPONSE_REASON <> '9' OR r.NONRESPONSE_REASON IS NULL)"
   q <- gsub("<CYTAG>",cycle,q)
   q <- gsub("<STTAG>",study,q)
   q <- gsub("<CTTAG>",city,q)
+  if (all(!is.na(yrs))){
+    years <- paste(yrs,collapse=',')
+    q <- gsub("<YRTAG>",years,q)
+  } else {
+    q <- gsub("<YRTAG>","p.NWOSYR",q)
+  }
   SR <- sqlQuery64(q)
   
   #combine RESPONSE_CD and NONRESPONSE_REASON in single column
@@ -166,6 +181,10 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city='HOUS'){
   fs$POINT_COUNT <- PO2$PLOT_OWNER_CN[match(fs$SAMPLE_CN,PO2$SAMPLE_CN)] #add point_count
   
   PO <- PO[names(PO)!='NONFOREST_LAND_USE_CD'] #DROP THIS FIELD FOR STORAGE
+  
+  if (any(is.na(PO$STRATA))|any(is.na(fs$STRATA))){
+    stop("This sample is not fully reconciled.")
+  }
   
   ls <- list(plots=PO,response_codes=fs)
   ls <- new("nwos.plots.object",plots=ls[[1]],response_codes=ls[[2]])

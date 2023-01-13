@@ -42,16 +42,15 @@ get_nwos_plots <- function(cycle = "2018",study='base',yrs=NA){
   LEFT JOIN FS_NWOS.OWNER o
   ON p.OWNER_CN = o.CN
   WHERE p.NWOS_CYCLE = '<CYTAG>'
-  AND p.NWOSYR IN '(<YRTAG>)'
+  AND p.NWOSYR IN (<YRTAG>)
   AND (p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON = 'Augmentation')"
   q <- gsub("<CYTAG>",cycle,q)
-  if (!is.na(yrs)){
-	years <- paste(yrs,collapse=',')
-	q <- gsub("<YRTAG>",years,q)
+  if (all(!is.na(yrs))){
+	  years <- paste(yrs,collapse=',')
+	  q <- gsub("<YRTAG>",years,q)
   } else {
-	q <- gsub("<YRTAG>","p.nwosyr",q)
+	  q <- gsub("<YRTAG>","p.NWOSYR",q)
   }
-  
   PO <- sqlQuery64(q)
   
   PO$STATECD_NWOS <- as.character(PO$STATECD_NWOS) #statecd to character
@@ -74,7 +73,7 @@ get_nwos_plots <- function(cycle = "2018",study='base',yrs=NA){
   CA <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_COND_ASSIGNED.csv") #import lookup table for randomly assigned condition classes
   CA <- CA[CA$NWOS_CYCLE==cycle,] #subset to this cycle
   
-  #update OWNCD_NWOS from OA
+  #update OWNCD_NWOS from CA
   IN.CA <- PO$PLOT_OWNER_CN %in% CA$CN #index of those with updates
   PO$OWNCD_NWOS[IN.CA] <- CA$COND_ASSIGNED[match(PO$PLOT_OWNER_CN[IN.CA],CA$CN)]
   
@@ -82,7 +81,7 @@ get_nwos_plots <- function(cycle = "2018",study='base',yrs=NA){
   
   #determine strata
   #non-private, non-forested
-  PR <- c('41','42','43','44','45') #private
+  PR <- c('41','42','43','45') #private
   NP <- na.omit(unique(PO$OWNCD_NWOS)[!unique(PO$OWNCD_NWOS)%in%PR]) #nonprivate
   NF <- na.omit(unique(PO$COND_STATUS_CD)[!unique(PO$COND_STATUS_CD)=='1']) #nonforest
   PO$STRATA <- ifelse(PO$OWNCD_NWOS %in% NP | 
@@ -116,9 +115,16 @@ get_nwos_plots <- function(cycle = "2018",study='base',yrs=NA){
   WHERE s.CN = r.SAMPLE_CN
   AND s.NWOS_CYCLE = '<CYTAG>'
   AND s.NWOS_STUDY = '<STTAG>'
+  AND s.NWOSYR IN (<YRTAG>)
   AND (r.NONRESPONSE_REASON <> '9' OR r.NONRESPONSE_REASON IS NULL)"
   q <- gsub("<CYTAG>",cycle,q)
   q <- gsub("<STTAG>",study,q)
+  if (all(!is.na(yrs))){
+    years <- paste(yrs,collapse=',')
+    q <- gsub("<YRTAG>",years,q)
+  } else {
+    q <- gsub("<YRTAG>","p.NWOSYR",q)
+  }
   SR <- sqlQuery64(q)
   
   PO <- PO[PO$STATECD_NWOS %in% SR$STATECD_NWOS,] #reduce PO to sampled geographies
@@ -172,6 +178,10 @@ get_nwos_plots <- function(cycle = "2018",study='base',yrs=NA){
   
   PO2 <- aggregate(PLOT_OWNER_CN~SAMPLE_CN,PO2,FUN='length') #aggregate PO2 by SAMPLE_CN
   fs$POINT_COUNT <- PO2$PLOT_OWNER_CN[match(fs$SAMPLE_CN,PO2$SAMPLE_CN)] #add point_count
+  
+  if (any(is.na(PO$STRATA))|any(is.na(fs$STRATA))){
+    stop("This sample is not fully reconciled.")
+  }
   
   ls <- list(plots=PO,response_codes=fs)
   ls <- new("nwos.plots.object",plots=ls[[1]],response_codes=ls[[2]])

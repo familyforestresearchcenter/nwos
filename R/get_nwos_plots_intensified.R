@@ -7,15 +7,17 @@
 #'
 #' @param cycle is a string containing the NWOS cycle desired.
 #' @param study is a string containing the NWOS study desired.
+#' @param states is a string containing the NWOS state desired.
+#' @param yrs is a vector containing the specific years desired with the NWOS cycle.
 #'
 #' @return an nwos.plots object
 #'
 #' @examples
-#' get_nwos_plots(cycle='2018',study='base intensified')
+#' get_nwos_plots(cycle='2018',study='base intensified',states="26",yrs=2017:2018)
 #'
 #' @export
 
-get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',states=NA){
+get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',states=NA,yrs=NA){
   
   if (study!='base intensified'){
 	  stop("get_nwos_plots_intensified() currently does not include functionality for studies other than 'base intensified'")
@@ -42,12 +44,19 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   ON p.OWNER_CN = o.CN
   WHERE p.NWOS_CYCLE = '<CYTAG>'
   AND p.STATECD_NWOS IN ('<STAG>')
+  AND p.NWOSYR IN (<YRTAG>)
   AND (p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON IN ('Augmentation','State intensification'))"
   q <- gsub("<CYTAG>",cycle,q)
   if (!is.na(states[1])){ #insert states (if listed)
     q <- gsub("<STAG>",paste(states,collapse="','"),q)
   } else {
     q <- gsub("IN ('<STAG>')","IS NOT NULL",q,fixed=T) #else, change to null filter
+  }
+  if (all(!is.na(yrs))){
+    years <- paste(yrs,collapse=',')
+    q <- gsub("<YRTAG>",years,q)
+  } else {
+    q <- gsub("<YRTAG>","p.NWOSYR",q)
   }
   PO <- sqlQuery64(q)
   
@@ -68,11 +77,18 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   IN.OA <- PO$PLOT_OWNER_CN %in% OA$CN #index of those with updates
   PO$OWNCD_NWOS[IN.OA] <- OA$OWNCD_ASSIGNED[match(PO$PLOT_OWNER_CN[IN.OA],OA$CN)]
   
+  CA <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_COND_ASSIGNED.csv") #import lookup table for randomly assigned condition classes
+  CA <- CA[CA$NWOS_CYCLE==cycle,] #subset to this cycle
+  
+  #update OWNCD_NWOS from CA
+  IN.CA <- PO$PLOT_OWNER_CN %in% CA$CN #index of those with updates
+  PO$OWNCD_NWOS[IN.CA] <- CA$COND_ASSIGNED[match(PO$PLOT_OWNER_CN[IN.CA],CA$CN)]
+  
   PO <- PO[nullif(PO$COND_STATUS_CD) != '4',] #drop census water from sample
   
   #determine strata
   #non-private, non-forested
-  PR <- c('41','42','43','44','45') #private
+  PR <- c('41','42','43','45') #private
   NP <- na.omit(unique(PO$OWNCD_NWOS)[!unique(PO$OWNCD_NWOS)%in%PR]) #nonprivate
   NF <- na.omit(unique(PO$COND_STATUS_CD)[!unique(PO$COND_STATUS_CD)=='1']) #nonforest
   PO$STRATA <- ifelse(PO$OWNCD_NWOS %in% NP | 
@@ -106,6 +122,7 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   WHERE s.CN = r.SAMPLE_CN
   AND s.NWOS_CYCLE = '<CYTAG>'
   AND s.STATECD_NWOS IN ('<STAG>')
+  AND s.NWOSYR IN (<YRTAG>)
   AND s.NWOS_STUDY IN ('base','base intensified') --AND s.NWOS_STUDY = '<STTAG>'
   AND (r.NONRESPONSE_REASON <> '9' OR r.NONRESPONSE_REASON IS NULL)"
   q <- gsub("<CYTAG>",cycle,q)
@@ -115,7 +132,15 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   } else {
     q <- gsub("IN ('<STAG>')","IS NOT NULL",q,fixed=T) #else, change to null filter
   }
+  if (all(!is.na(yrs))){
+    years <- paste(yrs,collapse=',')
+    q <- gsub("<YRTAG>",years,q)
+  } else {
+    q <- gsub("<YRTAG>","p.NWOSYR",q)
+  }
   SR <- sqlQuery64(q)
+  
+  PO <- PO[PO$STATECD_NWOS %in% SR$STATECD_NWOS,] #reduce PO to sampled geographies
   
   #combine RESPONSE_CD and NONRESPONSE_REASON in single column
   SR$RESPONSE <- ifelse(SR$RESPONSE_CD=='1','R',SR$NONRESPONSE_REASON)
@@ -166,6 +191,10 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   
   PO2 <- aggregate(PLOT_OWNER_CN~SAMPLE_CN,PO2,FUN='length') #aggregate PO2 by SAMPLE_CN
   fs$POINT_COUNT <- PO2$PLOT_OWNER_CN[match(fs$SAMPLE_CN,PO2$SAMPLE_CN)] #add point_count
+  
+  if (any(is.na(PO$STRATA))|any(is.na(fs$STRATA))){
+    stop("This sample is not fully reconciled.")
+  }
   
   ls <- list(plots=PO,response_codes=fs)
   ls <- new("nwos.plots.object",plots=ls[[1]],response_codes=ls[[2]])
