@@ -4,18 +4,10 @@
 \alias{nwos_table_total}
 \title{nwos_table_total}
 \usage{
-nwos_table_total(
-  geo.abb,
-  data = QUEST_EST,
-  ref.geo = REF_GEO,
-  ref.tab = REF_TABLE,
-  stratum.abb = STRATUM_ABB,
-  stratum.name = STRATUM_NAME,
-  domain.abb = DOMAIN_ABB,
-  domain.name = DOMAIN_NAME,
-  year = YEAR,
-  year.range = YEAR_RANGE
-)
+nwos_table_total(geo.abb, data = QUEST_EST, ref.geo = REF_GEO,
+  ref.tab = REF_TABLE, stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME, domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME, year = YEAR, year.range = YEAR_RANGE)
 }
 \description{
 geo.abb = "US"

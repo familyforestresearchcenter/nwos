@@ -4,12 +4,14 @@
 \alias{get_nwos_plots}
 \title{get_nwos_plots}
 \usage{
-get_nwos_plots(cycle = "2018", study = "base")
+get_nwos_plots(cycle = "2018", study = "base", yrs = NA)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}
 
 \item{study}{is a string containing the NWOS study desired.}
+
+\item{yrs}{is a vector containing the specific years desired with the NWOS cycle.}
 }
 \value{
 an nwos.plots object
@@ -21,6 +23,6 @@ Extracts the full plot list for a given NWOS cycle/study, classed to STRATA
 This function must be run on a machine with an ODBC connection to the USFS FIA production database through a user with read permissions.
 }
 \examples{
-get_nwos_plots(cycle='2018',study='base')
+get_nwos_plots(cycle='2018',study='base',yrs=2017:2018)
 
 }
