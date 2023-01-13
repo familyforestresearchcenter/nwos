@@ -4,7 +4,8 @@
 \alias{get_nwos_plots_urban}
 \title{get_nwos_plots_urban}
 \usage{
-get_nwos_plots_urban(cycle = "2023", study = "urban", city = "HOUS")
+get_nwos_plots_urban(cycle = "2023", study = "urban", city = "HOUS",
+  yrs = NA)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}
@@ -12,6 +13,8 @@ get_nwos_plots_urban(cycle = "2023", study = "urban", city = "HOUS")
 \item{study}{is a string containing the NWOS study desired.}
 
 \item{city}{is a string containing the NWOS city code desired.}
+
+\item{yrs}{is a vector containing the specific years desired with the NWOS cycle.}
 }
 \value{
 an nwos.plots object
@@ -23,6 +26,6 @@ Extracts the full plot list for a given NWOS cycle/study, classed to STRATA
 This function must be run on a machine with an ODBC connection to the USFS FIA production database through a user with read permissions.
 }
 \examples{
-get_nwos_plots_urban(cycle='2023',study='urban',city='HOUS')
+get_nwos_plots_urban(cycle='2023',study='urban',city='HOUS',yrs='2019')
 
 }
