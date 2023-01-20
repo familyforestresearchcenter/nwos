@@ -4,8 +4,7 @@
 \alias{get_nwos_plots_urban}
 \title{get_nwos_plots_urban}
 \usage{
-get_nwos_plots_urban(cycle = "2023", study = "urban", city = "HOUS",
-  yrs = NA)
+get_nwos_plots_urban(cycle = "2023", study = "urban", city = "HOUS", yrs = NA)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}

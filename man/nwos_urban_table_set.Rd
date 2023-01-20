@@ -4,12 +4,21 @@
 \alias{nwos_urban_table_set}
 \title{nwos_table_set}
 \usage{
-nwos_urban_table_set(geo.abb, data = ESTIMATES, data.coop = COOP,
-  ref.geo = REF_GEO, ref.table = REF_TABLE, stratum = STRATUM,
-  stratum.abb = STRATUM_ABB, stratum.name = STRATUM_NAME,
-  domain = DOMAIN, domain.abb = DOMAIN_ABB,
-  domain.name = DOMAIN_NAME, year = YEAR,
-  out.file = "HTML/TEST.html")
+nwos_urban_table_set(
+  geo.abb,
+  data = ESTIMATES,
+  data.coop = COOP,
+  ref.geo = REF_GEO,
+  ref.table = REF_TABLE,
+  stratum = STRATUM,
+  stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME,
+  domain = DOMAIN,
+  domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME,
+  year = YEAR,
+  out.file = "HTML/TEST.html"
+)
 }
 \description{
 Create the body of an NWOS table

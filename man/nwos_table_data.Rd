@@ -4,8 +4,14 @@
 \alias{nwos_table_data}
 \title{nwos_tables_data}
 \usage{
-nwos_table_data(data, units = "thousands", ref.geo = REF_GEO,
-  ref.tab = REF_TABLE, ref.var = REF_VARIABLE, ref.lab = REF_LABEL)
+nwos_table_data(
+  data,
+  units = "thousands",
+  ref.geo = REF_GEO,
+  ref.tab = REF_TABLE,
+  ref.var = REF_VARIABLE,
+  ref.lab = REF_LABEL
+)
 }
 \arguments{
 \item{data}{table.data}
