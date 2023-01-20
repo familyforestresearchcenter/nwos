@@ -112,9 +112,9 @@ nwos_urban_table_set <- function(geo.abb, # geo.abb = "BALT"
                   "<br>")
 
   ##### Citation ####
-  cite.html <- c(paste0("Suggested citation: USDA Forest Service. 2021. Urban Forest Ownerships of ",
-                        geo.name, ", ", year, ": ",
-                        "Results from the USDA Forest Service, Urban National Landwner Survey. ",
+  cite.html <- c(paste0("Suggested citation: USDA Forest Service. 2022. ",
+                        "Tabular results for the USDA Forest Service, Urban National Landowner Survey, ",
+                        geo.name, ", ", year, ". ",
                         "Madison, WI: U.S. Department of Agriculture, Forest Service, Northern Research Station. ",
                         "[ADD DOI].<br>"),
                  "<br>",
