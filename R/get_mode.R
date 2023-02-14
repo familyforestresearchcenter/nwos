@@ -1,4 +1,4 @@
-#' mode
+#' get_mode
 #'
 #' Find the modal value for a vector
 #'
@@ -9,14 +9,14 @@
 #' @param x is a vector
 #'
 #' @examples
-#' mode(c("a", "a", "b"))
-#' mode(c("a", "b", "b"))
-#' mode(c("a", "a", "b", "b"))
-#' mode(c("b", "b", "a", "a"))
+#' get_mode(c("a", "a", "b"))
+#' get_mode(c("a", "b", "b"))
+#' get_mode(c("a", "a", "b", "b"))
+#' get_mode(c("b", "b", "a", "a"))
 #'
 #' @export
 
-mode <- function(x) {
+get_mode <- function(x) {
   unique.x <- sort(unique(x))
   unique.x[which.max(tabulate(match(x, unique.x)))]
   }
