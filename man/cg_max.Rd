@@ -4,11 +4,8 @@
 \alias{cg_max}
 \title{cg_max}
 \usage{
-cg_max(
-  check_group = "ACQ_TYPE",
-  quest_wide = QUEST_WIDE,
-  quest_meta = QUEST_META
-)
+cg_max(check_group = "ACQ_TYPE", quest_wide = QUEST_WIDE,
+  quest_meta = QUEST_META)
 }
 \arguments{
 \item{quest_meta}{}

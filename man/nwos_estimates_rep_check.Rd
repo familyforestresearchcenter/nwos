@@ -4,11 +4,8 @@
 \alias{nwos_estimates_rep_check}
 \title{nwos_estimates_rep_check}
 \usage{
-nwos_estimates_rep_check(
-  file.dir = "DATA",
-  stratum = "FFO",
-  domain = "ONEPLUS"
-)
+nwos_estimates_rep_check(file.dir = "DATA", stratum = "FFO",
+  domain = "ONEPLUS")
 }
 \description{
 Check number of replicates

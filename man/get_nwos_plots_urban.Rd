@@ -4,14 +4,15 @@
 \alias{get_nwos_plots_urban}
 \title{get_nwos_plots_urban}
 \usage{
-get_nwos_plots_urban(cycle = "2023", study = "urban", city = "HOUS", yrs = NA)
+get_nwos_plots_urban(cycle = "2023", study = "urban", city = NA,
+  yrs = NA)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}
 
 \item{study}{is a string containing the NWOS study desired.}
 
-\item{city}{is a string containing the NWOS city code desired.}
+\item{city}{is a string containing the NWOS city codes desired.}
 
 \item{yrs}{is a vector containing the specific years desired with the NWOS cycle.}
 }
