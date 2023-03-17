@@ -4,15 +4,8 @@
 \alias{nwos_urban_table_number}
 \title{nwos_urban_table_number}
 \usage{
-nwos_urban_table_number(
-  x,
-  d = 0,
-  r = 0,
-  n = 1,
-  n.max = Inf,
-  less.one = T,
-  n.zero = T
-)
+nwos_urban_table_number(x, d = 0, r = 0, n = 1, n.max = Inf,
+  less.one = T, n.zero = T)
 }
 \description{
 Converts units (e.g., to thousands) and rounds simialr to base except it adds another digit for values less than 1

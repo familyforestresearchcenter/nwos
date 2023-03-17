@@ -4,16 +4,10 @@
 \alias{nwos_urban_table}
 \title{nwos_table}
 \usage{
-nwos_urban_table(
-  tab.num,
-  data = table.data,
-  data.coop = coop.table.data,
-  stratum.abb = STRATUM_ABB,
-  stratum.name = STRATUM_NAME,
-  domain.abb = DOMAIN_ABB,
-  domain.name = DOMAIN_NAME,
-  year = YEAR
-)
+nwos_urban_table(tab.num, data = table.data,
+  data.coop = coop.table.data, stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME, domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME, year = YEAR)
 }
 \description{
 nwos_table

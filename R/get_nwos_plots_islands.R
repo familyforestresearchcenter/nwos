@@ -1,4 +1,4 @@
-#' get_nwos_plots_urban
+#' get_nwos_plots_islands
 #'
 #' Extracts the full plot list for a given NWOS cycle/study, classed to STRATA
 #'
@@ -7,20 +7,20 @@
 #'
 #' @param cycle is a string containing the NWOS cycle desired.
 #' @param study is a string containing the NWOS study desired.
-#' @param city is a string containing the NWOS city codes desired.
+#' @param geo is a string containing the NWOS statecds desired.
 #' @param yrs is a vector containing the specific years desired with the NWOS cycle.
 #'
 #' @return an nwos.plots object
 #'
 #' @examples
-#' get_nwos_plots_urban(cycle='2023',study='urban',city='HOUS',yrs='2019')
+#' get_nwos_plots_islands(cycle='2023',study='islands',geo='78',yrs='2019')
 #'
 #' @export
 
-get_nwos_plots_urban <- function(cycle = "2023",study='urban',city=NA,yrs=NA){
+get_nwos_plots_islands <- function(cycle = "2023",study='islands',geo=NA,yrs=NA){
   
-  if (study!='urban'){
-	  stop("get_nwos_plots_urban() currently does not include functionality for studies other than 'urban'")
+  if (study!='islands'){
+	  stop("get_nwos_plots_islands() currently does not include functionality for studies other than 'islands'")
   }
   
   #changing global settings
@@ -44,15 +44,15 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city=NA,yrs=NA){
   LEFT JOIN FS_NWOS.OWNER o
   ON p.OWNER_CN = o.CN
   WHERE p.NWOS_CYCLE = '<CYTAG>'
-  AND p.STATECD_NWOS IN ('<CTTAG>')
+  AND p.STATECD_NWOS IN ('<GETAG>')
   AND p.NWOSYR IN (<YRTAG>)
-  AND p.ORIGIN_OTHER_REASON LIKE '%Urban%'"
+  AND p.ORIGIN_OTHER_REASON LIKE '%Island%'"
   q <- gsub("<CYTAG>",cycle,q)
-  if (all(!is.na(city))) {
-    geos <- paste(city, collapse = "','")
-    q <- gsub("<CTTAG>", geos, q)
+  if (all(!is.na(geo))) {
+    geos <- paste(geo, collapse = "','")
+    q <- gsub("<GETAG>", geos, q)
   } else {
-    q <- gsub("'<CTTAG>'", "p.STATECD_NWOS", q)
+    q <- gsub("'<GETAG>'", "p.STATECD_NWOS", q)
   }
   if (all(!is.na(yrs))){
     years <- paste(yrs,collapse=',')
@@ -81,29 +81,24 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city=NA,yrs=NA){
   # 
   PO <- PO[nullif(PO$COND_STATUS_CD) != '4',] #drop census water from sample
   
-  # #determine strata
-  # #non-private, non-forested
-  # PR <- c('41','42','43','44','45') #private
-  # NP <- na.omit(unique(PO$OWNCD_NWOS)[!unique(PO$OWNCD_NWOS)%in%PR]) #nonprivate
-  # NF <- na.omit(unique(PO$COND_STATUS_CD)[!unique(PO$COND_STATUS_CD)=='1']) #nonforest
-  # PO$STRATA <- ifelse(PO$OWNCD_NWOS %in% NP | 
-  #                       PO$COND_STATUS_CD %in% NF,"NPNF",NA)
-  # #large corporate
-  # PO$STRATA <- ifelse(PO$INDUSTRIALCD_NWOS=='1' & 
-  #                       PO$COND_STATUS_CD=='1' &
-  #                       is.na(PO$STRATA),"CORP_LARGE",PO$STRATA)
-  # # Other Corp
-  # # PO$STRATA <- ifelse(PO$STRATA == '41', "CORP_OTHER", PO$STRATA)
-  # #private, forested, other (by OWNCD_NWOS)
-  # PO$STRATA <- ifelse(PO$OWNCD_NWOS %in% PR &
-  #                       PO$INDUSTRIALCD_NWOS %in% c('0',NA) &
-  #                       PO$COND_STATUS_CD=='1'&
-  #                       is.na(PO$STRATA), PO$OWNCD_NWOS,PO$STRATA)
-  
-  #residential status for BALT 2018 was done using a shapefile (as was public ownership)
-  #so everything that wasn't positively identified as private residential is not
-  PO$STRATA <- ifelse(nullif(PO$NONFOREST_LAND_USE_CD) %in% c('311','312') &
-                        !nullif(PO$OWNCD_NWOS) %in% c('0','31','32'),'PR','NPR')
+  #determine strata
+  #non-private, non-forested
+  PR <- c('41','42','43','44','45') #private
+  NP <- na.omit(unique(PO$OWNCD_NWOS)[!unique(PO$OWNCD_NWOS)%in%PR]) #nonprivate
+  NF <- na.omit(unique(PO$COND_STATUS_CD)[!unique(PO$COND_STATUS_CD)=='1']) #nonforest
+  PO$STRATA <- ifelse(PO$OWNCD_NWOS %in% NP |
+                        PO$COND_STATUS_CD %in% NF,"NPNF",NA)
+  #large corporate
+  PO$STRATA <- ifelse(PO$INDUSTRIALCD_NWOS=='1' &
+                        PO$COND_STATUS_CD=='1' &
+                        is.na(PO$STRATA),"CORP_LARGE",PO$STRATA)
+  # Other Corp
+  # PO$STRATA <- ifelse(PO$STRATA == '41', "CORP_OTHER", PO$STRATA)
+  #private, forested, other (by OWNCD_NWOS)
+  PO$STRATA <- ifelse(PO$OWNCD_NWOS %in% PR &
+                        PO$INDUSTRIALCD_NWOS %in% c('0',NA) &
+                        PO$COND_STATUS_CD=='1'&
+                        is.na(PO$STRATA), PO$OWNCD_NWOS,PO$STRATA)
   
   PO$OWNER_CN <- as.character(PO$OWNER_CN)
   NO <- which(is.na(PO$OWNER_CN)) #which have null owner cns?
@@ -121,16 +116,16 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city=NA,yrs=NA){
   WHERE s.CN = r.SAMPLE_CN
   AND s.NWOS_CYCLE = '<CYTAG>'
   AND s.NWOS_STUDY = '<STTAG>'
-  AND s.STATECD_NWOS IN ('<CTTAG>')
+  AND s.STATECD_NWOS IN ('<GETAG>')
   AND s.NWOSYR IN (<YRTAG>)
   AND (r.NONRESPONSE_REASON <> '9' OR r.NONRESPONSE_REASON IS NULL)"
   q <- gsub("<CYTAG>",cycle,q)
   q <- gsub("<STTAG>",study,q)
-  if (all(!is.na(city))) {
-    geos <- paste(city, collapse = "','")
-    q <- gsub("<CTTAG>", geos, q)
+  if (all(!is.na(geo))) {
+    geos <- paste(geo, collapse = "','")
+    q <- gsub("<GETAG>", geos, q)
   } else {
-    q <- gsub("'<CTTAG>'", "s.STATECD_NWOS", q)
+    q <- gsub("'<GETAG>'", "s.STATECD_NWOS", q)
   }
   if (all(!is.na(yrs))){
     years <- paste(yrs,collapse=',')
@@ -174,7 +169,7 @@ get_nwos_plots_urban <- function(cycle = "2023",study='urban',city=NA,yrs=NA){
   PO$SKEY <- paste(PO$OWNER_CN,PO$STATECD_NWOS,sep="_")
   SR2$SKEY <- paste(SR2$OWNER_CN,SR2$STATECD_NWOS,sep="_")
   
-  PO2 <- PO[PO$STRATA %in% 'PR',] #copy of PO
+  PO2 <- PO[PO$STRATA %in% PR,] #copy of PO
   PO2$SAMPLE_CN <- SR2$SAMPLE_CN[match(PO2$SKEY,SR2$SKEY)] #join SAMPLE_CN
   PO2$RESPONSES <- SR2$RESPONSES[match(PO2$SKEY,SR2$SKEY)] #join RESPONSES
   PO2$RESPONSE_CAT <- SR2$RESPONSE_CAT[match(PO2$SKEY,SR2$SKEY)] #join RESPONSE_CAT
