@@ -4,8 +4,13 @@
 \alias{get_nwos}
 \title{get_nwos}
 \usage{
-get_nwos(cycle = "2018", study = "base", states = NA,
-  questions = NA)
+get_nwos(
+  cycle = "2018",
+  study = "base",
+  states = NA,
+  questions = NA,
+  response_cd = 1
+)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}
@@ -15,6 +20,8 @@ get_nwos(cycle = "2018", study = "base", states = NA,
 \item{states}{is a character vector containing one or more states to extract.}
 
 \item{questions}{is a character vector containing the names of one or more NWOS questions to extract.}
+
+\item{response_cd}{is a numeric vector indicating which responses to include (1=response (default), 0=nonresponse, -2=invalid respons).}
 }
 \value{
 a nwos.object
