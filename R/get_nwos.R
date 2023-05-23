@@ -9,7 +9,6 @@
 #' @param study is a string containing the NWOS study desired.
 #' @param states is a character vector containing one or more states to extract.
 #' @param questions is a character vector containing the names of one or more NWOS questions to extract.
-#' @param response_cd is a numeric vector indicating which responses to include (1=response (default), 0=nonresponse, -2=invalid respons).
 #'
 #' @return a nwos.object
 #'
@@ -18,12 +17,12 @@
 #'
 #' @export
 
-get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_cd=1){
-
+get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
+  
   #changing global settings
   options(stringsAsFactors = FALSE)
   options(scipen=999)
-
+  
   #query for downloading QUEST table
   q <- "SELECT r.CN,
 	  q.METADATA_CN,
@@ -34,7 +33,7 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
     AND s.NWOS_STUDY = '<STTAG>'
     AND s.STATECD_NWOS IN ('<STAG>')
     AND m.QUESTION_NAME IN ('<QTAG>')
-    AND r.RESPONSE_CD IN ('<RCTAG>')
+    AND r.RESPONSE_CD = 1
     ORDER BY r.CN,
     CAST(SUBSTR(q.METADATA_CN,4) AS NUMBER)"
    #query for downloading SAMPLE table
@@ -50,9 +49,9 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
     AND s.NWOS_CYCLE = '<CYTAG>'
     AND s.NWOS_STUDY = '<STTAG>'
     AND s.STATECD_NWOS IN ('<STAG>')
-    AND r.RESPONSE_CD  IN ('<RCTAG>')
+    AND r.RESPONSE_CD = 1
     ORDER BY r.CN"
-
+  
   #edit queries based on function parameters
   q <- gsub("<CYTAG>",cycle,q) #insert cycle
   q2 <- gsub("<CYTAG>",cycle,q2) #insert cycle
@@ -75,14 +74,13 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
   } else {
     q <- gsub("IN ('<QTAG>')","IS NOT NULL",q,fixed=T) #else, change to null filter
   }
-  q <- gsub("<RCTAG>", paste(response_cd, collapse = "','"), q)
 
   quest <- sqlQuery64(q) #send query to database, quest
-
+  
   if (nrow(quest)==0){
     stop('This combination of cycle/study/states/questions is invalid')
   }
-
+  
   #add records for unasked questions
   rcn <- unique(quest$CN)
   qus <- unique(quest$METADATA_CN)
@@ -96,9 +94,9 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
   una <- una[!una$ASKED,1:3]
   quest <- rbind(quest,una) #add unasked questions to quest
   quest <- quest[order(quest$CN,ncn(quest$METADATA_CN)),] #reorder
-
+  
   sample <- sqlQuery64(q2) #send query to database, sample
-
+  
   #get metadata
   q <- "SELECT CN,QUESTION_NAME,QUESTION_TEXT,
     DATA_TYPE,RANGE,UNITS_FACTORS,
@@ -107,7 +105,7 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
     FROM FS_NWOS.<T> WHERE <F> IN ('<I>')
     ORDER BY CAST(SUBSTR(CN,4) AS NUMBER)"
   metadata <- BATsqlQuery64(ids=quest$METADATA_CN,table='QUEST_METADATA',query=q)
-
+  
   #get fields metadata
   q <- "SELECT f.FIELD_NAME,
       f.DESCRIPTION,
@@ -116,7 +114,7 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
       FROM FS_NWOS.FIELDS f
       LEFT JOIN FS_NWOS.CODES c
       ON f.CN = c.FIELD_CN
-      WHERE f.TABLE_NAME||f.FIELD_NAME IN
+      WHERE f.TABLE_NAME||f.FIELD_NAME IN 
         ('RESPONSECN','SAMPLESTATECD_NWOS',
         'SAMPLENWOS_CYCLE','SAMPLENWOSYR',
         'OWNEROWNCD_NWOS',
@@ -130,18 +128,18 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
   #reorder
   so <- match(c(names(sample),names(quest)[2:3]),fields$FIELD_NAME)
   fields <- fields[so,]
-
+  
   #get weights
   weights <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_WEIGHTS.csv")
   weights <- weights[weights$NWOS_STUDY==study,]
   weights <- weights[weights$RESPONSE_CN %in% sample$CN
                        ,c('RESPONSE_CN','FINAL_WEIGHTS','PLOT_COUNT')]
 
-  #get imputations
+  #get imputations					   
   imps <- read.csv("T:/FS/RD/FIA/NWOS/DB/OFFLINE_TABLES/_REF_QUEST_IMPUTED.csv")
   imps <- imps[imps$RESPONSE_CN %in% sample$CN
                        ,c('RESPONSE_CN','RESPONSE_VALUE','IMPUTATION','METADATA_CN')]
-
+  
   ls <- list(quest,sample,metadata,fields,weights,imps)
   ls <- new("nwos.object",quest=ls[[1]],
 	sample=ls[[2]],
@@ -149,7 +147,7 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
 	fields=ls[[4]],
 	weights=ls[[5]],
 	imputations=ls[[6]])
-
+  
   return(ls)
-
+  
 }
