@@ -76,7 +76,6 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,response_c
     q <- gsub("IN ('<QTAG>')","IS NOT NULL",q,fixed=T) #else, change to null filter
   }
   q <- gsub("<RCTAG>", paste(response_cd, collapse = "','"), q)
-  q2 <- gsub("<RCTAG>", paste(response_cd, collapse = "','"), q2)
 
   quest <- sqlQuery64(q) #send query to database, quest
 
