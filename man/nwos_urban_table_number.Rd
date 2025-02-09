@@ -4,11 +4,21 @@
 \alias{nwos_urban_table_number}
 \title{nwos_urban_table_number}
 \usage{
-nwos_urban_table_number(x, d = 0, r = 0, n = 1, n.max = Inf,
-  less.one = T, n.zero = T)
+nwos_urban_table_number(
+  x,
+  d = 0,
+  r = 0,
+  n = 1,
+  n.max = Inf,
+  less.one = T,
+  n.zero = T
+)
+}
+\arguments{
+\item{x}{value to be formatted}
 }
 \description{
-Converts units (e.g., to thousands) and rounds simialr to base except it adds another digit for values less than 1
+Converts units (e.g., to thousands) and rounds similar to base except it adds another digit for values less than 1
 }
 \details{
 For area and cooperation rate tables see ...
@@ -16,7 +26,9 @@ nwos_urban_table_number(1100)
 nwos_urban_table_number(1100, r = -3)
 nwos_urban_table_number(900)
 nwos_urban_table_number(900, r = -3)
+nwos_urban_table_number(1.1, d = 1)
 nwos_urban_table_number(0.9)
+nwos_urban_table_number(0.9, d = 1)
 nwos_urban_table_number(0)
 nwos_urban_table_number(0, n = 0)
 nwos_urban_table_number(NA)
