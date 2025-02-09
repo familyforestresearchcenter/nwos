@@ -4,8 +4,7 @@
 \alias{get_nwos_plots_islands}
 \title{get_nwos_plots_islands}
 \usage{
-get_nwos_plots_islands(cycle = "2023", study = "islands", geo = NA,
-  yrs = NA)
+get_nwos_plots_islands(cycle = "2023", study = "islands", geo = NA, yrs = NA)
 }
 \arguments{
 \item{cycle}{is a string containing the NWOS cycle desired.}

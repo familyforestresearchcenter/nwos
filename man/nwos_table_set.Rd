@@ -4,12 +4,21 @@
 \alias{nwos_table_set}
 \title{nwos_table_set}
 \usage{
-nwos_table_set(geo.abb, data = ESTIMATES, ref.geo = REF_GEO,
-  ref.table = REF_TABLE, stratum = STRATUM,
-  stratum.abb = STRATUM_ABB, stratum.name = STRATUM_NAME,
-  domain = DOMAIN, domain.abb = DOMAIN_ABB,
-  domain.name = DOMAIN_NAME, year = YEAR, year.range = YEAR_RANGE,
-  min.n = 100)
+nwos_table_set(
+  geo.abb,
+  data = ESTIMATES,
+  ref.geo = REF_GEO,
+  ref.table = REF_TABLE,
+  stratum = STRATUM,
+  stratum.abb = STRATUM_ABB,
+  stratum.name = STRATUM_NAME,
+  domain = DOMAIN,
+  domain.abb = DOMAIN_ABB,
+  domain.name = DOMAIN_NAME,
+  year = YEAR,
+  year.range = YEAR_RANGE,
+  min.n = 100
+)
 }
 \description{
 Create the body of an NWOS table
