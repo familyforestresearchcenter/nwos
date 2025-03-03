@@ -48,7 +48,7 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   AND p.NWOSYR IN (<YRTAG>)
   AND (p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON IN ('Augmentation','State intensification'))"
   if (strict.intensification==TRUE){
-	q <- gsub("p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON IN ('Augmentation','State intensification')","p.ORIGIN_OTHER_REASON IN ('State intensification')",q)
+	q <- gsub("p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON IN ('Augmentation','State intensification')","p.ORIGIN_OTHER_REASON IN ('State intensification')",q,fixed=T)
   }
   q <- gsub("<CYTAG>",cycle,q)
   if (!is.na(states[1])){ #insert states (if listed)
@@ -129,6 +129,9 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   AND s.NWOSYR IN (<YRTAG>)
   AND s.NWOS_STUDY IN ('base','base intensified') --AND s.NWOS_STUDY = '<STTAG>'
   AND (r.NONRESPONSE_REASON <> '9' OR r.NONRESPONSE_REASON IS NULL)"
+  if (strict.intensification==TRUE){
+	q <- gsub("s.NWOS_STUDY IN ('base','base intensified')","s.NWOS_STUDY IN ('base intensified')",q,fixed=T)
+  }
   q <- gsub("<CYTAG>",cycle,q)
   q <- gsub("<STTAG>",study,q)
   if (!is.na(states[1])){ #insert states (if listed)
