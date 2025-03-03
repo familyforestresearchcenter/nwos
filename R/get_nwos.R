@@ -9,15 +9,16 @@
 #' @param study is a string containing the NWOS study desired.
 #' @param states is a character vector containing one or more states to extract.
 #' @param questions is a character vector containing the names of one or more NWOS questions to extract.
+#' @param yrs is a logical value determining whether ONLY intensified plots should be selected.
 #'
 #' @return a nwos.object
 #'
 #' @examples
-#' get_nwos(cycle='2018',study='base',states='44',questions='AC_LAND')
+#' get_nwos(cycle='2018',study='base',states='44',questions='AC_LAND',strict.intensification=FALSE)
 #'
 #' @export
 
-get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
+get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA,strict.intensification=FALSE){
   
   #changing global settings
   options(stringsAsFactors = FALSE)
@@ -55,9 +56,12 @@ get_nwos <- function(cycle='2018',study='base',states=NA,questions=NA){
   #edit queries based on function parameters
   q <- gsub("<CYTAG>",cycle,q) #insert cycle
   q2 <- gsub("<CYTAG>",cycle,q2) #insert cycle
-  if (study=='base intensified'){ #insert study
+  if (study=='base intensified' & strict.intensification==FALSE){ #insert study
     q <- gsub("= '<STTAG>'","IN ('base','base intensified')", q)
     q2 <- gsub("= '<STTAG>'","IN ('base','base intensified')", q2)
+  } else if (study=='base intensified'){
+	q <- gsub("= '<STTAG>'","IN ('base intensified')", q)
+    q2 <- gsub("= '<STTAG>'","IN ('base intensified')", q2)
   } else {
     q <- gsub("<STTAG>",study,q)
     q2 <- gsub("<STTAG>",study,q2)

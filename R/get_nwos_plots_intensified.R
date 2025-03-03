@@ -9,15 +9,16 @@
 #' @param study is a string containing the NWOS study desired.
 #' @param states is a string containing the NWOS state desired.
 #' @param yrs is a vector containing the specific years desired with the NWOS cycle.
+#' @param yrs is a logical value determining whether ONLY intensified plots should be selected.
 #'
 #' @return an nwos.plots object
 #'
 #' @examples
-#' get_nwos_plots(cycle='2018',study='base intensified',states="26",yrs=2017:2018)
+#' get_nwos_plots(cycle='2018',study='base intensified',states="26",yrs=2017:2018,strict.intensification=FALSE)
 #'
 #' @export
 
-get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',states=NA,yrs=NA){
+get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',states=NA,yrs=NA,strict.intensification=FALSE){
   
   if (study!='base intensified'){
 	  stop("get_nwos_plots_intensified() currently does not include functionality for studies other than 'base intensified'")
@@ -46,6 +47,9 @@ get_nwos_plots_intensified <- function(cycle = "2018",study='base intensified',s
   AND p.STATECD_NWOS IN ('<STAG>')
   AND p.NWOSYR IN (<YRTAG>)
   AND (p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON IN ('Augmentation','State intensification'))"
+  if (strict.intensification==TRUE){
+	q <- gsub("p.ORIGIN = 'P2' OR p.ORIGIN_OTHER_REASON IN ('Augmentation','State intensification')","p.ORIGIN_OTHER_REASON IN ('State intensification')",q)
+  }
   q <- gsub("<CYTAG>",cycle,q)
   if (!is.na(states[1])){ #insert states (if listed)
     q <- gsub("<STAG>",paste(states,collapse="','"),q)

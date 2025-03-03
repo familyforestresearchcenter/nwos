@@ -8,7 +8,8 @@ get_nwos_plots_intensified(
   cycle = "2018",
   study = "base intensified",
   states = NA,
-  yrs = NA
+  yrs = NA,
+  strict.intensification = FALSE
 )
 }
 \arguments{
@@ -18,7 +19,7 @@ get_nwos_plots_intensified(
 
 \item{states}{is a string containing the NWOS state desired.}
 
-\item{yrs}{is a vector containing the specific years desired with the NWOS cycle.}
+\item{yrs}{is a logical value determining whether ONLY intensified plots should be selected.}
 }
 \value{
 an nwos.plots object
@@ -30,6 +31,6 @@ Extracts the full plot list for a given NWOS cycle/study, classed to STRATA
 This function must be run on a machine with an ODBC connection to the USFS FIA production database through a user with read permissions.
 }
 \examples{
-get_nwos_plots(cycle='2018',study='base intensified',states="26",yrs=2017:2018)
+get_nwos_plots(cycle='2018',study='base intensified',states="26",yrs=2017:2018,strict.intensification=FALSE)
 
 }
