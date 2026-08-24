@@ -2,9 +2,9 @@
 #'
 #' Converts units (e.g., to thousands) and rounds similar to base except it adds another digit for values less than 1
 #' @param x value to be formatted
-#' @param d
-#' @param r
-#' @param n
+#' @param d number of digits
+#' @param r rounding
+#' @param n number of responses
 #' @details For area and cooperation rate tables see ...
 #' nwos_urban_table_number(1100)
 #' nwos_urban_table_number(1100, r = -3)
