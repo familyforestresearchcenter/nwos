@@ -8,9 +8,9 @@
 #' nwos_table_number(NA)
 #' @export
 
-nwos_table_number <- function(x, d = 0, less.one = T) {
+nwos_table_number <- function(x, n = NA, d = 0, less.one = T) {
   if(less.one) {
-    ifelse(length(x) == 0, "--",
+    ifelse(n == 0, "--", # length(x)
            ifelse(x < 1, "$<$1",
                   formatC(round(x, d), big.mark = ",", format = "f", digits = d)))}
   else formatC(round(x, d), big.mark = ",", format = "f", digits = d)

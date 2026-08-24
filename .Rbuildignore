@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 _ARCHIVE
+^\.positai$
+^\.claude$
