@@ -1,5 +1,5 @@
 ---
-title: "Accessing NWOS data"
+title: "get-NWOS-data"
 author: "Jesse Caputo"
 date: "October 2026"
 output: rmarkdown::html_vignette

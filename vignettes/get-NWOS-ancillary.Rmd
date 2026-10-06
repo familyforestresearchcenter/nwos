@@ -1,5 +1,5 @@
 ---
-title: "Accessing ancillary data for NWOS"
+title: "get-NWOS-ancillary"
 author: "Jesse Caputo"
 date: "Octohber 2026"
 output: rmarkdown::html_vignette
@@ -14,6 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   eval=F
+)
 ```
 
 This is a demonstration of a function for downloading and manipulating ancillary data for use with raw NWOS data.
