@@ -10,6 +10,9 @@ cg_max(
   quest_meta = QUEST_META
 )
 }
+\arguments{
+\item{quest_meta}{}
+}
 \description{
 Calculate maximum values for check group questions
 }
