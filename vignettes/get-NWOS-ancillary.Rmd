@@ -12,8 +12,7 @@ vignette: >
 ```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval=F
+  comment = "#>"
 )
 ```
 
@@ -22,28 +21,22 @@ This is a demonstration of a function for downloading and manipulating ancillary
 If the function is run with no variable listed in the 'var' parameter, it will return the metadata for all ancillary datasets in the database. This table is useful as a lookup table.
 
 ```{r md}
-
 md <- nwos::get_nwos_ancillary()
 print(str(md))
-
 ```
 
 The 'by' parameter determines how the returned data are aggregated. If we select 'by=all' (the default), the raw values are returned for all sample points. For example, here is the census tract population for all sample points:
 
 ```{r all}
-
 cnty <- nwos::get_nwos_ancillary(var="CENSUS",by="all")
 print(str(cnty))
-
 ```
 
 For numeric variables, however, we will usually want to aggregate the values by survey (for surveys with more than one sample point) in order to attach to a wide NWOS table. Here is the mean parcel acreage by respondent:
 
 ```{r mean}
-
 ac <- nwos::get_nwos_ancillary(var="ACREAGE",by="mean")
 print(str(ac))
-
 ```
 
 In addition to 'mean', numeric variables can also be aggregated by 'max' and 'min'.
