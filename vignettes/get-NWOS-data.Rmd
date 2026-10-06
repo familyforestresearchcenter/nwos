@@ -1,7 +1,7 @@
 ---
-title: "Accessing the NWOS database (NWOS-DB)"
+title: "Accessing NWOS data"
 author: "Jesse Caputo"
-date: "December 2020"
+date: "October 2026"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{get-NWOS-data}
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 The NWOS database (NWOS-DB) can be queried using a database client and SQL (standard query language) scripts. For administrative users, this is often a useful and necessary means of access – particularly for special-purpose or infrequent tasks. For the average user, however, a more reliable method is to use to the nwos R package. This R package contains a number of standardized functions for downloading, manipulating, and analyzing NWOS data in a clear and consistent manner.
 
-In order to use the full capacity of the package, the user must have access to a USDA computer that has been mapped to the internal Forest Service network (i.e. T drive), with read permissions for the NWOS folder space. The computer must be configured with the correct DSN (data source name) for PROD, the Forest Service production space (i.e. Oracle instance). Finally, it is necessary for the user to have connection privileges to the Forest Service production space and to have been assigned a role within NWOS-DB. Note: NWOS data is confidential and must be handled using appropriate protocols, including storing any downloaded data on USDA computers or networks. Accessing NWOS data without proper credentials is strictly forbidden.
+In order to use the full capacity of the package, the user must have access to a USDA computer that has been mapped to the internal Forest Service network (i.e. T drive), with read permissions for the NWOS folder space. The computer must be configured with the correct DSN (data source name) for PROD, the Forest Service production space (i.e. Oracle instance). Finally, it is necessary for the user to have been assigned a role within NWOS-DB. Note: NWOS data is confidential and must be handled using appropriate protocols, including storing any downloaded data on USDA computers or networks. Accessing NWOS data without proper credentials is strictly forbidden.
  
 
 ## Downloading and Preparing NWOS Data
