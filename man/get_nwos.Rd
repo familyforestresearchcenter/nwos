@@ -21,7 +21,7 @@ get_nwos(
 
 \item{questions}{is a character vector containing the names of one or more NWOS questions to extract.}
 
-\item{yrs}{is a logical value determining whether ONLY intensified plots should be selected.}
+\item{strict.intensification}{is a logical value determining whether ONLY intensified plots should be selected.}
 }
 \value{
 a nwos.object

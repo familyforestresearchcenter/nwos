@@ -19,7 +19,9 @@ get_nwos_plots_intensified(
 
 \item{states}{is a string containing the NWOS state desired.}
 
-\item{yrs}{is a logical value determining whether ONLY intensified plots should be selected.}
+\item{yrs}{is a vector containing the specific years desired with the NWOS cycle.}
+
+\item{strict.intensification}{is a logical value determining whether ONLY intensified plots should be selected.}
 }
 \value{
 an nwos.plots object

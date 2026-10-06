@@ -9,7 +9,7 @@
 #' @param study is a string containing the NWOS study desired.
 #' @param states is a character vector containing one or more states to extract.
 #' @param questions is a character vector containing the names of one or more NWOS questions to extract.
-#' @param yrs is a logical value determining whether ONLY intensified plots should be selected.
+#' @param strict.intensification is a logical value determining whether ONLY intensified plots should be selected.
 #'
 #' @return a nwos.object
 #'
